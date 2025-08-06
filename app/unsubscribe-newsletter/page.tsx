@@ -1,4 +1,5 @@
 'use client';
+
 import { unsubscribeNewsletter } from "@/lib/api";
 import { Button } from "@heroui/button";
 import { useState } from "react";
