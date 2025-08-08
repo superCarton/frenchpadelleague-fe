@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 
 import { login } from "@/lib/api";
 import { Form } from '@heroui/form';
+import { Link } from '@heroui/link';
+import { addToast } from '@heroui/toast';
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = 'Inconnue.';
@@ -23,27 +25,41 @@ const translateErrorMessageToFr = (message: string) => {
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [errors, setErrors] = useState({});
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
+
     const data = Object.fromEntries(new FormData(e.currentTarget));
     setLoading(true);
 
     try {
       await login(data.email.toString(), data.password.toString());
+      if (e.currentTarget) {
+        e.currentTarget.reset();
+      }
+      addToast({
+        title: "Login success",
+        color: "success"
+      })
       router.push('/profile');
     } catch (err: any) {
-      const message = err ? err.message : 'unknown';
-      setMessage(`❌ Erreur : ${translateErrorMessageToFr(message)}`);
+      let description;
+      if (err && err.message) {
+        description = translateErrorMessageToFr(err.message);
+      }
+      addToast({
+        title: `❌ Erreur lors de la connexion`,
+        description,
+        color: "danger"
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div>
+    <div className='login-container'>
       <Form 
         className="" 
         onSubmit={handleLogin}
@@ -57,7 +73,6 @@ export default function LoginPage() {
           errorMessage="Veuillez entrer un email valide"
           placeholder="email@example.com"
           labelPlacement="outside"
-          radius="none"
         />
         <Input
           isRequired
@@ -67,13 +82,13 @@ export default function LoginPage() {
           errorMessage="Le mot de passe est requis"
           placeholder="••••••••"
           labelPlacement="outside"
-          radius="none"
         />
-        <Button type="submit" isLoading={loading} variant="faded" radius="none" className="mt-2 self-center">
+        <Link href="/forgot-password">Mot de passe oublié ?</Link>
+        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
           Se Connecter
         </Button>
       </Form>
-      {message && <p className="text-sm mt-2">{message}</p>}
+      <div>Pas de compte ? <Link href="/register">S'inscrire maintenant</Link></div>
     </div>
   );
 }

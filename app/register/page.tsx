@@ -7,6 +7,10 @@ import { useRouter } from 'next/navigation';
 
 import { createPlayer } from "@/lib/api";
 import { Form } from '@heroui/form';
+import { Link } from '@heroui/link';
+import { addToast } from '@heroui/toast';
+import { DateInput } from "@heroui/date-input";
+import { CalendarDate } from '@internationalized/date';
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = message;
@@ -23,11 +27,11 @@ const translateErrorMessageToFr = (message: string) => {
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [errors, setErrors] = useState({});
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
+
     const data = Object.fromEntries(new FormData(e.currentTarget));
     setLoading(true);
 
@@ -37,11 +41,27 @@ export default function RegisterPage() {
         password: data.password.toString(),
         firstname: data.firstname.toString(),
         lastname: data.lastname.toString(),
+        birthdate: data.birthdate.toString()
       });
-      router.push('/confirm-email');
+      if (e.currentTarget) {
+        e.currentTarget.reset();
+      }
+      addToast({
+        title: "Inscription réussie ✅",
+        description: "Un email de confirmation vient de t'être envoyé",
+        color: "success"
+      });
+      router.push('/profile');
     } catch (err: any) {
-      const message = err ? err.message : 'inconnue';
-      setMessage(`❌ Erreur : ${translateErrorMessageToFr(message)}`);
+      let description;
+      if (err && err.message) {
+        description = translateErrorMessageToFr(err.message)
+      }
+      addToast({
+        title: "❌ Erreur lors de l'inscription",
+        description,
+        color: "danger"
+      });
     } finally {
       setLoading(false);
     }
@@ -62,7 +82,6 @@ export default function RegisterPage() {
           errorMessage="Veuillez entrer votre prénom"
           placeholder="Prénom"
           labelPlacement="outside"
-          radius="none"
         />
         <Input
           isRequired
@@ -72,7 +91,16 @@ export default function RegisterPage() {
           errorMessage="Veuillez entrer votre nom"
           placeholder="Nom"
           labelPlacement="outside"
-          radius="none"
+        />
+        <DateInput
+          isRequired
+          name="birthdate"
+          label="Date de naissance"
+          errorMessage="Veuillez entrer une date valide"
+          labelPlacement="outside"
+          placeholderValue={new CalendarDate(1993, 3, 10)}
+          maxValue={new CalendarDate(2025, 1, 1)}
+          className="max-w-sm"
         />
         <Input
           isRequired
@@ -82,7 +110,6 @@ export default function RegisterPage() {
           errorMessage="Veuillez entrer un email valide"
           placeholder="email@example.com"
           labelPlacement="outside"
-          radius="none"
         />
         <Input
           isRequired
@@ -92,7 +119,6 @@ export default function RegisterPage() {
           errorMessage="Le mot de passe doit contenir au moins 8 caractères"
           placeholder="••••••••"
           labelPlacement="outside"
-          radius="none"
           validate={(value) => {
             if (value.length < 8) {
               return "Le mot de passe doit contenir au moins 8 caractères dddd";
@@ -107,16 +133,15 @@ export default function RegisterPage() {
           errorMessage="Le mot de passe n'est pas indentique"
           placeholder="••••••••"
           labelPlacement="outside"
-          radius="none"
           validate={(value) => {
             return true;
           }}
         />
-        <Button type="submit" isLoading={loading} variant="faded" radius="none" className="mt-2 self-center">
+        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
           Créer mon compte joueur
         </Button>
       </Form>
-      {message && <p className="text-sm mt-2">{message}</p>}
+      <div>Déjà un compte ? <Link href="/login">Se connecter</Link></div>
     </div>
   );
 }

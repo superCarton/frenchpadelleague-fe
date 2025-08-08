@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "French Padel League",
+  description: "",
   navItems: [
     {
       label: "Découvrir la FPL",
@@ -21,10 +21,6 @@ export const siteConfig = {
     {
       label: "Profile",
       href: "/profile",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
     },
   ],
   links: {

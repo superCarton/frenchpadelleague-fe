@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-import { Card, CardBody } from '@heroui/card';
-import {Tabs, Tab} from "@heroui/tabs";
-
 import { useAuth } from '@/lib/useAuth';
 import { getMeProfiles } from '@/lib/api';
 
@@ -40,34 +37,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <Tabs aria-label="Options" radius="none" color="primary">
-        <Tab key="player" title="Joueur">
-          <Card>
-            <CardBody>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-              exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab key="referee" title="Juge Arbitre">
-          <Card>
-            <CardBody>
-              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex
-              ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur.
-            </CardBody>
-          </Card>
-        </Tab>
-        <Tab key="club" title="Club">
-          <Card>
-            <CardBody>
-              Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-              mollit anim id est laborum.
-            </CardBody>
-          </Card>
-        </Tab>
-      </Tabs>
+      {JSON.stringify(profiles, null, 2)}
     </div>
   );
 }

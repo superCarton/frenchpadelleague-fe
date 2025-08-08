@@ -27,6 +27,32 @@ export async function login(email: string, password: string) {
   return data;
 }
 
+export async function forgotPassword(email: string) {
+  const res = await fetch(`${API_URL}/auth/forgot-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || 'Erreur lors du renouvelement du mot de passe');
+  return data;
+}
+
+export async function resetPassword(code: string, newPassword: string) {
+  const res = await fetch(`${API_URL}/auth/reset-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, password: newPassword, passwordConfirmation: newPassword }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || 'Erreur lors du changement du mot de passe');
+  localStorage.setItem('jwt', data.jwt);
+  localStorage.setItem('user', JSON.stringify(data.user));
+  return data;
+}
+
 export function logout() {
     if (typeof window !== 'undefined') {
         localStorage.removeItem('jwt');
@@ -63,11 +89,11 @@ export async function createPlayer(payload: any) {
   return data;
 }
 
-export async function subscribeNewsletter(payload: any) {
+export async function subscribeNewsletter(email: string) {
   const res = await fetch(`${API_URL}/newsletters`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({ data: { email } }),
   });
 
   const data = await res.json();
