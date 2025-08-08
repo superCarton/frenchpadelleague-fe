@@ -505,7 +505,7 @@
     "@heroui/system" "2.4.20"
     "@heroui/use-measure" "2.1.8"
 
-"@heroui/image@2.2.15":
+"@heroui/image@2.2.15", "@heroui/image@^2.2.15":
   version "2.2.15"
   resolved "https://registry.yarnpkg.com/@heroui/image/-/image-2.2.15.tgz#bf2da968ddb518c98abca5394c00247e882f24fd"
   integrity sha512-7/DIVZJh2CIZuzoRW9/XVLRyLTWsqNFQgEknEAjGudAUxlcu1dJ8ZuFBVC55SfPIrXE7WuGoiG1Q0B1iwW65IA==
@@ -985,7 +985,7 @@
     "@heroui/system" "2.4.19"
     "@heroui/system-rsc" "2.3.16"
 
-"@heroui/spinner@2.2.21":
+"@heroui/spinner@2.2.21", "@heroui/spinner@^2.2.21":
   version "2.2.21"
   resolved "https://registry.yarnpkg.com/@heroui/spinner/-/spinner-2.2.21.tgz#ae14523d114764d046d119a9594e5af4be42b73e"
   integrity sha512-8rBUwVcVESlHfguRXkgC4p7UEymAAUL/E+nOCfqOHqr308bKhVrS2lSjfeRMBGEJqWLf3m5AMhRfwpRbcSVHWg==

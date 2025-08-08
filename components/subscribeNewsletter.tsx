@@ -48,19 +48,18 @@ export default function SubscribeNewsletter() {
     <div>
         Reste informé des prochaines actualités, tournois et offres exclusives
       <Form 
-        className="" 
+        className="pt-2" 
         onSubmit={handleSubscribeNewsLetter}
       >
         <Input
           isRequired
           type="email"
           name="email"
-          label="Email"
           errorMessage="Une adresse email valide est requise"
           placeholder="ton@adresse.email"
         />
-        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
-          S'abonner
+        <Button type="submit" isLoading={loading} variant="bordered" className="w-full bg-black text-white">
+          S'abonner à la newsletter
         </Button>
       </Form>
     </div>

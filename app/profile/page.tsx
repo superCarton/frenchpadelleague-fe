@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import {Spinner} from "@heroui/spinner";
 
 import { useAuth } from '@/lib/useAuth';
 import { getMeProfiles } from '@/lib/api';
@@ -32,7 +33,7 @@ export default function ProfilePage() {
     fetchProfiles();
   }, []);
 
-  if (loading) return <p className="p-4">Chargement...</p>;
+  if (loading) return <Spinner variant='wave' />;
   if (error) return <p className="p-4 text-red-500">{error}</p>;
 
   return (

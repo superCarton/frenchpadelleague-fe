@@ -59,36 +59,33 @@ export default function LoginPage() {
   };
 
   return (
-    <div className='login-container'>
-      <Form 
-        className="" 
-        onSubmit={handleLogin}
-        validationErrors={errors}
-      >
-        <Input
-          isRequired
-          type="email"
-          name="email"
-          label="Email"
-          errorMessage="Veuillez entrer un email valide"
-          placeholder="email@example.com"
-          labelPlacement="outside"
-        />
-        <Input
-          isRequired
-          type="password"
-          name="password"
-          label="Mot de passe"
-          errorMessage="Le mot de passe est requis"
-          placeholder="••••••••"
-          labelPlacement="outside"
-        />
-        <Link href="/forgot-password">Mot de passe oublié ?</Link>
-        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
-          Se Connecter
-        </Button>
-      </Form>
-      <div>Pas de compte ? <Link href="/register">S'inscrire maintenant</Link></div>
-    </div>
+    <Form 
+      className="" 
+      onSubmit={handleLogin}
+      validationErrors={errors}
+    >
+      <Input
+        isRequired
+        type="email"
+        name="email"
+        label="Email"
+        errorMessage="Veuillez entrer un email valide"
+        placeholder="ton@adress.email"
+        labelPlacement="outside"
+      />
+      <Input
+        isRequired
+        type="password"
+        name="password"
+        label="Mot de passe"
+        errorMessage="Le mot de passe est requis"
+        placeholder="••••••••"
+        labelPlacement="outside"
+      />
+      <Link href="/forgot-password" className="self-end text-small">Mot de passe oublié ?</Link>
+      <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
+        Se Connecter
+      </Button>
+    </Form>
   );
 }

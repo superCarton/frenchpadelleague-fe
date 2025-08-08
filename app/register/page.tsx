@@ -108,7 +108,7 @@ export default function RegisterPage() {
           name="email"
           label="Email"
           errorMessage="Veuillez entrer un email valide"
-          placeholder="email@example.com"
+          placeholder="ton@adresse.email"
           labelPlacement="outside"
         />
         <Input

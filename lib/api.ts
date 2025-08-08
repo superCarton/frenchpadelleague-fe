@@ -10,6 +10,10 @@ export function getCurrentUser(): any | null {
     return user ? JSON.parse(user) : null;
 }
 
+export function isUserConnected() {
+  return typeof window !== 'undefined' ? !!localStorage.getItem('jwt') : false;
+}
+
 export async function login(email: string, password: string) {
   const res = await fetch(`${API_URL}/auth/local`, {
     method: 'POST',

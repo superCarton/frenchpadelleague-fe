@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Navbar as HeroUINavbar,
   NavbarContent,
@@ -5,30 +7,70 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
+  NavbarMenuToggle,
 } from "@heroui/navbar";
 import { Link } from "@heroui/link";
-import { link as linkStyles } from "@heroui/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { Image } from "@heroui/image";
 
-import { siteConfig } from "@/config/site";
-import {
-  Logo,
-} from "@/components/icons";
+import { isUserConnected } from "@/lib/api";
+import { Button } from "@heroui/button";
+import { useState } from "react";
+
+type NavLink = {
+  label: string;
+  href: string;
+  isButton?: boolean;
+}
 
 export const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  let navItems: NavLink[] = [];
+  if (isUserConnected()) {
+    navItems = [
+      {
+        label: "Rechercher un tournoi",
+        href: "/",
+      },
+      {
+        label: "Mon Profil",
+        href: "/profile",
+      },
+    ];
+  } else {
+    navItems = [
+      {
+        label: "Découvrir la FPL",
+        href: "/discover-fpl",
+      },
+      {
+        label: "Tester mon niveau",
+        href: "/",
+      },
+      {
+        label: "Se Connecter",
+        href: "/login",
+        isButton: true
+      },
+    ];
+  }
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky" className="bg-black text-white uppercase">
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/" color="primary">
-            <Logo />
-            <p className="font-bold text-inherit">FPL</p>
-          </NextLink>
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
+    <HeroUINavbar maxWidth="xl" position="sticky" className="bg-black text-white uppercase" onMenuOpenChange={setIsMenuOpen}>
+      <NavbarBrand>
+        <NextLink className="flex justify-start items-center gap-1" href="/" color="primary">
+          <Image src="/logo.png" width={30} />
+        </NextLink>
+      </NavbarBrand>
+      <NavbarContent justify="end">
+        {navItems.map((item) => (
+          <NavbarItem key={item.href} className="hidden sm:flex gap-4">
+            {item.isButton ? (
+              <Button as={Link} color="primary" href={item.href} variant="flat" className="bg-black text-white">
+                {item.label}
+              </Button>
+            ) : (
               <NextLink
                 className={clsx(
                   "text-white",
@@ -38,39 +80,25 @@ export const Navbar = () => {
               >
                 {item.label}
               </NextLink>
-            </NavbarItem>
-          ))}
-        </ul>
+            )}
+          </NavbarItem>
+        ))}
+        <NavbarMenuToggle
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          className="sm:hidden"
+        />
       </NavbarContent>
-
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-        </NavbarItem>
-      </NavbarContent>
-
       <NavbarMenu>
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
-        </div>
+        {navItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              href={item.href}
+              size="lg"
+            >
+              {item.label}
+            </Link>
+          </NavbarMenuItem>
+        ))}
       </NavbarMenu>
     </HeroUINavbar>
   );
