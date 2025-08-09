@@ -35,7 +35,7 @@ export default function SubscribeNewsletter() {
         }
       }
       addToast({
-        title: "❌ Erreur lors de l'inscription à la newsletter",
+        title: "Une erreur est survenue lors de l'inscription à la newsletter",
         description,
         color: "danger"
       });

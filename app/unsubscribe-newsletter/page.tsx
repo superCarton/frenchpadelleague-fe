@@ -15,7 +15,8 @@ export default function UnsubscribeNewsletterPage() {
   const handleUnsubscribeNewsletter = async (e: any) => {
     if (!token) {
       addToast({
-        title: "❌ Erreur : token manquant",
+        title: "Erreur lors de la désinscription",
+        description: "Token manquant",
         color: "danger"
       });
       return null;
@@ -32,9 +33,13 @@ export default function UnsubscribeNewsletterPage() {
         router.push('/');
       }
     } catch (err: any) {
-      const message = err ? err.message : 'inconnue';
+      let description;
+      if (err && err.message) {
+        description = err.message;
+      }
       addToast({
-        title: `❌ Erreur : ${message}}`,
+        title: "Erreur lors de la désisnscription",
+        description,
         color: "danger"
       });
     } finally {
@@ -44,7 +49,7 @@ export default function UnsubscribeNewsletterPage() {
 
   return (
     <div>
-      <Button onPress={handleUnsubscribeNewsletter} isLoading={loading} variant="faded" className="mt-2 self-center">
+      <Button onPress={handleUnsubscribeNewsletter} isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
         Se désinscrire de la newsletter
       </Button>
     </div>

@@ -11,15 +11,15 @@ import { Link } from '@heroui/link';
 import { addToast } from '@heroui/toast';
 
 const translateErrorMessageToFr = (message: string) => {
-  let messageFR = 'Inconnue.';
   if (message.includes('Invalid identifier or password')) {
-    messageFR = 'Identifiants incorrects.';
+    return 'Identifiants incorrects.';
   } else if (message.includes('Email or Username are already taken')) {
-    messageFR = 'Cet email est déjà utilisé.';
+    return 'Cet email est déjà utilisé.';
   } else if (message.includes('password is too short')) {
-    messageFR = 'Mot de passe trop court.';
+    return 'Mot de passe trop court.';
+  } else {
+    return message;
   }
-  return messageFR;
 };
 
 export default function LoginPage() {
@@ -49,7 +49,7 @@ export default function LoginPage() {
         description = translateErrorMessageToFr(err.message);
       }
       addToast({
-        title: `❌ Erreur lors de la connexion`,
+        title: "Une erreur est survenue lors de la connexion",
         description,
         color: "danger"
       });
@@ -72,6 +72,7 @@ export default function LoginPage() {
         errorMessage="Veuillez entrer un email valide"
         placeholder="ton@adress.email"
         labelPlacement="outside"
+        disabled={loading}
       />
       <Input
         isRequired
@@ -81,6 +82,7 @@ export default function LoginPage() {
         errorMessage="Le mot de passe est requis"
         placeholder="••••••••"
         labelPlacement="outside"
+        disabled={loading}
       />
       <Link href="/forgot-password" className="self-end text-small">Mot de passe oublié ?</Link>
       <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">

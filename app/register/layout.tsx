@@ -1,5 +1,6 @@
 import { title } from "@/components/primitives";
-import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Link } from "@heroui/link";
 
 export default function RegisterLayout({
     children,
@@ -7,12 +8,19 @@ export default function RegisterLayout({
     children: React.ReactNode;
   }) {
     return (
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-        <Card>
-          <CardHeader>Créer un compte joueur</CardHeader>
-          <CardBody>{children}</CardBody>
-        </Card>
-      </section>
+          <div className="flex justify-center sm:py-10">
+          <Card className="w-full sm:max-w-[500px] mx-auto py-5 sm:px-5">
+            <CardHeader className="flex gap-3 text-lg font-semibold text-gray-80 border-b border-gray-200 pb-2 mb-4">
+              <h2>Créer un compte joueur</h2>
+            </CardHeader>
+            <CardBody className="py-2">
+              {children}
+            </CardBody>
+            <CardFooter className="text-small">
+              Tu as déjà un compte ? <Link className="pl-2 text-small" href="/login">Se connecter</Link>
+            </CardFooter>
+          </Card>
+        </div>
     );
   }
   

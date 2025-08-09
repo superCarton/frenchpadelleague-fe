@@ -8,11 +8,11 @@ export default function LoginLayout({
   }) {
   return (
     <div className="flex justify-center sm:py-10">
-      <Card className="sm:p-5 w-full">
-        <CardHeader className="flex gap-3">
+      <Card className="w-full sm:max-w-[500px] mx-auto py-5 sm:px-5">
+        <CardHeader className="flex gap-3 text-lg font-semibold text-gray-80 border-b border-gray-200 pb-2 mb-4">
           <h2>Se connecter</h2>
         </CardHeader>
-        <CardBody className="">
+        <CardBody className="py-2">
           {children}
         </CardBody>
         <CardFooter className="text-small">

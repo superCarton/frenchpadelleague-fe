@@ -21,7 +21,7 @@ export default function RenewPasswordPage() {
 
     if (!token) {
       addToast({
-        title: "❌ Erreur lors du renouvellement du mot de passe",
+        title: "Une erreur est survenue lors du renouvellement du mot de passe",
         description: "Lien invalide ou expiré",
         color: "danger"
       });
@@ -47,7 +47,7 @@ export default function RenewPasswordPage() {
         description = err.message;
       }
       addToast({
-        title: `❌ Erreur lors du renouvellement du mot de passe`,
+        title: `Une erreur est survenue lors du renouvellement du mot de passe`,
         description,
         color: "danger"
       });
@@ -66,7 +66,7 @@ export default function RenewPasswordPage() {
           isRequired
           type="password"
           name="password"
-          label="Mot de passe"
+          label="Nouveau mot de passe"
           errorMessage="Le mot de passe est requis"
           placeholder="••••••••"
           labelPlacement="outside"
@@ -75,13 +75,13 @@ export default function RenewPasswordPage() {
           isRequired
           type="password"
           name="confirm-password"
-          label="Confirmation du mot de passe"
+          label="Confirmation du nouveau mot de passe"
           errorMessage="La confirmation du mot de passe est requise"
           placeholder="••••••••"
           labelPlacement="outside"
         />
-        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
-          Confirmer
+        <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
+          Mettre à jour mon mot de passe
         </Button>
       </Form>
     </div>

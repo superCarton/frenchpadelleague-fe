@@ -7,9 +7,10 @@ import { Input } from "@heroui/input";
 
 import { forgotPassword } from "@/lib/api";
 import { addToast } from "@heroui/toast";
-import { Link } from "@heroui/link";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
 
   const handleForgotPassword = async (e: any) => {
@@ -27,14 +28,15 @@ export default function ForgotPasswordPage() {
         title: "Un email vient de t'être envoyé ✅",
         description: "Pour réinitialiser ton mode de passe, il te suffit de cliquer sur le lien sécurisé que tu as reçu",
         color: "success"
-      })
+      });
+      router.push('/');
     } catch (err: any) {
       let description;
       if (err && err.message) {
         description = err.message;
       }
       addToast({
-        title: "❌ Erreur lors de la reinitialisation du mot de passe",
+        title: "Une erreur est survenue lors de la réinitialisation du mot de passe",
         description,
         color: "danger"
       })
@@ -57,11 +59,11 @@ export default function ForgotPasswordPage() {
           errorMessage="Veuillez entrer votre email"
           placeholder="email@example.com"
           labelPlacement="outside"
+          disabled={loading}
         />
-        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
+        <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
           Réinitialiser le mot de passe
         </Button>
-        <Link href="/login">Se connecter</Link>
       </Form>
     </div>
   );

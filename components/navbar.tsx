@@ -67,7 +67,7 @@ export const Navbar = () => {
         {navItems.map((item) => (
           <NavbarItem key={item.href} className="hidden sm:flex gap-4">
             {item.isButton ? (
-              <Button as={Link} color="primary" href={item.href} variant="flat" className="bg-black text-white">
+              <Button as={Link} href={item.href} className="" variant="solid" color="primary">
                 {item.label}
               </Button>
             ) : (

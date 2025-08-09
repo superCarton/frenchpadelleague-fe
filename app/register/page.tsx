@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 
 import { createPlayer } from "@/lib/api";
 import { Form } from '@heroui/form';
-import { Link } from '@heroui/link';
 import { addToast } from '@heroui/toast';
 import { DateInput } from "@heroui/date-input";
 import { CalendarDate } from '@internationalized/date';
@@ -58,7 +57,7 @@ export default function RegisterPage() {
         description = translateErrorMessageToFr(err.message)
       }
       addToast({
-        title: "❌ Erreur lors de l'inscription",
+        title: "Une erreur est survenue lors de l'inscription",
         description,
         color: "danger"
       });
@@ -137,11 +136,10 @@ export default function RegisterPage() {
             return true;
           }}
         />
-        <Button type="submit" isLoading={loading} variant="faded" className="mt-2 self-center">
-          Créer mon compte joueur
+        <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
+          S'inscrire
         </Button>
       </Form>
-      <div>Déjà un compte ? <Link href="/login">Se connecter</Link></div>
     </div>
   );
 }
