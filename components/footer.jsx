@@ -12,7 +12,7 @@ export default function Footer() {
           
           <div className="w-full lg:w-auto flex justify-center">
             <div className="flex flex-col items-center">
-              <Image src="/logo-black.jpeg" width={250} alt="FPL logo" />
+              <Image src="/logo-transparent.svg" width={150} alt="FPL logo" />
             </div>
           </div>
 

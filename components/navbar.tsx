@@ -60,7 +60,7 @@ export const Navbar = () => {
     <HeroUINavbar maxWidth="xl" position="sticky" className="bg-black text-white uppercase" onMenuOpenChange={setIsMenuOpen}>
       <NavbarBrand>
         <NextLink className="flex justify-start items-center gap-1" href="/" color="primary">
-          <Image src="/logo.png" width={30} />
+          <Image src="/logo-transparent.svg" width={30} />
         </NextLink>
       </NavbarBrand>
       <NavbarContent justify="end">

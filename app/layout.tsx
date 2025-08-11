@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  manifest: "/site.webmanifest"
 };
 
 export const viewport: Viewport = {
@@ -45,7 +46,7 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
           <div className="relative flex flex-col h-screen">
             <Navbar />
-            <main className="container mx-auto max-w-7xl flex-grow">
+            <main className="w-full">
               <Suspense fallback={<div>Chargement...</div>}>
                 {children}
               </Suspense>

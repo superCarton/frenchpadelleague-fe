@@ -1,33 +1,162 @@
 'use client';
 
-import { title, subtitle } from "@/components/primitives";
 import { Button } from "@heroui/button";
+import { Image } from "@heroui/image";
+import { Card, CardHeader, CardBody } from "@heroui/card";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
   const router = useRouter();
+
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-      <div className="inline-block max-w-xl text-center justify-center bg-black">
-        <div className="">
-          <h1 className={title()}>French Padel League</h1>
-          <br />
-          <div className={subtitle({ class: "mt-4 uppercase" })}>
-            La plus grande ligue amateur de france
+    <div className="flex flex-col w-full">
+
+      {/* Hero */}
+      <section className="relative bg-black text-white py-20 px-6 w-full">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-10 max-w-7xl mx-auto">
+          <Image
+            src="/logo-black-transparent.png"
+            alt="French Padel League Logo"
+            width={180}
+            className="rounded-xl p-4 shadow-lg"
+          />
+          <h1 className="text-4xl md:text-6xl font-bold tracking-widest leading-tight text-center md:text-left">
+            <div>FRENCH</div>
+            <div>PADEL</div>
+            <div>LEAGUE</div>
+          </h1>
+        </div>
+        <p className="mt-6 text-lg md:text-xl text-gray-300 uppercase tracking-wide text-center">
+          La plus grande ligue amateur de France
+        </p>
+        <div className="flex justify-center mt-10">
+          <Button
+            color="primary"
+            variant="solid"
+            className="px-10 py-4 text-xl font-semibold shadow-lg hover:scale-105 transition-transform"
+            onPress={() => router.push('/register')}
+          >
+            S'inscrire
+          </Button>
+        </div>
+      </section>
+
+      {/* Qui sommes-nous */}
+      <section className="bg-white py-16 px-6 w-full">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-bold uppercase mb-8 text-gray-900 border-b-4 border-primary pb-2 inline-block">
+            Qui sommes-nous ?
+          </h2>
+          <div className="space-y-4 text-gray-700 leading-relaxed">
+            <p>La French Padel League est la première ligue 100 % amateur, ouverte à tous les passionnés.</p>
+            <p>Notre mission ? Offrir aux joueurs une vraie structure compétitive, claire, équitable et indépendante de la FFT.</p>
+            <p>Tournois par niveau, classement transparent, badges officiels : tout est pensé pour que chaque joueur, quel que soit son niveau, puisse progresser, se challenger et prendre du plaisir.</p>
+            <p className="font-medium">Bienvenue dans une nouvelle façon de vivre le padel amateur.</p>
           </div>
-          <div><Button color="primary" variant="bordered" onPress={() => router.push('/register')}>S'inscrire</Button></div>
         </div>
-      </div>
-      <div className="inline-block max-w-xl text-center justify-center">
-        <div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-          <div className={subtitle({ class: "uppercase" })}>Qui sommes-nous ?</div>
-          <div>La French Padel League est la première ligue 100 % amateur, ouverte à tous les passionnés.</div>
-          <div>Notre mission ?</div>
-          <div>Offrir aux joueurs une vraie structure compétitive, claire, équitable et indépendante de la FFT.</div>
-          <div>Tournois par niveau, classement transparent, badges officiels : tout est pensé pour que chaque joueur, quel que soit son niveau, puisse progresser, se challenger et prendre du plaisir.</div>
-          <div>Bienvenue dans une nouvelle façon de vivre le padel amateur.</div>
+      </section>
+
+      {/* Badges */}
+      <section className="bg-gray-50 py-16 px-6 w-full">
+        <div className="max-w-7xl mx-auto">
+
+        <h2 className="text-3xl font-bold uppercase text-center mb-12 border-b-4 border-primary inline-block">
+          Nos Catégories
+        </h2>
+        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto text-center">
+          {[
+            { src: "/badge-bronze.png", label: "Découverte du padel compétitif. Accessible et loisir" },
+            { src: "/badge-silver.png", label: "Niveau intermédiaire, jeu régulier et structuré" },
+            { src: "/badge-gold.png", label: "Compétiteur confirmé. Bon rythme et expérience" },
+            { src: "/badge-premium.png", label: "Haut niveau. Technique et intensité" },
+            { src: "/badge-legend.png", label: "Joueurs élite. Jeu complet et exigences élevées" },
+          ].map((badge, i) => (
+            <div key={i} className="flex flex-col items-center">
+              <Image src={badge.src} alt={badge.label} width={100} className="mb-4" />
+              <span className="text-sm text-gray-700">{badge.label}</span>
+            </div>
+          ))}
         </div>
-      </div>
-    </section>
+        <div className="text-center mt-10 max-w-3xl mx-auto text-gray-700">
+          <p>
+            Chaque joueur s’inscrit dans la catégorie correspondant à son niveau de jeu. Des critères de montée et de descente encadrent l’évolution entre les catégories, afin de garantir des confrontations équilibrées.
+          </p>
+          <Button
+            color="primary"
+            className="mt-6 px-8 py-3"
+            onPress={() => router.push('/test-level')}
+          >
+            Tester son niveau
+          </Button>
+        </div>
+        </div>
+      </section>
+
+      {/* Compétitions */}
+      <section className="bg-white py-16 px-6 w-full">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl font-bold uppercase mb-8 border-b-4 border-primary inline-block">
+            Les compétitions
+          </h2>
+          <p className="text-gray-700 max-w-3xl mx-auto mb-6">
+            Des tournois sont organisés dans toute la France, toute l’année, pour permettre à chaque joueur de participer au plus proche de chez lui.
+          </p>
+          <p className="text-gray-700 max-w-3xl mx-auto mb-8">
+            En plus des étapes régulières, la French Padel League propose des événements majeurs pour valoriser les performances et rassembler la communauté amateur autour de rendez-vous clés.
+          </p>
+          <Button color="primary" onPress={() => router.push('/search-tournament')}>
+            Rechercher une compétition
+          </Button>
+        </div>
+      </section>
+
+      {/* Actualités */}
+      <section className="bg-gray-50 py-16 px-6 w-full">
+        <div className="max-w-7xl mx-auto">
+
+        <h2 className="text-3xl font-bold uppercase mb-12 text-center border-b-4 border-primary inline-block">
+          Actualités
+        </h2>
+        <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+          {[1, 2, 3].map((news) => (
+            <Card key={news} className="shadow-md hover:shadow-lg transition rounded-xl overflow-hidden">
+              <CardHeader className="bg-primary text-white text-lg font-semibold">
+                Titre de l'actualité {news}
+              </CardHeader>
+              <CardBody className="text-gray-600">
+                Petit résumé de l’actualité {news}. Cliquez pour en savoir plus.
+              </CardBody>
+            </Card>
+          ))}
+        </div>
+        </div>
+
+      </section>
+
+      {/* Prochains événements */}
+      <section className="bg-white py-16 px-6 w-full">
+        <div className="max-w-7xl mx-auto">
+
+        <h2 className="text-3xl font-bold uppercase mb-12 text-center border-b-4 border-primary inline-block">
+          Prochains tournois
+        </h2>
+        <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+          {[1, 2, 3].map((event) => (
+            <Card key={event} className="shadow-md hover:shadow-lg transition rounded-xl overflow-hidden">
+              <CardHeader className="bg-primary text-white text-lg font-semibold">
+                Événement {event}
+              </CardHeader>
+              <CardBody className="text-gray-600">
+                Date : JJ/MM/AAAA <br />
+                Lieu : Ville
+              </CardBody>
+            </Card>
+          ))}
+        </div>
+        </div>
+
+      </section>
+
+    </div>
   );
 }
