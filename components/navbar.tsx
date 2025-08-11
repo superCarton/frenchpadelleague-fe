@@ -32,7 +32,7 @@ export const Navbar = () => {
     navItems = [
       {
         label: "Rechercher un tournoi",
-        href: "/",
+        href: "/search-tournament",
       },
       {
         label: "Mon Profil",
@@ -47,7 +47,7 @@ export const Navbar = () => {
       },
       {
         label: "Tester mon niveau",
-        href: "/",
+        href: "/test-level",
       },
       {
         label: "Se Connecter",

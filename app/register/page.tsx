@@ -2,7 +2,7 @@
 
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { createPlayer } from "@/lib/api";
@@ -10,6 +10,7 @@ import { Form } from '@heroui/form';
 import { addToast } from '@heroui/toast';
 import { DateInput } from "@heroui/date-input";
 import { CalendarDate } from '@internationalized/date';
+import { siteConfig } from '@/config/site';
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = message;
@@ -25,8 +26,8 @@ const translateErrorMessageToFr = (message: string) => {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const passwordRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -71,7 +72,6 @@ export default function RegisterPage() {
       <Form 
         className="" 
         onSubmit={handleRegister}
-        validationErrors={errors}
       >
         <Input
           isRequired
@@ -115,24 +115,29 @@ export default function RegisterPage() {
           type="password"
           name="password"
           label="Mot de passe"
-          errorMessage="Le mot de passe doit contenir au moins 8 caractères"
           placeholder="••••••••"
           labelPlacement="outside"
           validate={(value) => {
-            if (value.length < 8) {
-              return "Le mot de passe doit contenir au moins 8 caractères dddd";
-            }      
+            if (!siteConfig.passwordRegex.test(value)) {
+              return "Le mot de passe doit contenir au minimum 8 caractères, dont 1 lettre, 1 chiffre et 1 caractère spécial";
+            }
+            return true;
           }}
+          ref={passwordRef}
         />
         <Input
           isRequired
           type="password"
           name="confirm-password"
           label="Confirmation du mot de passe"
-          errorMessage="Le mot de passe n'est pas indentique"
           placeholder="••••••••"
           labelPlacement="outside"
+          errorMessage="La confirmation doit être identique au mot de passe"
           validate={(value) => {
+            const password = passwordRef.current?.value || "";
+            if (value !== password) {
+              return "La confirmation doit être identique au mot de passe";
+            }
             return true;
           }}
         />

@@ -11,20 +11,14 @@ export default function Home() {
   return (
     <div className="flex flex-col w-full">
 
-      {/* Hero */}
       <section className="relative bg-black text-white py-20 px-6 w-full">
         <div className="flex flex-col md:flex-row items-center justify-center gap-10 max-w-7xl mx-auto">
           <Image
-            src="/logo-black-transparent.png"
+            src="/logo-black-with-title.jpeg"
             alt="French Padel League Logo"
-            width={180}
+            width={500}
             className="rounded-xl p-4 shadow-lg"
           />
-          <h1 className="text-4xl md:text-6xl font-bold tracking-widest leading-tight text-center md:text-left">
-            <div>FRENCH</div>
-            <div>PADEL</div>
-            <div>LEAGUE</div>
-          </h1>
         </div>
         <p className="mt-6 text-lg md:text-xl text-gray-300 uppercase tracking-wide text-center">
           La plus grande ligue amateur de France
@@ -41,7 +35,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Qui sommes-nous */}
       <section className="bg-white py-16 px-6 w-full">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-bold uppercase mb-8 text-gray-900 border-b-4 border-primary pb-2 inline-block">
@@ -56,7 +49,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Badges */}
       <section className="bg-gray-50 py-16 px-6 w-full">
         <div className="max-w-7xl mx-auto">
 
@@ -92,7 +84,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Compétitions */}
       <section className="bg-white py-16 px-6 w-full">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl font-bold uppercase mb-8 border-b-4 border-primary inline-block">
@@ -110,7 +101,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Actualités */}
       <section className="bg-gray-50 py-16 px-6 w-full">
         <div className="max-w-7xl mx-auto">
 
@@ -133,7 +123,6 @@ export default function Home() {
 
       </section>
 
-      {/* Prochains événements */}
       <section className="bg-white py-16 px-6 w-full">
         <div className="max-w-7xl mx-auto">
 

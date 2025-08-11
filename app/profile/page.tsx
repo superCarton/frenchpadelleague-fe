@@ -8,7 +8,7 @@ import { getMeProfiles } from '@/lib/api';
 
 export default function ProfilePage() {
 
-  useAuth();
+  // useAuth();
   const [profiles, setProfiles] = useState<{
     player?: any;
     referee?: any;
