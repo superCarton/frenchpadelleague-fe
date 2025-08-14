@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { title } from '@/components/primitives';
+import { title } from "@/components/primitives";
 
 export default function TestLevelPage() {
   return (

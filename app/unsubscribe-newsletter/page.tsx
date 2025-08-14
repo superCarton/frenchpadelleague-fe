@@ -1,24 +1,26 @@
-'use client';
+"use client";
 
-import { unsubscribeNewsletter } from "@/lib/api";
 import { Button } from "@heroui/button";
 import { useState } from "react";
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from "next/navigation";
 import { addToast } from "@heroui/toast";
+
+import { unsubscribeNewsletter } from "@/lib/api";
 
 export default function UnsubscribeNewsletterPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams.get("token");
   const [loading, setLoading] = useState(false);
 
-  const handleUnsubscribeNewsletter = async (e: any) => {
+  const handleUnsubscribeNewsletter = async () => {
     if (!token) {
       addToast({
         title: "Erreur lors de la désinscription",
         description: "Token manquant",
-        color: "danger"
+        color: "danger",
       });
+
       return null;
     }
     setLoading(true);
@@ -27,20 +29,22 @@ export default function UnsubscribeNewsletterPage() {
         await unsubscribeNewsletter(token);
         addToast({
           title: "Vous êtes désinscrit(e) de la newsletter !",
-          description: "Nous sommes désolés de vous voir partir. Vous pouvez vous réabonner à tout moment.",
-          color: "success"
+          description:
+            "Nous sommes désolés de vous voir partir. Vous pouvez vous réabonner à tout moment.",
+          color: "success",
         });
-        router.push('/');
+        router.push("/");
       }
     } catch (err: any) {
       let description;
+
       if (err && err.message) {
         description = err.message;
       }
       addToast({
         title: "Erreur lors de la désisnscription",
         description,
-        color: "danger"
+        color: "danger",
       });
     } finally {
       setLoading(false);
@@ -49,7 +53,13 @@ export default function UnsubscribeNewsletterPage() {
 
   return (
     <div>
-      <Button onPress={handleUnsubscribeNewsletter} isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
+      <Button
+        className="mt-2 self-center w-full"
+        color="primary"
+        isLoading={loading}
+        variant="solid"
+        onPress={handleUnsubscribeNewsletter}
+      >
         Se désinscrire de la newsletter
       </Button>
     </div>

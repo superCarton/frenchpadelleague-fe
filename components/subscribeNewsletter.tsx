@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
 import { Button } from "@heroui/button";
 import { useState } from "react";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
+import { addToast } from "@heroui/toast";
 
 import { subscribeNewsletter } from "@/lib/api";
-import { addToast } from "@heroui/toast";
 
 export default function SubscribeNewsletter() {
   const [loading, setLoading] = useState(false);
@@ -14,6 +14,7 @@ export default function SubscribeNewsletter() {
   const handleSubscribeNewsLetter = async (e: any) => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
+
     setLoading(true);
 
     try {
@@ -23,21 +24,22 @@ export default function SubscribeNewsletter() {
       }
       addToast({
         title: "Vous êtes désormais inscrits à la newsletter !",
-        color: "success"
+        color: "success",
       });
     } catch (err: any) {
       let description;
+
       if (err && err.message) {
         if (err.message === "This attribute must be unique") {
-            description = "Cet email est déjà inscrit";
+          description = "Cet email est déjà inscrit";
         } else {
-            description = err.message;
+          description = err.message;
         }
       }
       addToast({
         title: "Une erreur est survenue lors de l'inscription à la newsletter",
         description,
-        color: "danger"
+        color: "danger",
       });
     } finally {
       setLoading(false);
@@ -46,19 +48,21 @@ export default function SubscribeNewsletter() {
 
   return (
     <div>
-        Reste informé des prochaines actualités, tournois et offres exclusives
-      <Form 
-        className="pt-2" 
-        onSubmit={handleSubscribeNewsLetter}
-      >
+      Reste informé des prochaines actualités, tournois et offres exclusives
+      <Form className="pt-2" onSubmit={handleSubscribeNewsLetter}>
         <Input
           isRequired
-          type="email"
-          name="email"
           errorMessage="Une adresse email valide est requise"
+          name="email"
           placeholder="ton@adresse.email"
+          type="email"
         />
-        <Button type="submit" isLoading={loading} variant="bordered" className="w-full bg-black text-white">
+        <Button
+          className="w-full bg-black text-white"
+          isLoading={loading}
+          type="submit"
+          variant="bordered"
+        >
           S'abonner à la newsletter
         </Button>
       </Form>

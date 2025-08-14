@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Navbar as HeroUINavbar,
@@ -13,34 +13,50 @@ import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import clsx from "clsx";
 import { Image } from "@heroui/image";
+import { Button } from "@heroui/button";
+import { ReactNode, useEffect, useState } from "react";
+import { ShieldUser } from "lucide-react";
 
 import { isUserConnected } from "@/lib/api";
-import { Button } from "@heroui/button";
-import { useState } from "react";
 
 type NavLink = {
-  label: string;
+  label: string | ReactNode;
   href: string;
   isButton?: boolean;
-}
+};
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  let navItems: NavLink[] = [];
-  if (isUserConnected()) {
-    navItems = [
-      {
-        label: "Rechercher un tournoi",
-        href: "/search-tournament",
-      },
-      {
-        label: "Mon Profil",
-        href: "/profile",
-      },
-    ];
+  // On vérifie seulement côté client
+  useEffect(() => {
+    setIsConnected(isUserConnected());
+  }, []);
+
+  const navItems: NavLink[] = [
+    {
+      label: "Rechercher un joueur",
+      href: "/players",
+    },
+    {
+      label: "Rechercher un tournoi",
+      href: "/tournaments",
+    },
+  ];
+
+  if (isConnected) {
+    navItems.push({
+      label: (
+        <div className="inline-block">
+          <ShieldUser />
+          Mon Profil
+        </div>
+      ),
+      href: "/profile",
+    });
   } else {
-    navItems = [
+    navItems.push(
       {
         label: "Découvrir la FPL",
         href: "/discover-fpl",
@@ -52,14 +68,20 @@ export const Navbar = () => {
       {
         label: "Se Connecter",
         href: "/login",
-        isButton: true
-      },
-    ];
+        isButton: true,
+      }
+    );
   }
+
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky" className="bg-black text-white uppercase" onMenuOpenChange={setIsMenuOpen}>
+    <HeroUINavbar
+      className="bg-black text-white uppercase"
+      maxWidth="xl"
+      position="sticky"
+      onMenuOpenChange={setIsMenuOpen}
+    >
       <NavbarBrand>
-        <NextLink className="flex justify-start items-center gap-1" href="/" color="primary">
+        <NextLink className="flex justify-start items-center gap-1" color="primary" href="/">
           <Image src="/logo-transparent.svg" width={30} />
         </NextLink>
       </NavbarBrand>
@@ -67,14 +89,14 @@ export const Navbar = () => {
         {navItems.map((item) => (
           <NavbarItem key={item.href} className="hidden sm:flex gap-4">
             {item.isButton ? (
-              <Button as={Link} href={item.href} className="" variant="solid" color="primary">
+              <Button as={Link} className="" color="primary" href={item.href} variant="solid">
                 {item.label}
               </Button>
             ) : (
               <NextLink
                 className={clsx(
                   "text-white",
-                  "data-[active=true]:primary data-[active=true]:font-medium",
+                  "data-[active=true]:primary data-[active=true]:font-medium"
                 )}
                 href={item.href}
               >
@@ -91,10 +113,7 @@ export const Navbar = () => {
       <NavbarMenu>
         {navItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              href={item.href}
-              size="lg"
-            >
+            <Link href={item.href} size="lg">
               {item.label}
             </Link>
           </NavbarMenuItem>

@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { Button } from '@heroui/button';
-import { Input } from '@heroui/input';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Form } from "@heroui/form";
+import { Link } from "@heroui/link";
+import { addToast } from "@heroui/toast";
 
 import { login } from "@/lib/api";
-import { Form } from '@heroui/form';
-import { Link } from '@heroui/link';
-import { addToast } from '@heroui/toast';
 
 const translateErrorMessageToFr = (message: string) => {
-  if (message.includes('Invalid identifier or password')) {
-    return 'Identifiants incorrects.';
-  } else if (message.includes('Email or Username are already taken')) {
-    return 'Cet email est déjà utilisé.';
-  } else if (message.includes('password is too short')) {
-    return 'Mot de passe trop court.';
+  if (message.includes("Invalid identifier or password")) {
+    return "Identifiants incorrects.";
+  } else if (message.includes("Email or Username are already taken")) {
+    return "Cet email est déjà utilisé.";
+  } else if (message.includes("password is too short")) {
+    return "Mot de passe trop court.";
   } else {
     return message;
   }
@@ -25,12 +25,12 @@ const translateErrorMessageToFr = (message: string) => {
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(e.currentTarget));
+
     setLoading(true);
 
     try {
@@ -40,18 +40,19 @@ export default function LoginPage() {
       }
       addToast({
         title: "Login success",
-        color: "success"
-      })
-      router.push('/profile');
+        color: "success",
+      });
+      router.push("/profile");
     } catch (err: any) {
       let description;
+
       if (err && err.message) {
         description = translateErrorMessageToFr(err.message);
       }
       addToast({
         title: "Une erreur est survenue lors de la connexion",
         description,
-        color: "danger"
+        color: "danger",
       });
     } finally {
       setLoading(false);
@@ -59,33 +60,37 @@ export default function LoginPage() {
   };
 
   return (
-    <Form 
-      className="" 
-      onSubmit={handleLogin}
-      validationErrors={errors}
-    >
+    <Form onSubmit={handleLogin}>
       <Input
         isRequired
-        type="email"
-        name="email"
-        label="Email"
+        disabled={loading}
         errorMessage="Veuillez entrer un email valide"
-        placeholder="ton@adress.email"
+        label="Email"
         labelPlacement="outside"
-        disabled={loading}
+        name="email"
+        placeholder="ton@adress.email"
+        type="email"
       />
       <Input
         isRequired
-        type="password"
-        name="password"
-        label="Mot de passe"
-        errorMessage="Le mot de passe est requis"
-        placeholder="••••••••"
-        labelPlacement="outside"
         disabled={loading}
+        errorMessage="Le mot de passe est requis"
+        label="Mot de passe"
+        labelPlacement="outside"
+        name="password"
+        placeholder="••••••••"
+        type="password"
       />
-      <Link href="/forgot-password" className="self-end text-small">Mot de passe oublié ?</Link>
-      <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
+      <Link className="self-end text-small" href="/forgot-password">
+        Mot de passe oublié ?
+      </Link>
+      <Button
+        className="mt-2 self-center w-full"
+        color="primary"
+        isLoading={loading}
+        type="submit"
+        variant="solid"
+      >
         Se Connecter
       </Button>
     </Form>

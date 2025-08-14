@@ -15,9 +15,7 @@ export interface ProvidersProps {
 
 declare module "@react-types/shared" {
   interface RouterConfig {
-    routerOptions: NonNullable<
-      Parameters<ReturnType<typeof useRouter>["push"]>[1]
-    >;
+    routerOptions: NonNullable<Parameters<ReturnType<typeof useRouter>["push"]>[1]>;
   }
 }
 
@@ -28,7 +26,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <HeroUIProvider navigate={router.push}>
       <NextThemesProvider {...themeProps}>
         <div className="fixed z-[100]">
-          <ToastProvider placement="top-right" toastOffset={70} toastProps={{timeout: 10000}}/>
+          <ToastProvider placement="top-right" toastOffset={70} toastProps={{ timeout: 10000 }} />
         </div>
         {children}
       </NextThemesProvider>

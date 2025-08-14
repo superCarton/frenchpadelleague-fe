@@ -1,9 +1,10 @@
 // lib/useAuth.ts
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { getToken, getCurrentUser } from './api';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { getToken, getCurrentUser } from "./api";
 
 export function useAuth(required = true) {
   const [user, setUser] = useState<any | null>(null);
@@ -15,7 +16,7 @@ export function useAuth(required = true) {
     const currentUser = getCurrentUser();
 
     if (!token || !currentUser) {
-      if (required) router.push('/login');
+      if (required) router.push("/login");
       setUser(null);
     } else {
       setUser(currentUser);

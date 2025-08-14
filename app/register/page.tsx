@@ -1,26 +1,28 @@
-'use client';
+"use client";
 
-import { Button } from '@heroui/button';
-import { Input } from '@heroui/input';
-import { useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Button } from "@heroui/button";
+import { Input } from "@heroui/input";
+import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Form } from "@heroui/form";
+import { addToast } from "@heroui/toast";
+import { CalendarDate } from "@internationalized/date";
+import { DatePicker } from "@heroui/date-picker";
 
+import { siteConfig } from "@/config/site";
 import { createPlayer } from "@/lib/api";
-import { Form } from '@heroui/form';
-import { addToast } from '@heroui/toast';
-import { DateInput } from "@heroui/date-input";
-import { CalendarDate } from '@internationalized/date';
-import { siteConfig } from '@/config/site';
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = message;
-  if (message.includes('Invalid identifier or password')) {
-    messageFR = 'Identifiants incorrects.';
-  } else if (message.includes('Email or Username are already taken')) {
-    messageFR = 'Cet email est déjà utilisé.';
-  } else if (message.includes('password is too short')) {
-    messageFR = 'Mot de passe trop court.';
+
+  if (message.includes("Invalid identifier or password")) {
+    messageFR = "Identifiants incorrects.";
+  } else if (message.includes("Email or Username are already taken")) {
+    messageFR = "Cet email est déjà utilisé.";
+  } else if (message.includes("password is too short")) {
+    messageFR = "Mot de passe trop court.";
   }
+
   return messageFR;
 };
 
@@ -33,15 +35,16 @@ export default function RegisterPage() {
     e.preventDefault();
 
     const data = Object.fromEntries(new FormData(e.currentTarget));
+
     setLoading(true);
 
     try {
       await createPlayer({
-        email: data.email.toString(), 
+        email: data.email.toString(),
         password: data.password.toString(),
         firstname: data.firstname.toString(),
         lastname: data.lastname.toString(),
-        birthdate: data.birthdate.toString()
+        birthdate: data.birthdate.toString(),
       });
       if (e.currentTarget) {
         e.currentTarget.reset();
@@ -49,18 +52,19 @@ export default function RegisterPage() {
       addToast({
         title: "Inscription réussie ✅",
         description: "Un email de confirmation vient de t'être envoyé",
-        color: "success"
+        color: "success",
       });
-      router.push('/profile');
+      router.push("/profile");
     } catch (err: any) {
       let description;
+
       if (err && err.message) {
-        description = translateErrorMessageToFr(err.message)
+        description = translateErrorMessageToFr(err.message);
       }
       addToast({
         title: "Une erreur est survenue lors de l'inscription",
         description,
-        color: "danger"
+        color: "danger",
       });
     } finally {
       setLoading(false);
@@ -69,79 +73,85 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <Form 
-        className="" 
-        onSubmit={handleRegister}
-      >
+      <Form className="" onSubmit={handleRegister}>
         <Input
           isRequired
-          type="text"
-          name="firstname"
-          label="Prénom"
           errorMessage="Veuillez entrer votre prénom"
+          label="Prénom"
+          labelPlacement="outside"
+          name="firstname"
           placeholder="Prénom"
-          labelPlacement="outside"
-        />
-        <Input
-          isRequired
           type="text"
-          name="lastname"
-          label="Nom"
+        />
+        <Input
+          isRequired
           errorMessage="Veuillez entrer votre nom"
+          label="Nom"
+          labelPlacement="outside"
+          name="lastname"
           placeholder="Nom"
-          labelPlacement="outside"
+          type="text"
         />
-        <DateInput
+        <DatePicker
           isRequired
-          name="birthdate"
-          label="Date de naissance"
-          errorMessage="Veuillez entrer une date valide"
-          labelPlacement="outside"
-          placeholderValue={new CalendarDate(1993, 3, 10)}
-          maxValue={new CalendarDate(2025, 1, 1)}
           className="max-w-sm"
+          errorMessage="Veuillez entrer une date valide"
+          label="Date de naissance"
+          labelPlacement="outside"
+          maxValue={new CalendarDate(2025, 1, 1)}
+          name="birthdate"
+          placeholderValue={new CalendarDate(1993, 3, 10)}
         />
         <Input
           isRequired
-          type="email"
-          name="email"
-          label="Email"
           errorMessage="Veuillez entrer un email valide"
-          placeholder="ton@adresse.email"
+          label="Email"
           labelPlacement="outside"
+          name="email"
+          placeholder="ton@adresse.email"
+          type="email"
         />
         <Input
+          ref={passwordRef}
           isRequired
-          type="password"
-          name="password"
           label="Mot de passe"
-          placeholder="••••••••"
           labelPlacement="outside"
+          name="password"
+          placeholder="••••••••"
+          type="password"
           validate={(value) => {
             if (!siteConfig.passwordRegex.test(value)) {
               return "Le mot de passe doit contenir au minimum 8 caractères, dont 1 lettre, 1 chiffre et 1 caractère spécial";
             }
+
             return true;
           }}
-          ref={passwordRef}
         />
         <Input
           isRequired
-          type="password"
-          name="confirm-password"
-          label="Confirmation du mot de passe"
-          placeholder="••••••••"
-          labelPlacement="outside"
           errorMessage="La confirmation doit être identique au mot de passe"
+          label="Confirmation du mot de passe"
+          labelPlacement="outside"
+          name="confirm-password"
+          placeholder="••••••••"
+          type="password"
           validate={(value) => {
             const password = passwordRef.current?.value || "";
+
             if (value !== password) {
               return "La confirmation doit être identique au mot de passe";
             }
+
             return true;
           }}
         />
-        <Button type="submit" isLoading={loading} className="mt-2 self-center w-full" color="primary" variant="solid">
+        <Button
+          className="mt-2 self-center w-full"
+          color="primary"
+          isLoading={loading}
+          type="submit"
+          variant="solid"
+        >
           S'inscrire
         </Button>
       </Form>
