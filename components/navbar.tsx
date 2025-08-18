@@ -10,12 +10,11 @@ import {
   NavbarMenuToggle,
 } from "@heroui/navbar";
 import { Link } from "@heroui/link";
-import NextLink from "next/link";
-import clsx from "clsx";
 import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import { ReactNode, useEffect, useState } from "react";
-import { ShieldUser } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
 
 import { isUserConnected } from "@/lib/api";
 
@@ -34,28 +33,9 @@ export const Navbar = () => {
     setIsConnected(isUserConnected());
   }, []);
 
-  const navItems: NavLink[] = [
-    {
-      label: "Rechercher un joueur",
-      href: "/players",
-    },
-    {
-      label: "Rechercher un tournoi",
-      href: "/tournaments",
-    },
-  ];
+  const navItems: NavLink[] = [];
 
-  if (isConnected) {
-    navItems.push({
-      label: (
-        <div className="inline-block">
-          <ShieldUser />
-          Mon Profil
-        </div>
-      ),
-      href: "/profile",
-    });
-  } else {
+  if (!isConnected) {
     navItems.push(
       {
         label: "Découvrir la FPL",
@@ -64,11 +44,6 @@ export const Navbar = () => {
       {
         label: "Tester mon niveau",
         href: "/test-level",
-      },
-      {
-        label: "Se Connecter",
-        href: "/login",
-        isButton: true,
       }
     );
   }
@@ -76,41 +51,88 @@ export const Navbar = () => {
   return (
     <HeroUINavbar
       className="bg-black text-white uppercase"
-      maxWidth="xl"
-      position="sticky"
       onMenuOpenChange={setIsMenuOpen}
     >
-      <NavbarBrand>
-        <NextLink className="flex justify-start items-center gap-1" color="primary" href="/">
-          <Image src="/logo-transparent.svg" width={30} />
-        </NextLink>
-      </NavbarBrand>
-      <NavbarContent justify="end">
-        {navItems.map((item) => (
-          <NavbarItem key={item.href} className="hidden sm:flex gap-4">
-            {item.isButton ? (
-              <Button as={Link} className="" color="primary" href={item.href} variant="solid">
-                {item.label}
-              </Button>
-            ) : (
-              <NextLink
-                className={clsx(
-                  "text-white",
-                  "data-[active=true]:primary data-[active=true]:font-medium"
-                )}
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            )}
-          </NavbarItem>
-        ))}
+      <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
+        <NavbarBrand>
+          <Link className="flex justify-start items-center gap-1" color="primary" href="/">
+            <Image height={40} src="/logo-transparent.svg"/>
+          </Link>
+        </NavbarBrand>
       </NavbarContent>
-      <NavbarMenu>
+
+      <NavbarContent className="hidden sm:flex gap-0" justify="center">
+        <div className="flex gap-4">
+          <NavbarItem as={Link} key="discover-fpl" href="/discover-fpl" className="text-white text-small">
+            Découvrir la FPL
+          </NavbarItem>
+          <NavbarItem as={Link} key="test-level" href="/test-level" className="text-white text-small">
+            Tester mon niveau
+          </NavbarItem>
+        </div>
+        <Dropdown>
+          <NavbarItem>
+            <DropdownTrigger>
+              <Button
+                as={Link}
+                className="text-white bg-transparent"
+                endContent={<ChevronDown />}
+              >
+                Rechercher
+              </Button>
+            </DropdownTrigger>
+          </NavbarItem>
+          <DropdownMenu
+            itemClasses={{
+              base: "gap-4",
+            }}
+          >
+            <DropdownItem as={Link} key="tournaments" href="/tournaments">
+              Une compétition
+            </DropdownItem>
+            <DropdownItem as={Link} key="players" href="/players">
+              Un joueur
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </NavbarContent>
+      <NavbarContent justify="end">
+        {isConnected ? (
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <Avatar
+                isBordered
+                as="button"
+                className="transition-transform"
+                color="secondary"
+                name="RG"
+                size="sm"
+              />
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="user" className="h-14 gap-2">
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">zoey@example.com</p>
+              </DropdownItem>
+              <DropdownItem key="profile">Mon profil</DropdownItem>
+              <DropdownItem key="results">Mes résultats</DropdownItem>
+              <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+              <DropdownItem key="logout" color="danger">
+                Se déconnecter
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) : (
+          <Button as={Link} className="" color="primary" href={"/login"} variant="solid">
+            Se connecter
+          </Button>
+        )}
+      </NavbarContent>
+      <NavbarMenu className="bg-black text-white">
         {navItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link href={item.href} size="lg">

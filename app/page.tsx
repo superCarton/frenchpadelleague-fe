@@ -4,6 +4,7 @@ import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
 import { Card, CardHeader, CardBody } from "@heroui/card";
 import { useRouter } from "next/navigation";
+import { sectionTitle } from "@/components/primitives";
 
 export default function Home() {
   const router = useRouter();
@@ -35,8 +36,8 @@ export default function Home() {
       </section>
 
       <section className="bg-white py-16 px-6 w-full">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold uppercase mb-8 text-gray-900 border-b-4 border-primary pb-2 inline-block">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className={sectionTitle()}>
             Qui sommes-nous ?
           </h2>
           <div className="space-y-4 text-gray-700 leading-relaxed">
@@ -62,7 +63,7 @@ export default function Home() {
 
       <section className="bg-gray-50 py-16 px-6 w-full">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold uppercase text-center mb-12 border-b-4 border-primary inline-block">
+          <h2 className={sectionTitle()}>
             Nos Catégories
           </h2>
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto text-center">
@@ -106,8 +107,8 @@ export default function Home() {
       </section>
 
       <section className="bg-white py-16 px-6 w-full">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-3xl font-bold uppercase mb-8 border-b-4 border-primary inline-block">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className={sectionTitle()}>
             Les compétitions
           </h2>
           <p className="text-gray-700 max-w-3xl mx-auto mb-6">
@@ -126,8 +127,8 @@ export default function Home() {
       </section>
 
       <section className="bg-gray-50 py-16 px-6 w-full">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold uppercase mb-12 text-center border-b-4 border-primary inline-block">
+        <div className="max-w-2xl mx-auto">
+          <h2 className={sectionTitle()}>
             Actualités
           </h2>
           <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
@@ -146,8 +147,8 @@ export default function Home() {
       </section>
 
       <section className="bg-white py-16 px-6 w-full">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl font-bold uppercase mb-12 text-center border-b-4 border-primary inline-block">
+        <div className="max-w-2xl mx-auto">
+          <h2 className={sectionTitle()}>
             Prochains tournois
           </h2>
           <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">

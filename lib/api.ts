@@ -1,4 +1,4 @@
-import { Player, Tournament, WithStrapiMeta } from "./interfaces";
+import { Club, Player, Tournament, WithStrapiMeta } from "./interfaces";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api";
 
@@ -149,7 +149,6 @@ export async function createPlayer(payload: any) {
   });
 
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur création joueur");
   localStorage.setItem("jwt", data.jwt);
 
@@ -162,11 +161,8 @@ export async function subscribeNewsletter(email: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data: { email } }),
   });
-
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur lors de l'ajout à la newsletter");
-
   return data;
 }
 
@@ -175,10 +171,7 @@ export async function unsubscribeNewsletter(token: string) {
     method: "DELETE",
   });
   const data = await res.json();
-
-  if (!res.ok)
-    throw new Error(data.error?.message || "Erreur lors de la suppression de la newsletter");
-
+  if (!res.ok) throw new Error(data.error?.message || "Erreur lors de la suppression de la newsletter");
   return data;
 }
 
@@ -189,11 +182,8 @@ export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
-
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments");
-
   return data;
 }
 
@@ -204,10 +194,22 @@ export async function getTournamentById(tournamentId: string): Promise<WithStrap
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentId");
+  return data;
+}
+
+export async function getClubById(clubId: string): Promise<WithStrapiMeta<Club>> {
+  const token = getToken();
+  const res = await fetch(`${API_URL}/clubs/${clubId}?populate=address`, {
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
 
   const data = await res.json();
 
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentId");
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs/:clubId");
 
   return data;
 }

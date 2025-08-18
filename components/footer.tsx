@@ -4,17 +4,18 @@ import { Link } from "@heroui/link";
 import { Image } from "@heroui/image";
 
 import SubscribeNewsletter from "./subscribeNewsletter";
+import { Mail, Phone, Smartphone } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="w-full bg-black text-white px-6 py-10">
       <div className="max-w-6xl mx-auto w-full">
         <div className="w-full flex flex-col lg:flex-row lg:justify-center lg:items-center gap-8">
-          <div className="w-full lg:w-auto flex justify-center">
+          {/* <div className="w-full lg:w-auto flex justify-center">
             <div className="flex flex-col items-center">
-              <Image alt="FPL logo" src="/logo-transparent.svg" width={150} />
+              <Image alt="FPL logo" src="/logo-transparent.png" width={150} />
             </div>
-          </div>
+          </div> */}
 
           <div className="w-full lg:w-auto flex flex-col md:flex-row md:justify-center items-start md:items-start gap-8">
             <div className="w-full md:w-auto flex flex-col items-start text-left">
@@ -48,24 +49,24 @@ export default function Footer() {
                 <li>
                   <Link
                     isExternal
-                    className="text-white"
+                    className="text-white flex align-center"
                     href="mailto:contact@frenchpadelleague.com"
                   >
-                    📧 contact@frenchpadelleague.com
+                    <Mail size={16} className="mr-2" /> contact@frenchpadelleague.com
                   </Link>
                 </li>
                 <li>
-                  <Link isExternal className="text-white" href="tel:+33698311099">
-                    📞 +33 6 98 31 10 99
+                  <Link isExternal className="text-white flex align-center" href="tel:+33698311099">
+                    <Phone size={16} className="mr-2" /> +33 6 98 31 10 99
                   </Link>
                 </li>
                 <li>
                   <Link
                     isExternal
-                    className="text-white"
+                    className="text-white flex align-center"
                     href="https://www.instagram.com/frenchpadelleague"
                   >
-                    📲 Instagram
+                    <Smartphone size={16} className="mr-2"/> Instagram
                   </Link>
                 </li>
               </ul>

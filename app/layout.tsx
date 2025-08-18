@@ -6,10 +6,10 @@ import { Suspense } from "react";
 import { Providers } from "./providers";
 
 import { siteConfig } from "@/config/site";
-import { fontSans } from "@/config/fonts";
+import { fontOswald } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
-import { Loading } from "@/components/loading";
+import PadelLoader from "@/components/padelLoader";
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: {
-    icon: "/favicon.ico",
+    icon: "/favicons/favicon.ico",
   },
   manifest: "/site.webmanifest",
 };
@@ -36,15 +36,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head />
       <body
         className={clsx(
-          "min-h-screen text-foreground bg-background font-sans antialiased",
-          fontSans.variable
+          "min-h-screen text-foreground bg-background font-oswald antialiased",
+          fontOswald.variable
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
           <div className="relative flex flex-col h-screen">
-            <Navbar />
-            <main className="w-full">
-              <Suspense fallback={<Loading />}>{children}</Suspense>
+            <div className="fixed top-0 left-0 right-0 z-50">
+              <Navbar />
+            </div>
+            <main className="pt-[64px] w-full bg-gray-50 text-gray-800">
+              <Suspense fallback={<PadelLoader />}>{children}</Suspense>
             </main>
             <Footer />
           </div>

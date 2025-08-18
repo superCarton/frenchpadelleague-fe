@@ -10,6 +10,7 @@ type DateProps = {
   abbrev?: boolean;
   withTime?: boolean;
   withDay?: boolean;
+  withYear?: boolean;
 };
 
 export const DateComponent = ({
@@ -17,10 +18,11 @@ export const DateComponent = ({
   abbrev = false,
   withTime = false,
   withDay = false,
+  withYear = true,
 }: DateProps) => {
   const d = dayjs(date);
 
-  return d.format(
-    `${withDay ? "dddd " : ""}${abbrev ? "DD/MM/YY" : "DD MMMM YYYY"}${withTime ? " - HH:mm" : ""}`
-  );
+  return <span>{d.format(
+    `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH:mm" : ""}`
+  )}</span>;
 };

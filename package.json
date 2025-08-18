@@ -10,11 +10,15 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix && prettier --write ."
   },
   "dependencies": {
+    "@heroui/breadcrumbs": "^2.2.20",
     "@heroui/button": "2.2.23",
     "@heroui/card": "^2.2.22",
+    "@heroui/chip": "^2.2.20",
     "@heroui/code": "2.2.17",
     "@heroui/date-input": "^2.3.24",
     "@heroui/date-picker": "^2.3.25",
+    "@heroui/divider": "^2.2.17",
+    "@heroui/dropdown": "^2.3.24",
     "@heroui/form": "^2.1.22",
     "@heroui/image": "^2.2.15",
     "@heroui/input": "2.4.23",
@@ -36,16 +40,19 @@
     "@internationalized/date": "^3.8.2",
     "@react-aria/ssr": "3.9.9",
     "@react-aria/visually-hidden": "3.8.25",
+    "@tailwindcss/typography": "^0.5.16",
+    "add": "^2.0.6",
     "clsx": "2.1.1",
     "dayjs": "^1.11.13",
-    "framer-motion": "11.18.2",
+    "framer-motion": "^12.23.12",
     "intl-messageformat": "10.7.16",
     "lucide-react": "^0.539.0",
     "next": "15.3.1",
     "next-themes": "0.4.6",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "recharts": "^3.1.2"
+    "recharts": "^3.1.2",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
     "@eslint/compat": "^1.3.2",

@@ -72,7 +72,7 @@ export interface Match extends StrapiDocument {
   tournament: Tournament;
 }
 
-export type TournamentStatus = "pending" | "validated" | "started" | "completed" | "cancelled";
+export type TournamentStatus = "pending-validation" | "validated" | "registrations-opened" | "registrations-closed" | "started" | "completed" | "cancelled";
 
 export interface Tournament extends StrapiDocument {
   documentId: string;
@@ -91,5 +91,5 @@ export interface Tournament extends StrapiDocument {
   allocatedCourts: number;
   registrationFee?: number;
   maxTeams?: number;
-  gameFormat?: string;
+  gamesFormat?: string;
 }
