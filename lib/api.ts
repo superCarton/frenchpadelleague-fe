@@ -149,6 +149,7 @@ export async function createPlayer(payload: any) {
   });
 
   const data = await res.json();
+
   if (!res.ok) throw new Error(data.error?.message || "Erreur création joueur");
   localStorage.setItem("jwt", data.jwt);
 
@@ -162,7 +163,9 @@ export async function subscribeNewsletter(email: string) {
     body: JSON.stringify({ data: { email } }),
   });
   const data = await res.json();
+
   if (!res.ok) throw new Error(data.error?.message || "Erreur lors de l'ajout à la newsletter");
+
   return data;
 }
 
@@ -171,7 +174,10 @@ export async function unsubscribeNewsletter(token: string) {
     method: "DELETE",
   });
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Erreur lors de la suppression de la newsletter");
+
+  if (!res.ok)
+    throw new Error(data.error?.message || "Erreur lors de la suppression de la newsletter");
+
   return data;
 }
 
@@ -183,7 +189,9 @@ export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
     },
   });
   const data = await res.json();
+
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments");
+
   return data;
 }
 
@@ -195,7 +203,9 @@ export async function getTournamentById(tournamentId: string): Promise<WithStrap
     },
   });
   const data = await res.json();
+
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentId");
+
   return data;
 }
 

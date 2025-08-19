@@ -22,7 +22,11 @@ export const DateComponent = ({
 }: DateProps) => {
   const d = dayjs(date);
 
-  return <span>{d.format(
-    `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH:mm" : ""}`
-  )}</span>;
+  return (
+    <span>
+      {d.format(
+        `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH:mm" : ""}`
+      )}
+    </span>
+  );
 };

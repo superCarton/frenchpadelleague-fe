@@ -49,10 +49,7 @@ export const Navbar = () => {
   }
 
   return (
-    <HeroUINavbar
-      className="bg-black text-white uppercase"
-      onMenuOpenChange={setIsMenuOpen}
-    >
+    <HeroUINavbar className="bg-black text-white uppercase" onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -60,28 +57,34 @@ export const Navbar = () => {
         />
         <NavbarBrand>
           <Link className="flex justify-start items-center gap-1" color="primary" href="/">
-            <Image height={40} src="/logo-transparent.svg"/>
+            <Image height={40} src="/logo-transparent.svg" />
           </Link>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-0" justify="center">
         <div className="flex gap-4">
-          <NavbarItem as={Link} key="discover-fpl" href="/discover-fpl" className="text-white text-small">
+          <NavbarItem
+            key="discover-fpl"
+            as={Link}
+            className="text-white text-small"
+            href="/discover-fpl"
+          >
             Découvrir la FPL
           </NavbarItem>
-          <NavbarItem as={Link} key="test-level" href="/test-level" className="text-white text-small">
+          <NavbarItem
+            key="test-level"
+            as={Link}
+            className="text-white text-small"
+            href="/test-level"
+          >
             Tester mon niveau
           </NavbarItem>
         </div>
         <Dropdown>
           <NavbarItem>
             <DropdownTrigger>
-              <Button
-                as={Link}
-                className="text-white bg-transparent"
-                endContent={<ChevronDown />}
-              >
+              <Button as={Link} className="text-white bg-transparent" endContent={<ChevronDown />}>
                 Rechercher
               </Button>
             </DropdownTrigger>
@@ -91,10 +94,10 @@ export const Navbar = () => {
               base: "gap-4",
             }}
           >
-            <DropdownItem as={Link} key="tournaments" href="/tournaments">
+            <DropdownItem key="tournaments" as={Link} href="/tournaments">
               Une compétition
             </DropdownItem>
-            <DropdownItem as={Link} key="players" href="/players">
+            <DropdownItem key="players" as={Link} href="/players">
               Un joueur
             </DropdownItem>
           </DropdownMenu>

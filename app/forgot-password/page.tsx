@@ -26,7 +26,7 @@ export default function ForgotPasswordPage() {
         e.currentTarget.reset();
       }
       addToast({
-        title: "Un email vient de t'être envoyé ✅",
+        title: "Un email vient de t'être envoyé",
         description:
           "Pour réinitialiser ton mode de passe, il te suffit de cliquer sur le lien sécurisé que tu as reçu",
         color: "success",

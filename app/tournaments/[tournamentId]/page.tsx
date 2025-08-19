@@ -9,13 +9,13 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { User } from "@heroui/user";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
+import { Calendar, Users, Trophy, Info, Utensils, Euro, MapPin, ScanLine } from "lucide-react";
 
 import { Tournament } from "@/lib/interfaces";
 import { getTournamentById, isUserConnected } from "@/lib/api";
 import { DateComponent } from "@/components/dateComponent";
 import AddressLink from "@/components/addressLink";
 import PadelLoader from "@/components/padelLoader";
-import { Calendar, Users, Trophy, Info, Utensils, Euro, MapPin, ScanLine } from "lucide-react";
 import { TournamentPreviewView } from "@/components/tournamentPreview";
 import { ClubUser } from "@/components/clubUser";
 import { sectionTitle } from "@/components/primitives";
@@ -40,6 +40,7 @@ export default function TournamentPage() {
     const fetchTournament = async () => {
       try {
         const { data } = await getTournamentById(tournamentId);
+
         setTournament(data);
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement du tournoi");
@@ -47,6 +48,7 @@ export default function TournamentPage() {
         setLoading(false);
       }
     };
+
     fetchTournament();
   }, [tournamentId]);
 
@@ -58,16 +60,23 @@ export default function TournamentPage() {
     <div className="min-h-screen bg-gray-50">
       <div className="relative h-64 w-full overflow-hidden hidden sm:block">
         <Image
-          src={"/clubs/bg-acacias.png"}
           alt="cover tournoi"
           className="object-cover w-full h-full"
+          src={"/clubs/bg-acacias.png"}
         />
       </div>
 
       <div className="sticky top-[64px] z-40 bg-white shadow-sm border-b">
-        <Breadcrumbs size="sm" className="px-4 pt-2 pb-0 text-gray-500">
+        <Breadcrumbs className="px-4 pt-2 pb-0 text-gray-500" size="sm">
           <BreadcrumbItem href="/tournaments">Tournois</BreadcrumbItem>
-          <BreadcrumbItem isCurrent>FPL Bronze - {tournament.club.name} - <DateRangeComponent abbrev startDate={tournament.startDate} endDate={tournament.endDate}/></BreadcrumbItem>
+          <BreadcrumbItem isCurrent>
+            FPL Bronze - {tournament.club.name} -{" "}
+            <DateRangeComponent
+              abbrev
+              endDate={tournament.endDate}
+              startDate={tournament.startDate}
+            />
+          </BreadcrumbItem>
         </Breadcrumbs>
         <Tabs
           aria-label="Onglets du tournoi"
@@ -79,9 +88,34 @@ export default function TournamentPage() {
           variant="underlined"
           onSelectionChange={(key) => handleTabChange(key as string)}
         >
-          <Tab key="infos" title={<span className="flex items-center gap-1"><Info size={16}/>Infos</span>} />
-          <Tab key="teams" title={<span className="flex items-center gap-1"><Users size={16}/>Équipes</span>} />
-          <Tab key="table" title={<span className="flex items-center gap-1"><Trophy size={16}/>Tableau</span>} isDisabled />
+          <Tab
+            key="infos"
+            title={
+              <span className="flex items-center gap-1">
+                <Info size={16} />
+                Infos
+              </span>
+            }
+          />
+          <Tab
+            key="teams"
+            title={
+              <span className="flex items-center gap-1">
+                <Users size={16} />
+                Équipes
+              </span>
+            }
+          />
+          <Tab
+            key="table"
+            isDisabled
+            title={
+              <span className="flex items-center gap-1">
+                <Trophy size={16} />
+                Tableau
+              </span>
+            }
+          />
         </Tabs>
       </div>
 
@@ -91,43 +125,67 @@ export default function TournamentPage() {
             <TournamentPreviewView tournament={tournament} />
 
             {tournament.description && (
-              <div className="prose max-w-none text-gray-700">
-                {tournament.description}
-              </div>
+              <div className="prose max-w-none text-gray-700">{tournament.description}</div>
             )}
 
             <section className="space-y-2">
-              <h2 className={sectionTitle()}><div className="flex items-center gap-2"><MapPin size={18}/>Lieu</div></h2>
+              <h2 className={sectionTitle()}>
+                <div className="flex items-center gap-2">
+                  <MapPin size={18} />
+                  Lieu
+                </div>
+              </h2>
               <div className="text-gray-700 space-y-1">
                 <ClubUser club={tournament.club} />
-                <p className="flex items-center gap-2 mt-2"><MapPin size={16}/><AddressLink address={tournament.address} /></p>
-                <p className="flex items-center gap-2"><Utensils size={16}/>Restauration sur place disponible</p>
-                <p className="flex items-center gap-2"><ScanLine size={16}/>6 courts alloués</p>
+                <p className="flex items-center gap-2 mt-2">
+                  <MapPin size={16} />
+                  <AddressLink address={tournament.address} />
+                </p>
+                <p className="flex items-center gap-2">
+                  <Utensils size={16} />
+                  Restauration sur place disponible
+                </p>
+                <p className="flex items-center gap-2">
+                  <ScanLine size={16} />6 courts alloués
+                </p>
               </div>
             </section>
 
             {/* Dates */}
             <section className="space-y-2">
-              <h2 className={sectionTitle()}><div className="flex items-center gap-2"><Calendar size={18}/>Dates</div></h2>
+              <h2 className={sectionTitle()}>
+                <div className="flex items-center gap-2">
+                  <Calendar size={18} />
+                  Dates
+                </div>
+              </h2>
               <div className="grid sm:grid-cols-2 gap-4 text-gray-700">
                 <div>
                   <h3 className="font-semibold">Début</h3>
-                  <DateComponent date={tournament.startDate} withDay withTime />
+                  <DateComponent withDay withTime date={tournament.startDate} />
                 </div>
                 <div>
                   <h3 className="font-semibold">Fin</h3>
-                  <DateComponent date={tournament.endDate} withDay withTime />
+                  <DateComponent withDay withTime date={tournament.endDate} />
                 </div>
               </div>
             </section>
 
-             <section className="space-y-2">
-               <h2 className={sectionTitle()}><div className="flex items-center gap-2"><Info size={18}/>Informations</div></h2>
-               <div className="text-gray-700 space-y-2">
+            <section className="space-y-2">
+              <h2 className={sectionTitle()}>
+                <div className="flex items-center gap-2">
+                  <Info size={18} />
+                  Informations
+                </div>
+              </h2>
+              <div className="text-gray-700 space-y-2">
                 {tournament.prizeMoney && (
                   <div>
                     <h3 className="font-semibold">Prize Money</h3>
-                    <p className="flex items-center"><Euro className="mr-2" size={16} />{tournament.prizeMoney}</p>
+                    <p className="flex items-center">
+                      <Euro className="mr-2" size={16} />
+                      {tournament.prizeMoney}
+                    </p>
                   </div>
                 )}
                 {tournament.gamesFormat && (
@@ -146,19 +204,29 @@ export default function TournamentPage() {
 
             {/* Inscriptions */}
             <Card className="w-full sm:w-xl mx-auto mx-auto py-5 sm:px-5">
-              <CardHeader className="flex gap-3 text-lg font-semibold text-gray-80 border-b border-gray-200 pb-2 mb-4">Inscriptions</CardHeader>
+              <CardHeader className="flex gap-3 text-lg font-semibold text-gray-80 border-b border-gray-200 pb-2 mb-4">
+                Inscriptions
+              </CardHeader>
               <CardBody className="space-y-3 text-gray-700">
-                <p>Les inscriptions se font uniquement en ligne sur ce site. Le paiement se fera directement à l'arrivée au bar du club.</p>
+                <p>
+                  Les inscriptions se font uniquement en ligne sur ce site. Le paiement se fera
+                  directement à l'arrivée au bar du club.
+                </p>
 
                 {tournament.registrationFee && (
                   <div>
                     <h3 className="font-semibold">Tarif</h3>
-                    <p className="flex items-center gap-1">{tournament.registrationFee}<Euro size={16}/></p>
+                    <p className="flex items-center gap-1">
+                      {tournament.registrationFee}
+                      <Euro size={16} />
+                    </p>
                   </div>
                 )}
                 <div>
                   <h3 className="font-semibold">Status des inscriptions</h3>
-                  <p>{tournament.currentStatus === 'registrations-opened' ? 'Ouvertes' : 'Fermées'}</p>
+                  <p>
+                    {tournament.currentStatus === "registrations-opened" ? "Ouvertes" : "Fermées"}
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-semibold">Nombre de places restantes</h3>
@@ -173,11 +241,13 @@ export default function TournamentPage() {
               </CardBody>
               <CardFooter className="justify-center">
                 {isUserConnected() ? (
-                  <Button color="primary" className="w-full sm:w-auto">
+                  <Button className="w-full sm:w-auto" color="primary">
                     S'inscrire au tournoi
                   </Button>
                 ) : (
-                  <p className="text-gray-600 text-sm">Tu dois <Link href="/login">te connecter</Link> pour pouvoir t'inscrire</p>
+                  <p className="text-gray-600 text-sm">
+                    Tu dois <Link href="/login">te connecter</Link> pour pouvoir t'inscrire
+                  </p>
                 )}
               </CardFooter>
             </Card>

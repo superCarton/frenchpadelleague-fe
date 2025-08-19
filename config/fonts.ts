@@ -13,5 +13,5 @@ export const fontMono = FontMono({
 export const fontOswald = Oswald({
   subsets: ["latin"],
   // weight: ["400", "500", "600", "700"], // choisis les graisses que tu veux
-  variable: "--font-oswald",           // pour Tailwind
+  variable: "--font-oswald", // pour Tailwind
 });

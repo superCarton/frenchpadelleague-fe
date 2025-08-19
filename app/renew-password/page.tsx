@@ -41,7 +41,7 @@ export default function RenewPasswordPage() {
         e.currentTarget.reset();
       }
       addToast({
-        title: "Mot de passe mis à jour ✅",
+        title: "Mot de passe mis à jour",
         color: "success",
       });
       router.push("/profile");

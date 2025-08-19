@@ -39,7 +39,7 @@ const config = {
           DEFAULT: "#e5e4e2",
           dark: "#bfbfbf",
         },
-      }
+      },
     },
   },
   darkMode: "class",
@@ -60,12 +60,12 @@ const config = {
             },
             secondary: {
               DEFAULT: "#3C6DD7",
-            }
+            },
           },
         },
       },
     }),
-    require('@tailwindcss/typography')
+    require("@tailwindcss/typography"),
   ],
 };
 

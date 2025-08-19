@@ -4,6 +4,7 @@ import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
 import { Card, CardHeader, CardBody } from "@heroui/card";
 import { useRouter } from "next/navigation";
+
 import { sectionTitle } from "@/components/primitives";
 
 export default function Home() {
@@ -37,9 +38,7 @@ export default function Home() {
 
       <section className="bg-white py-16 px-6 w-full">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className={sectionTitle()}>
-            Qui sommes-nous ?
-          </h2>
+          <h2 className={sectionTitle()}>Qui sommes-nous ?</h2>
           <div className="space-y-4 text-gray-700 leading-relaxed">
             <p>
               La French Padel League est la première ligue 100 % amateur, ouverte à tous les
@@ -63,9 +62,7 @@ export default function Home() {
 
       <section className="bg-gray-50 py-16 px-6 w-full">
         <div className="max-w-7xl mx-auto">
-          <h2 className={sectionTitle()}>
-            Nos Catégories
-          </h2>
+          <h2 className={sectionTitle()}>Nos Catégories</h2>
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto text-center">
             {[
               {
@@ -108,9 +105,7 @@ export default function Home() {
 
       <section className="bg-white py-16 px-6 w-full">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className={sectionTitle()}>
-            Les compétitions
-          </h2>
+          <h2 className={sectionTitle()}>Les compétitions</h2>
           <p className="text-gray-700 max-w-3xl mx-auto mb-6">
             Des tournois sont organisés dans toute la France, toute l’année, pour permettre à chaque
             joueur de participer au plus proche de chez lui.
@@ -128,9 +123,7 @@ export default function Home() {
 
       <section className="bg-gray-50 py-16 px-6 w-full">
         <div className="max-w-2xl mx-auto">
-          <h2 className={sectionTitle()}>
-            Actualités
-          </h2>
+          <h2 className={sectionTitle()}>Actualités</h2>
           <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
             {[1, 2, 3].map((news) => (
               <Card key={news} className="shadow-md hover:shadow-lg transition overflow-hidden">
@@ -148,9 +141,7 @@ export default function Home() {
 
       <section className="bg-white py-16 px-6 w-full">
         <div className="max-w-2xl mx-auto">
-          <h2 className={sectionTitle()}>
-            Prochains tournois
-          </h2>
+          <h2 className={sectionTitle()}>Prochains tournois</h2>
           <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
             {[1, 2, 3].map((event) => (
               <Card key={event} className="shadow-md hover:shadow-lg transition overflow-hidden">

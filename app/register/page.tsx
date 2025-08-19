@@ -50,7 +50,7 @@ export default function RegisterPage() {
         e.currentTarget.reset();
       }
       addToast({
-        title: "Inscription réussie ✅",
+        title: "Inscription réussie",
         description: "Un email de confirmation vient de t'être envoyé",
         color: "success",
       });

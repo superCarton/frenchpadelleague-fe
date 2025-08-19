@@ -1,7 +1,7 @@
 import { tv } from "tailwind-variants";
 
 export const sectionTitle = tv({
-  base: "text-xl sm:text-2xl font-bold uppercase mb-8 border-b-4 border-primary inline-block"
+  base: "text-xl sm:text-2xl font-bold uppercase mb-8 border-b-4 border-primary inline-block",
 });
 
 // export const title = tv({

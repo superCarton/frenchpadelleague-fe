@@ -1,5 +1,6 @@
-import { Address } from "@/lib/interfaces";
 import Link from "next/link";
+
+import { Address } from "@/lib/interfaces";
 
 export default function AddressLink({ address }: { address: Address }) {
   const fullAddress = `${address.street}, ${address.zipcode} ${address.city}`;

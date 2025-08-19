@@ -1,10 +1,9 @@
 "use client";
 
 import { Link } from "@heroui/link";
-import { Image } from "@heroui/image";
+import { Mail, Phone, Smartphone } from "lucide-react";
 
 import SubscribeNewsletter from "./subscribeNewsletter";
-import { Mail, Phone, Smartphone } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -52,12 +51,12 @@ export default function Footer() {
                     className="text-white flex align-center"
                     href="mailto:contact@frenchpadelleague.com"
                   >
-                    <Mail size={16} className="mr-2" /> contact@frenchpadelleague.com
+                    <Mail className="mr-2" size={16} /> contact@frenchpadelleague.com
                   </Link>
                 </li>
                 <li>
                   <Link isExternal className="text-white flex align-center" href="tel:+33698311099">
-                    <Phone size={16} className="mr-2" /> +33 6 98 31 10 99
+                    <Phone className="mr-2" size={16} /> +33 6 98 31 10 99
                   </Link>
                 </li>
                 <li>
@@ -66,7 +65,7 @@ export default function Footer() {
                     className="text-white flex align-center"
                     href="https://www.instagram.com/frenchpadelleague"
                   >
-                    <Smartphone size={16} className="mr-2"/> Instagram
+                    <Smartphone className="mr-2" size={16} /> Instagram
                   </Link>
                 </li>
               </ul>
