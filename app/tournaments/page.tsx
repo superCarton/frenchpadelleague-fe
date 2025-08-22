@@ -5,6 +5,9 @@ import { sectionTitle } from "@/components/primitives";
 import { TournamentPreviewView } from "@/components/tournamentPreview";
 import { getTournaments } from "@/lib/api";
 
+export const revalidate = 120; // ISR
+export const dynamic = "force-dynamic"; // prevent pre-render at first build
+
 export default async function TournamentsPage() {
   const { data: tournaments } = await getTournaments();
 

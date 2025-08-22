@@ -31,7 +31,6 @@ export function useAuthInit(options: UseAuthInitOptions = {}) {
       } catch (err) {
         setToken(null);
         setProfile(null);
-        console.error("AuthInit error:", err);
       } finally {
         setLoading(false);
         if (options.onFinished) {

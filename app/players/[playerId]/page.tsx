@@ -4,6 +4,9 @@ import dayjs from "dayjs";
 import { getPlayerById } from "@/lib/api";
 import { sectionTitle } from "@/components/primitives";
 
+export const revalidate = 120; // ISR
+export const dynamic = "force-dynamic"; // prevent pre-render at first build
+
 type PlayerPageProps = {
   params: Promise<{ playerId: string }>;
 };

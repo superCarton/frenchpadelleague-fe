@@ -8,6 +8,9 @@ import { getClubById } from "@/lib/api";
 import { sectionTitle } from "@/components/primitives";
 import AddressLink from "@/components/addressLink";
 
+export const revalidate = 120; // ISR
+export const dynamic = "force-dynamic"; // prevent pre-render at first build
+
 type ClubPageProps = {
   params: Promise<{ clubId: string }>;
 };

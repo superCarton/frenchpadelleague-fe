@@ -12,5 +12,5 @@ export const fontMono = FontMono({
 
 export const fontOswald = Oswald({
   subsets: ["latin"],
-  variable: "--font-oswald", // pour Tailwind
+  variable: "--font-oswald",
 });

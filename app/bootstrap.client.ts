@@ -4,7 +4,6 @@
 import { useUserStore } from "@/store/store";
 import { getMePlayer } from "@/lib/api";
 
-// Ce code sera exécuté une seule fois au démarrage du client
 (async () => {
   const { token, setToken, setProfile, setLoading } = useUserStore.getState();
 
@@ -19,7 +18,6 @@ import { getMePlayer } from "@/lib/api";
       setProfile(null);
     }
   } catch (err) {
-    console.error("Auth bootstrap error:", err);
     setToken(null);
     setProfile(null);
   } finally {
