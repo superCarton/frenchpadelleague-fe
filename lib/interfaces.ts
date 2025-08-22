@@ -12,6 +12,10 @@ export type WithStrapiMeta<A> = {
   };
 };
 
+export type StrapiImage = {
+  url: string;
+};
+
 export interface Address {
   street: string;
   streetComplement?: string;
@@ -40,10 +44,14 @@ export interface Player extends StrapiDocument {
   lastname: string;
   birthdate: string;
   elo: number;
-  league?: League;
+  league: League;
   user: User;
   club?: Club;
   matchesHistory: Match[];
+}
+
+export interface Profiles {
+  player: Player;
 }
 
 export interface Club extends StrapiDocument {
@@ -51,12 +59,16 @@ export interface Club extends StrapiDocument {
   name: string;
   address: Address;
   totalCourts: number;
-  contactEmail: string;
+  contactEmail?: string;
+  instagramLink?: string;
+  website?: string;
   hasRestaurant: boolean;
   phoneNumber?: string;
   description?: string;
   players: Player[];
   tournaments: Tournament[];
+  logo: StrapiImage;
+  coverImage: StrapiImage;
 }
 
 export interface Referee extends StrapiDocument {

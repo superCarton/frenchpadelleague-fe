@@ -15,8 +15,8 @@ export const ClubUser = (props: { club: Club }) => {
         isBordered: true,
       }}
       className="cursor-pointer"
-      description={club.address ? <div className="text-gray-600">{club.address.city}</div> : null}
-      name={<div className="text-bold text-gray-900">{club.name}</div>}
+      description={<div className="text-gray-600">{club.address.city}</div>}
+      name={<div className="font-bold text-gray-900">{club.name}</div>}
       onClick={() => router.push(`/clubs/${club.documentId}`)}
     />
   );

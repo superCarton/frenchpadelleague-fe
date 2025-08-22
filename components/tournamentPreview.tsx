@@ -9,6 +9,14 @@ import { DateRangeComponent } from "./dateRangeComponent";
 
 import { Tournament } from "@/lib/interfaces";
 
+const leagueGradients: Record<string, string> = {
+  bronze: "from-bronze to-bronze-light",
+  silver: "from-silver to-silver-light",
+  gold: "from-gold to-gold-light",
+  premium: "from-premium to-premium-light",
+  legend: "from-legend to-legend-light",
+};
+
 export const TournamentPreviewView = (props: { tournament: Tournament }) => {
   const { tournament } = props;
   const router = useRouter();
@@ -23,15 +31,19 @@ export const TournamentPreviewView = (props: { tournament: Tournament }) => {
         if (e.key === "Enter") router.push(`/tournaments/${tournament.documentId}`);
       }}
     >
-      <div className="bg-gradient-to-r from-bronze to-bronze-light px-6 py-3">
-        <h3 className="text-white font-bold text-lg uppercase tracking-wide">FPL Ligue Bronze</h3>
+      <div
+        className={`bg-gradient-to-r px-2 py-2 sm:px-6 sm:py-3 ${leagueGradients[tournament.league.badge]}`}
+      >
+        <h3 className="text-white font-bold text-lg uppercase tracking-wide">
+          FPL {tournament.league.title}
+        </h3>
       </div>
 
-      <div className="p-6 flex items-start gap-4 bg-white">
+      <div className="p-3 sm:p-6 flex items-start gap-4 bg-white">
         <Image
           alt="Club logo"
           className="w-16 h-16 rounded-full border-2 border-gray-200 object-cover"
-          src="/clubs/logo-acacias.png"
+          src={tournament.club.logo.url}
         />
 
         <div className="flex flex-col justify-center">
@@ -42,7 +54,7 @@ export const TournamentPreviewView = (props: { tournament: Tournament }) => {
           <div className="mt-2 flex flex-col gap-1 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <MapPin className="text-gray-500" size={16} />
-              <span>Toulouse, France</span>
+              <span>{tournament.club.address.city}</span>
             </div>
             <div className="flex items-center gap-1">
               <Calendar className="text-gray-500" size={16} />

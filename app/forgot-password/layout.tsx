@@ -1,5 +1,6 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Link } from "@heroui/link";
+import NextLink from "next/link";
 
 export default function UnSubscribeNewsletterLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -10,7 +11,7 @@ export default function UnSubscribeNewsletterLayout({ children }: { children: Re
         </CardHeader>
         <CardBody className="py-2">{children}</CardBody>
         <CardFooter className="text-small">
-          <Link className="pl-2 text-small" href="/login">
+          <Link as={NextLink} className="pl-2 text-small" href="/login">
             Se connecter
           </Link>
         </CardFooter>

@@ -1,24 +1,34 @@
-import { Club, Player, Tournament, WithStrapiMeta } from "./interfaces";
+import { Club, Player, Profiles, Tournament, WithStrapiMeta } from "./interfaces";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api";
 
-export function getToken(): string | null {
-  return typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
-}
+type StrapiPopulate =
+  | string
+  | {
+      fieldName: string;
+      subFields: string[];
+    };
 
-export function getCurrentUser(): any | null {
-  if (typeof window === "undefined") return null;
-  const user = localStorage.getItem("user");
+const buildUrl = (url: string, populateFields?: StrapiPopulate[]) => {
+  return `${API_URL}${url}?${
+    populateFields
+      ? populateFields
+          .map((field) => {
+            if (typeof field === "string") {
+              return `populate[${field}]=true`;
+            } else {
+              return field.subFields
+                .map((subField) => `populate[${field.fieldName}][populate][${subField}]=true`)
+                .join("&");
+            }
+          })
+          .join("&")
+      : ""
+  }`;
+};
 
-  return user ? JSON.parse(user) : null;
-}
-
-export function isUserConnected() {
-  return typeof window !== "undefined" ? !!localStorage.getItem("jwt") : false;
-}
-
-export async function login(email: string, password: string) {
-  const res = await fetch(`${API_URL}/auth/local`, {
+export async function login(email: string, password: string): Promise<{ jwt: string }> {
+  const res = await fetch(buildUrl("/auth/local"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -30,19 +40,16 @@ export async function login(email: string, password: string) {
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur login");
-  localStorage.setItem("jwt", data.jwt);
-  localStorage.setItem("user", JSON.stringify(data.user));
 
   return data;
 }
 
 export async function forgotPassword(email: string) {
-  const res = await fetch(`${API_URL}/auth/forgot-password`, {
+  const res = await fetch(buildUrl("/auth/forgot-password"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
   });
-
   const data = await res.json();
 
   if (!res.ok)
@@ -52,7 +59,7 @@ export async function forgotPassword(email: string) {
 }
 
 export async function resetPassword(code: string, newPassword: string) {
-  const res = await fetch(`${API_URL}/auth/reset-password`, {
+  const res = await fetch(buildUrl("/auth/reset-password"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code, password: newPassword, passwordConfirmation: newPassword }),
@@ -67,22 +74,12 @@ export async function resetPassword(code: string, newPassword: string) {
   return data;
 }
 
-export function logout() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("jwt");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
-  }
-}
+export async function getMeProfiles(jwt: string): Promise<Profiles> {
+  if (!jwt) throw new Error("Utilisateur non authentifié");
 
-export async function getMeProfiles() {
-  const token = getToken();
-
-  if (!token) throw new Error("Utilisateur non authentifié");
-
-  const res = await fetch(`${API_URL}/me/profiles`, {
+  const res = await fetch(buildUrl("/me/profiles"), {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${jwt}`,
     },
   });
 
@@ -93,14 +90,12 @@ export async function getMeProfiles() {
   return data;
 }
 
-export async function getMePlayer(): Promise<Player> {
-  const token = getToken();
+export async function getMePlayer(jwt: string): Promise<Player> {
+  if (!jwt) throw new Error("Utilisateur non authentifié");
 
-  if (!token) throw new Error("Utilisateur non authentifié");
-
-  const res = await fetch(`${API_URL}/me/player`, {
+  const res = await fetch(buildUrl("/me/player"), {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${jwt}`,
     },
   });
 
@@ -112,13 +107,7 @@ export async function getMePlayer(): Promise<Player> {
 }
 
 export async function getPlayerById(playerId: string): Promise<WithStrapiMeta<Player>> {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/players/${playerId}?populate=league`, {
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-
+  const res = await fetch(buildUrl(`/players/${playerId}`, ["league"]));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players/:playerId");
@@ -127,13 +116,7 @@ export async function getPlayerById(playerId: string): Promise<WithStrapiMeta<Pl
 }
 
 export async function getPlayers(): Promise<WithStrapiMeta<Player[]>> {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/players?populate=league`, {
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-
+  const res = await fetch(buildUrl("/players", ["league"]));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players");
@@ -142,22 +125,20 @@ export async function getPlayers(): Promise<WithStrapiMeta<Player[]>> {
 }
 
 export async function createPlayer(payload: any) {
-  const res = await fetch(`${API_URL}/players`, {
+  const res = await fetch(buildUrl("/players"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
-
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur création joueur");
-  localStorage.setItem("jwt", data.jwt);
 
   return data;
 }
 
 export async function subscribeNewsletter(email: string) {
-  const res = await fetch(`${API_URL}/newsletters`, {
+  const res = await fetch(buildUrl("/newsletters"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data: { email } }),
@@ -170,7 +151,7 @@ export async function subscribeNewsletter(email: string) {
 }
 
 export async function unsubscribeNewsletter(token: string) {
-  const res = await fetch(`${API_URL}/newsletters/unknown?token=${token}`, {
+  const res = await fetch(buildUrl(`/newsletters/unknown?token=${token}`), {
     method: "DELETE",
   });
   const data = await res.json();
@@ -182,12 +163,12 @@ export async function unsubscribeNewsletter(token: string) {
 }
 
 export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/tournaments?populate=league&populate=club`, {
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
+  const res = await fetch(
+    buildUrl("/tournaments", [
+      "league",
+      { fieldName: "club", subFields: ["logo", "coverImage", "address"] },
+    ])
+  );
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments");
@@ -196,12 +177,12 @@ export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
 }
 
 export async function getTournamentById(tournamentId: string): Promise<WithStrapiMeta<Tournament>> {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/tournaments/${tournamentId}?populate=*`, {
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
+  const res = await fetch(
+    buildUrl(`/tournaments/${tournamentId}`, [
+      "league",
+      { fieldName: "club", subFields: ["logo", "coverImage", "address"] },
+    ])
+  );
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentId");
@@ -210,13 +191,7 @@ export async function getTournamentById(tournamentId: string): Promise<WithStrap
 }
 
 export async function getClubById(clubId: string): Promise<WithStrapiMeta<Club>> {
-  const token = getToken();
-  const res = await fetch(`${API_URL}/clubs/${clubId}?populate=address`, {
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
-
+  const res = await fetch(buildUrl(`/clubs/${clubId}`, ["address", "logo", "coverImage"]));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs/:clubId");

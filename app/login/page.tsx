@@ -4,11 +4,13 @@ import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import NextLink from "next/link";
 import { Form } from "@heroui/form";
 import { Link } from "@heroui/link";
 import { addToast } from "@heroui/toast";
 
-import { login } from "@/lib/api";
+import { getMePlayer, login } from "@/lib/api";
+import { useUserStore } from "@/store/store";
 
 const translateErrorMessageToFr = (message: string) => {
   if (message.includes("Invalid identifier or password")) {
@@ -25,6 +27,7 @@ const translateErrorMessageToFr = (message: string) => {
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { setToken, setProfile } = useUserStore();
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
@@ -34,7 +37,12 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      await login(data.email.toString(), data.password.toString());
+      const { jwt } = await login(data.email.toString(), data.password.toString());
+
+      setToken(jwt);
+      const profile = await getMePlayer(jwt);
+
+      setProfile(profile);
       if (e.currentTarget) {
         e.currentTarget.reset();
       }
@@ -42,7 +50,7 @@ export default function LoginPage() {
         title: "Login success",
         color: "success",
       });
-      router.push("/profile");
+      router.push(`/players/${profile.documentId}`);
     } catch (err: any) {
       let description;
 
@@ -73,6 +81,7 @@ export default function LoginPage() {
       />
       <Input
         isRequired
+        autoComplete="current-password"
         disabled={loading}
         errorMessage="Le mot de passe est requis"
         label="Mot de passe"
@@ -81,7 +90,7 @@ export default function LoginPage() {
         placeholder="••••••••"
         type="password"
       />
-      <Link className="self-end text-small" href="/forgot-password">
+      <Link as={NextLink} className="self-end text-small" href="/forgot-password">
         Mot de passe oublié ?
       </Link>
       <Button

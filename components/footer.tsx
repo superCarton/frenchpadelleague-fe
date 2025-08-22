@@ -1,5 +1,6 @@
 "use client";
 
+import NextLink from "next/link";
 import { Link } from "@heroui/link";
 import { Mail, Phone, Smartphone } from "lucide-react";
 
@@ -21,22 +22,22 @@ export default function Footer() {
               <h3 className="text-lg font-semibold mb-3 uppercase">Support</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link className="text-white" href="/discover-fpl">
+                  <Link as={NextLink} className="text-white" href="/discover-fpl">
                     Découvrir la FPL
                   </Link>
                 </li>
                 <li>
-                  <Link className="text-white" href="/discover-fpl">
+                  <Link as={NextLink} className="text-white" href="/discover-fpl">
                     La FPL côté clubs
                   </Link>
                 </li>
                 <li>
-                  <Link className="text-white" href="/faq">
+                  <Link as={NextLink} className="text-white" href="/faq">
                     FAQ
                   </Link>
                 </li>
                 <li>
-                  <Link className="text-white" href="/privacy-policy">
+                  <Link as={NextLink} className="text-white" href="/privacy-policy">
                     Politique de confidentialité
                   </Link>
                 </li>
@@ -48,6 +49,7 @@ export default function Footer() {
                 <li>
                   <Link
                     isExternal
+                    as={NextLink}
                     className="text-white flex align-center"
                     href="mailto:contact@frenchpadelleague.com"
                   >
@@ -55,13 +57,19 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link isExternal className="text-white flex align-center" href="tel:+33698311099">
+                  <Link
+                    isExternal
+                    as={NextLink}
+                    className="text-white flex align-center"
+                    href="tel:+33698311099"
+                  >
                     <Phone className="mr-2" size={16} /> +33 6 98 31 10 99
                   </Link>
                 </li>
                 <li>
                   <Link
                     isExternal
+                    as={NextLink}
                     className="text-white flex align-center"
                     href="https://www.instagram.com/frenchpadelleague"
                   >

@@ -1,5 +1,6 @@
 import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
 import { Link } from "@heroui/link";
+import NextLink from "next/link";
 
 export default function LoginLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,7 +12,7 @@ export default function LoginLayout({ children }: { children: React.ReactNode })
         <CardBody className="py-2">{children}</CardBody>
         <CardFooter className="text-small">
           Pas de compte ?{" "}
-          <Link className="pl-2 text-small" href="/register">
+          <Link as={NextLink} className="pl-2 text-small" href="/register">
             S'inscrire maintenant
           </Link>
         </CardFooter>

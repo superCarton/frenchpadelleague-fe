@@ -10,7 +10,8 @@ import { CalendarDate } from "@internationalized/date";
 import { DatePicker } from "@heroui/date-picker";
 
 import { siteConfig } from "@/config/site";
-import { createPlayer } from "@/lib/api";
+import { createPlayer, getMePlayer } from "@/lib/api";
+import { useUserStore } from "@/store/store";
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = message;
@@ -30,6 +31,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const passwordRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const { setToken, setProfile } = useUserStore();
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -39,13 +41,18 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await createPlayer({
+      const { jwt } = await createPlayer({
         email: data.email.toString(),
         password: data.password.toString(),
         firstname: data.firstname.toString(),
         lastname: data.lastname.toString(),
         birthdate: data.birthdate.toString(),
       });
+
+      setToken(jwt);
+      const profile = await getMePlayer(jwt);
+
+      setProfile(profile);
       if (e.currentTarget) {
         e.currentTarget.reset();
       }
@@ -114,6 +121,7 @@ export default function RegisterPage() {
         <Input
           ref={passwordRef}
           isRequired
+          autoComplete="new-password"
           label="Mot de passe"
           labelPlacement="outside"
           name="password"
@@ -129,6 +137,7 @@ export default function RegisterPage() {
         />
         <Input
           isRequired
+          autoComplete="new-password"
           errorMessage="La confirmation doit être identique au mot de passe"
           label="Confirmation du mot de passe"
           labelPlacement="outside"

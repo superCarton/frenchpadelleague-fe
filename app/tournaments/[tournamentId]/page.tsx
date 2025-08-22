@@ -10,9 +10,10 @@ import { Link } from "@heroui/link";
 import { User } from "@heroui/user";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import { Calendar, Users, Trophy, Info, Utensils, Euro, MapPin, ScanLine } from "lucide-react";
+import NextLink from "next/link";
 
 import { Tournament } from "@/lib/interfaces";
-import { getTournamentById, isUserConnected } from "@/lib/api";
+import { getTournamentById } from "@/lib/api";
 import { DateComponent } from "@/components/dateComponent";
 import AddressLink from "@/components/addressLink";
 import PadelLoader from "@/components/padelLoader";
@@ -20,12 +21,14 @@ import { TournamentPreviewView } from "@/components/tournamentPreview";
 import { ClubUser } from "@/components/clubUser";
 import { sectionTitle } from "@/components/primitives";
 import { DateRangeComponent } from "@/components/dateRangeComponent";
+import { useUserStore } from "@/store/store";
 
 export default function TournamentPage() {
   const router = useRouter();
   const { tournamentId } = useParams<{ tournamentId: string }>();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get("tab") || "infos";
+  const { profile } = useUserStore();
 
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,21 +59,29 @@ export default function TournamentPage() {
   if (loading) return <PadelLoader />;
   if (!tournament) return <div className="p-6">Tournoi introuvable</div>;
 
+  const { league, club } = tournament;
+  const isCurrentPlayerInTournamentLeague =
+    profile && profile.elo > league.minElo && profile.elo < league.maxElo;
+  const isRegistrationButtonEnabled =
+    tournament.currentStatus === "registrations-opened" && isCurrentPlayerInTournamentLeague;
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="relative h-64 w-full overflow-hidden hidden sm:block">
+      <div className="relative h-64 max-w-6xl mx-auto overflow-hidden hidden sm:block">
         <Image
           alt="cover tournoi"
           className="object-cover w-full h-full"
-          src={"/clubs/bg-acacias.png"}
+          src={club.coverImage.url}
         />
       </div>
 
-      <div className="sticky top-[64px] z-40 bg-white shadow-sm border-b">
+      <div className="sticky top-[64px] z-40 max-w-6xl mx-auto bg-white shadow-sm border-b">
         <Breadcrumbs className="px-4 pt-2 pb-0 text-gray-500" size="sm">
-          <BreadcrumbItem href="/tournaments">Tournois</BreadcrumbItem>
+          <BreadcrumbItem>
+            <NextLink href="/tournaments">Tournois</NextLink>
+          </BreadcrumbItem>
           <BreadcrumbItem isCurrent>
-            FPL Bronze - {tournament.club.name} -{" "}
+            FPL {league.title} - {club.name} -{" "}
             <DateRangeComponent
               abbrev
               endDate={tournament.endDate}
@@ -136,10 +147,9 @@ export default function TournamentPage() {
                 </div>
               </h2>
               <div className="text-gray-700 space-y-1">
-                <ClubUser club={tournament.club} />
+                <ClubUser club={club} />
                 <p className="flex items-center gap-2 mt-2">
-                  <MapPin size={16} />
-                  <AddressLink address={tournament.address} />
+                  <AddressLink address={club.address} className="text-gray-700" />
                 </p>
                 <p className="flex items-center gap-2">
                   <Utensils size={16} />
@@ -212,7 +222,6 @@ export default function TournamentPage() {
                   Les inscriptions se font uniquement en ligne sur ce site. Le paiement se fera
                   directement à l'arrivée au bar du club.
                 </p>
-
                 {tournament.registrationFee && (
                   <div>
                     <h3 className="font-semibold">Tarif</h3>
@@ -223,7 +232,7 @@ export default function TournamentPage() {
                   </div>
                 )}
                 <div>
-                  <h3 className="font-semibold">Status des inscriptions</h3>
+                  <h3 className="font-semibold">Statut des inscriptions</h3>
                   <p>
                     {tournament.currentStatus === "registrations-opened" ? "Ouvertes" : "Fermées"}
                   </p>
@@ -238,15 +247,26 @@ export default function TournamentPage() {
                     <DateComponent withDay withTime date={tournament.registrationDeadline} />
                   </div>
                 )}
+                <p>
+                  Ce tournoi de niveau <strong>{league.title}</strong> est réservé aux joueurs
+                  possédant le badge <strong>{league.badge}</strong> (Elo compris entre{" "}
+                  {league.minElo} et {league.maxElo}) au moment de l'inscription
+                </p>
               </CardBody>
               <CardFooter className="justify-center">
-                {isUserConnected() ? (
-                  <Button className="w-full sm:w-auto" color="primary">
-                    S'inscrire au tournoi
-                  </Button>
+                {profile ? (
+                  isRegistrationButtonEnabled && (
+                    <Button className="w-full sm:w-auto" color="primary">
+                      S'inscrire au tournoi
+                    </Button>
+                  )
                 ) : (
                   <p className="text-gray-600 text-sm">
-                    Tu dois <Link href="/login">te connecter</Link> pour pouvoir t'inscrire
+                    Tu dois{" "}
+                    <Link as={NextLink} href="/login">
+                      te connecter
+                    </Link>{" "}
+                    pour pouvoir t'inscrire
                   </p>
                 )}
               </CardFooter>

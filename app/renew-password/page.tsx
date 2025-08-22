@@ -7,14 +7,16 @@ import { Input } from "@heroui/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { addToast } from "@heroui/toast";
 
-import { resetPassword } from "@/lib/api";
+import { getMePlayer, resetPassword } from "@/lib/api";
 import { siteConfig } from "@/config/site";
+import { useUserStore } from "@/store/store";
 
 export default function RenewPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("code");
   const passwordRef = useRef<HTMLInputElement>(null);
+  const { setToken, setProfile } = useUserStore();
 
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +38,12 @@ export default function RenewPasswordPage() {
     setLoading(true);
 
     try {
-      await resetPassword(token, data.password.toString());
+      const { jwt } = await resetPassword(token, data.password.toString());
+
+      setToken(jwt);
+      const profile = await getMePlayer(jwt);
+
+      setProfile(profile);
       if (e.currentTarget) {
         e.currentTarget.reset();
       }
@@ -44,7 +51,7 @@ export default function RenewPasswordPage() {
         title: "Mot de passe mis à jour",
         color: "success",
       });
-      router.push("/profile");
+      router.push(`/players/${profile.documentId}`);
     } catch (err: any) {
       let description;
 
@@ -67,6 +74,7 @@ export default function RenewPasswordPage() {
         <Input
           ref={passwordRef}
           isRequired
+          autoComplete="new-password"
           errorMessage="Le mot de passe est requis"
           label="Nouveau mot de passe"
           labelPlacement="outside"
@@ -83,6 +91,7 @@ export default function RenewPasswordPage() {
         />
         <Input
           isRequired
+          autoComplete="new-password"
           errorMessage="La confirmation doit être identique au mot de passe"
           label="Confirmation du nouveau mot de passe"
           labelPlacement="outside"

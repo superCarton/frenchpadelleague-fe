@@ -10,7 +10,7 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)"],
+        sans: ["var(--font-oswald)"],
         mono: ["var(--font-mono)"],
       },
       colors: {
@@ -20,24 +20,24 @@ const config = {
           dark: "#3a1b0a",
         },
         silver: {
-          light: "#d9d9d9",
-          DEFAULT: "#c0c0c0",
-          dark: "#8a8a8a",
+          light: "#b3aea7",
+          DEFAULT: "#959084",
+          dark: "#6b6761",
         },
         gold: {
-          light: "#ffe066",
-          DEFAULT: "#ffd700",
-          dark: "#bfa600",
+          light: "#f3c74d",
+          DEFAULT: "#e2a21c",
+          dark: "#a77414",
         },
         premium: {
-          light: "#333333",
-          DEFAULT: "#000000",
+          light: "#2a2a2a",
+          DEFAULT: "#0b0b0b",
           dark: "#000000",
         },
         legend: {
-          light: "#f2f2f2",
-          DEFAULT: "#e5e4e2",
-          dark: "#bfbfbf",
+          light: "#a52a2a",
+          DEFAULT: "#820817",
+          dark: "#4d040d",
         },
       },
     },
