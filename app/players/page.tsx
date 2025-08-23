@@ -1,4 +1,5 @@
 import { PlayerList } from "@/components/playersList";
+import { pageTitle } from "@/components/primitives";
 import { getPlayers } from "@/lib/api";
 
 export const revalidate = 120; // ISR
@@ -8,8 +9,11 @@ export default async function SearchPlayersPage() {
   const { data: players } = await getPlayers();
 
   return (
-    <div>
-      <PlayerList players={players} />
+    <div className="flex justify-center py-4 sm:py-10 px-2 sm:px-4">
+      <div className="w-full sm:w-xl mx-auto">
+        <h2 className={pageTitle()}>Tous les joueurs</h2>
+        <PlayerList players={players} />
+      </div>
     </div>
   );
 }

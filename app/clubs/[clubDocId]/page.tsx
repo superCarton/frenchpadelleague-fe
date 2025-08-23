@@ -4,20 +4,20 @@ import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { Globe, Mail, Phone, Smartphone } from "lucide-react";
 
-import { getClubById } from "@/lib/api";
-import { sectionTitle } from "@/components/primitives";
+import { getClubByDocId } from "@/lib/api";
+import { pageTitle, sectionTitle } from "@/components/primitives";
 import AddressLink from "@/components/addressLink";
 
 export const revalidate = 120; // ISR
 export const dynamic = "force-dynamic"; // prevent pre-render at first build
 
 type ClubPageProps = {
-  params: Promise<{ clubId: string }>;
+  params: Promise<{ clubDocId: string }>;
 };
 
 export default async function ClubPage({ params }: ClubPageProps) {
-  const { clubId } = await params;
-  const { data: club } = await getClubById(clubId);
+  const { clubDocId } = await params;
+  const { data: club } = await getClubByDocId(clubDocId);
 
   return (
     <div className="max-w-xl mx-auto px-2 py-6">
@@ -34,7 +34,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
         </div>
       </div>
       <div className="flex item-center justify-center">
-        <h2 className={sectionTitle()}>{club.name}</h2>
+        <h2 className={pageTitle()}>{club.name}</h2>
       </div>
       <div className="space-y-6">
         {club.description && (

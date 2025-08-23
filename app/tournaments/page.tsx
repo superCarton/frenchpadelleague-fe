@@ -1,7 +1,7 @@
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import dayjs from "dayjs";
 
-import { sectionTitle } from "@/components/primitives";
+import { pageTitle } from "@/components/primitives";
 import { TournamentPreviewView } from "@/components/tournamentPreview";
 import { getTournaments } from "@/lib/api";
 
@@ -18,7 +18,7 @@ export default async function TournamentsPage() {
           <BreadcrumbItem href="/accueil">Accueil</BreadcrumbItem>
           <BreadcrumbItem href="/tournaments">Tournois</BreadcrumbItem>
         </Breadcrumbs>
-        <h2 className={sectionTitle()}>Les tournois à venir</h2>
+        <h2 className={pageTitle()}>Les tournois à venir</h2>
         <div className="w-full space-y-4">
           {tournaments
             .sort((a, b) => (dayjs(b.startDate).isBefore(dayjs(a.startDate)) ? 1 : -1))

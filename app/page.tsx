@@ -2,13 +2,29 @@
 
 import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
-import { Card, CardHeader, CardBody } from "@heroui/card";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { sectionTitle } from "@/components/primitives";
+import { Tournament } from "@/lib/interfaces";
+import { getNextTournaments } from "@/lib/api";
+import { TournamentPreviewView } from "@/components/tournamentPreview";
 
 export default function Home() {
   const router = useRouter();
+  const [nextTournaments, setNextTournaments] = useState<Tournament[]>([]);
+
+  useEffect(() => {
+    async function fetchTournaments() {
+      try {
+        const { data } = await getNextTournaments();
+
+        setNextTournaments(data);
+      } catch (err: any) {}
+    }
+
+    fetchTournaments();
+  }, []);
 
   return (
     <div className="flex flex-col w-full">
@@ -26,7 +42,7 @@ export default function Home() {
         </p>
         <div className="flex justify-center mt-10">
           <Button
-            className="px-10 py-4 text-xl font-semibold shadow-lg hover:scale-105 transition-transform"
+            className="px-10 py-4 text-xl shadow-lg hover:scale-105 transition-transform"
             color="primary"
             variant="solid"
             onPress={() => router.push("/register")}
@@ -36,7 +52,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16 px-6 w-full">
+      <section className="bg-white py-16 px-4 w-full">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className={sectionTitle()}>Qui sommes-nous ?</h2>
           <div className="space-y-4 text-gray-700 leading-relaxed">
@@ -60,7 +76,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-16 px-6 w-full">
+      <section className="bg-gray-50 py-16 px-4 w-full">
         <div className="max-w-7xl mx-auto">
           <h2 className={sectionTitle()}>Nos Catégories</h2>
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto text-center">
@@ -103,7 +119,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white py-16 px-6 w-full">
+      <section className="bg-white py-16 px-4 w-full">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className={sectionTitle()}>Les compétitions</h2>
           <p className="text-gray-700 max-w-3xl mx-auto mb-6">
@@ -121,39 +137,18 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-gray-50 py-16 px-6 w-full">
-        <div className="max-w-2xl mx-auto">
-          <h2 className={sectionTitle()}>Actualités</h2>
-          <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-            {[1, 2, 3].map((news) => (
-              <Card key={news} className="shadow-md hover:shadow-lg transition overflow-hidden">
-                <CardHeader className="bg-primary text-white text-lg font-semibold">
-                  Titre de l'actualité {news}
-                </CardHeader>
-                <CardBody className="text-gray-600">
-                  Petit résumé de l’actualité {news}. Cliquez pour en savoir plus.
-                </CardBody>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white py-16 px-6 w-full">
+      <section className="bg-gray-50 py-16 px-4 w-full">
         <div className="max-w-2xl mx-auto">
           <h2 className={sectionTitle()}>Prochains tournois</h2>
-          <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-            {[1, 2, 3].map((event) => (
-              <Card key={event} className="shadow-md hover:shadow-lg transition overflow-hidden">
-                <CardHeader className="bg-primary text-white text-lg font-semibold">
-                  Événement {event}
-                </CardHeader>
-                <CardBody className="text-gray-600">
-                  Date : JJ/MM/AAAA <br />
-                  Lieu : Ville
-                </CardBody>
-              </Card>
+          <div className="max-w-6xl mx-auto space-y-2">
+            {nextTournaments.map((t) => (
+              <TournamentPreviewView key={t.documentId} tournament={t} />
             ))}
+          </div>
+          <div className="mx-auto mt-4 text-center">
+            <Button color="primary" onPress={() => router.push("/tournaments")}>
+              Tous les tournois
+            </Button>
           </div>
         </div>
       </section>

@@ -1,4 +1,4 @@
-type StrapiDocument = { documentId: string };
+type StrapiDocument = { documentId: string; id: number };
 
 export type WithStrapiMeta<A> = {
   data: A;
@@ -73,6 +73,14 @@ export interface Club extends StrapiDocument {
 
 export interface Referee extends StrapiDocument {
   user: User;
+}
+
+export interface Team extends StrapiDocument {
+  playerA: Player;
+  playerB: Player;
+  tournament: Tournament;
+  name: string;
+  confirmed: boolean;
 }
 
 export interface Match extends StrapiDocument {

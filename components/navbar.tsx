@@ -75,19 +75,29 @@ export const Navbar = () => {
         <Dropdown>
           <NavbarItem>
             <DropdownTrigger>
-              <Button as={Link} className="text-white bg-transparent" endContent={<ChevronDown />}>
+              <Button
+                as={Link}
+                className="text-white bg-transparent text-medium"
+                endContent={<ChevronDown />}
+              >
                 Rechercher
               </Button>
             </DropdownTrigger>
           </NavbarItem>
           <DropdownMenu
+            className="bg-black"
             itemClasses={{
-              base: "gap-4",
+              base: "gap-4 text-white",
             }}
           >
             <DropdownItem key="tournaments">
               <Link as={NextLink} href="/tournaments">
                 Une compétition
+              </Link>
+            </DropdownItem>
+            <DropdownItem key="clubs">
+              <Link as={NextLink} href="/clubs">
+                Un club
               </Link>
             </DropdownItem>
             <DropdownItem key="players">
@@ -104,9 +114,9 @@ export const Navbar = () => {
             <DropdownTrigger>
               <Avatar
                 as="button"
-                className={`transition-transform border-2 border-${profile.league?.badge}`}
+                className={`transition-transform border-2 border-${profile.league.badge}`}
                 name="RG"
-                size="sm"
+                size="md"
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">

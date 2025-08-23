@@ -4,10 +4,25 @@ import { User } from "@heroui/user";
 import { useRouter } from "next/navigation";
 
 import { Player } from "@/lib/interfaces";
+import { useUserStore } from "@/store/store";
 
-export const PlayerPreviewView = (props: { player: Player }) => {
+const leagueAvatarClasses: Record<string, string> = {
+  bronze: "bg-bronze border-bronze text-white",
+  silver: "bg-silver border-silver",
+  gold: "bg-gold border-gold",
+  premium: "bg-premium border-premium text-white",
+  legend: "bg-legend border-legend text-white",
+};
+
+export const PlayerPreviewView = (props: {
+  player: Player;
+  hideDescription?: boolean;
+  avatarSize?: "md" | "sm" | "lg";
+  nameFont?: string;
+}) => {
   const router = useRouter();
-  const { player } = props;
+  const { profile } = useUserStore();
+  const { player, hideDescription, avatarSize, nameFont } = props;
   const prettyNameWithElo = (
     <>
       {player.firstname} {player.lastname} ({player.elo})
@@ -19,11 +34,20 @@ export const PlayerPreviewView = (props: { player: Player }) => {
       <User
         avatarProps={{
           name: `${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`,
-          className: `border-2 border-${player.league?.badge}`,
+          className: `${leagueAvatarClasses[player.league.badge]}`,
+          size: avatarSize || "md",
         }}
         className="cursor-pointer"
-        description={<div className="text-gray-600">{player.league.badge}</div>}
-        name={<div className="font-bold text-gray-900">{prettyNameWithElo}</div>}
+        description={
+          !hideDescription ? <div className="text-gray-600">{player.league.badge}</div> : null
+        }
+        name={
+          <div
+            className={`${nameFont || "font-bold"} ${profile && profile.documentId === player.documentId ? "text-blue-800" : "text-gray-800"}`}
+          >
+            {prettyNameWithElo}
+          </div>
+        }
         onClick={() => router.push(`/players/${player.documentId}`)}
       />
     </div>

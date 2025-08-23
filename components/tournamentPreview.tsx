@@ -23,7 +23,7 @@ export const TournamentPreviewView = (props: { tournament: Tournament }) => {
 
   return (
     <div
-      className="mx-auto rounded-sm shadow-lg overflow-hidden border border-gray-200 cursor-pointer"
+      className="mx-auto rounded-sm shadow-sm hover:shadow-md transition overflow-hidden border border-gray-200 cursor-pointer"
       role="button"
       tabIndex={0}
       onClick={() => router.push(`/tournaments/${tournament.documentId}`)}

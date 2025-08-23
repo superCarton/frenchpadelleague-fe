@@ -1,5 +1,6 @@
 import React from "react";
-import { Clock, UserPlus, CheckCircle, Play, XCircle, Flag } from "lucide-react";
+import { Clock, UserPlus, CheckCircle, Play, XCircle, Flag, CheckCheck } from "lucide-react";
+import { Chip } from "@heroui/chip";
 
 import { TournamentStatus } from "@/lib/interfaces";
 
@@ -9,41 +10,45 @@ interface TournamentStatusBadgeProps {
 
 const statusMap: Record<
   TournamentStatus,
-  { label: string; color: string; icon: React.ElementType }
+  {
+    label: string;
+    color: "default" | "success" | "warning" | "danger" | "primary" | "secondary";
+    icon: React.ElementType;
+  }
 > = {
   "pending-validation": {
     label: "En cours de validation",
-    color: "bg-orange-100 text-orange-800",
+    color: "warning",
     icon: Clock,
   },
   validated: {
-    label: "Inscriptions ouvertes",
-    color: "bg-green-100 text-green-800",
-    icon: UserPlus,
+    label: "Validé",
+    color: "success",
+    icon: CheckCheck,
   },
   "registrations-opened": {
     label: "Inscriptions ouvertes",
-    color: "bg-green-100 text-green-800",
+    color: "success",
     icon: UserPlus,
   },
   "registrations-closed": {
     label: "Inscriptions terminées",
-    color: "bg-yellow-100 text-yellow-800",
+    color: "warning",
     icon: CheckCircle,
   },
   started: {
     label: "En cours",
-    color: "bg-indigo-100 text-indigo-800",
+    color: "secondary",
     icon: Play,
   },
   cancelled: {
     label: "Annulé",
-    color: "bg-red-100 text-red-800",
+    color: "danger",
     icon: XCircle,
   },
   completed: {
     label: "Terminé",
-    color: "bg-gray-100 text-gray-800",
+    color: "default",
     icon: Flag,
   },
 };
@@ -57,12 +62,9 @@ const TournamentStatusBadge: React.FC<TournamentStatusBadgeProps> = ({
   const Icon = statusEl.icon;
 
   return (
-    <span
-      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${statusEl.color}`}
-    >
-      <Icon className="w-4 h-4 mr-1" />
+    <Chip color={statusEl.color} startContent={<Icon className="ml-2" size={16} />}>
       {statusEl.label}
-    </span>
+    </Chip>
   );
 };
 

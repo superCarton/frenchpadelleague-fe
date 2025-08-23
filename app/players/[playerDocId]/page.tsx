@@ -1,19 +1,19 @@
 import { Image } from "@heroui/image";
 import dayjs from "dayjs";
 
-import { getPlayerById } from "@/lib/api";
-import { sectionTitle } from "@/components/primitives";
+import { getPlayerByDocId } from "@/lib/api";
+import { pageTitle, sectionTitle } from "@/components/primitives";
 
 export const revalidate = 120; // ISR
 export const dynamic = "force-dynamic"; // prevent pre-render at first build
 
 type PlayerPageProps = {
-  params: Promise<{ playerId: string }>;
+  params: Promise<{ playerDocId: string }>;
 };
 
 export default async function PlayerPage({ params }: PlayerPageProps) {
-  const { playerId } = await params;
-  const { data: player } = await getPlayerById(playerId);
+  const { playerDocId } = await params;
+  const { data: player } = await getPlayerByDocId(playerDocId);
   const playerAge = dayjs().diff(dayjs(player.birthdate), "year");
 
   return (
@@ -27,7 +27,7 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         />
       </div>
       <div className="flex item-center justify-center">
-        <h2 className={sectionTitle()}>
+        <h2 className={pageTitle()}>
           {player.firstname} {player.lastname}
         </h2>
       </div>
