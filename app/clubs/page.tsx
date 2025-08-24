@@ -1,4 +1,4 @@
-import { ClubPreviewView } from "@/components/clubPreview";
+import { ClubPreviewView } from "@/components/club/clubPreview";
 import { pageTitle } from "@/components/primitives";
 import { getClubs } from "@/lib/api";
 

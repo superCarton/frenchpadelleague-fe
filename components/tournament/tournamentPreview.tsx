@@ -4,8 +4,9 @@ import { Image } from "@heroui/image";
 import { useRouter } from "next/navigation";
 import { Calendar, MapPin } from "lucide-react";
 
+import { DateRangeComponent } from "../dateRangeComponent";
+
 import TournamentStatusBadge from "./tournamentStatusBadge";
-import { DateRangeComponent } from "./dateRangeComponent";
 
 import { Tournament } from "@/lib/interfaces";
 

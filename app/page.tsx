@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { sectionTitle } from "@/components/primitives";
 import { Tournament } from "@/lib/interfaces";
 import { getNextTournaments } from "@/lib/api";
-import { TournamentPreviewView } from "@/components/tournamentPreview";
+import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
 
 export default function Home() {
   const router = useRouter();

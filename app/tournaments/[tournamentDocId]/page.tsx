@@ -13,8 +13,8 @@ import { getTournamentByDocId } from "@/lib/api";
 import PadelLoader from "@/components/padelLoader";
 import { DateRangeComponent } from "@/components/dateRangeComponent";
 import { useUserStore } from "@/store/store";
-import TournamentInfos from "@/components/tournamentInfos";
-import TournamentTeams from "@/components/tournamentTeams";
+import TournamentInfos from "@/components/tournament/tournamentInfos";
+import TournamentTeams from "@/components/tournament/tournamentTeams";
 
 export default function TournamentPage() {
   const router = useRouter();
@@ -121,7 +121,7 @@ export default function TournamentPage() {
 
       <div className="max-w-xl mx-auto px-2 py-6 space-y-6">
         {activeTab === "infos" && <TournamentInfos profile={profile} tournament={tournament} />}
-        {activeTab === "teams" && <TournamentTeams profile={profile} tournament={tournament} />}
+        {activeTab === "teams" && <TournamentTeams tournament={tournament} />}
       </div>
     </div>
   );

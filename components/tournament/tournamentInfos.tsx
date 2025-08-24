@@ -8,11 +8,12 @@ import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { useState } from "react";
 
-import { DateComponent } from "./dateComponent";
+import { DateComponent } from "../dateComponent";
+import { sectionTitle } from "../primitives";
+import { ClubUser } from "../club/clubUser";
+import AddressLink from "../addressLink";
+
 import { TournamentPreviewView } from "./tournamentPreview";
-import { sectionTitle } from "./primitives";
-import { ClubUser } from "./clubUser";
-import AddressLink from "./addressLink";
 import TournamentRegisterModal from "./tournamentRegister";
 
 import { Player, Tournament } from "@/lib/interfaces";

@@ -120,3 +120,12 @@ export interface Tournament extends StrapiDocument {
   maxTeams?: number;
   gamesFormat?: string;
 }
+
+export interface GameFormat extends StrapiDocument {
+  name: string;
+  description: string;
+  nbOfSets: number;
+  nbGamesInSet: number;
+  noAd: boolean;
+  lastSetSuperTie: boolean;
+}

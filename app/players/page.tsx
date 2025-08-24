@@ -1,4 +1,4 @@
-import { PlayerList } from "@/components/playersList";
+import { PlayerList } from "@/components/player/playersList";
 import { pageTitle } from "@/components/primitives";
 import { getPlayers } from "@/lib/api";
 

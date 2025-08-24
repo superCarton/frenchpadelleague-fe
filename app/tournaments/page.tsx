@@ -2,7 +2,7 @@ import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import dayjs from "dayjs";
 
 import { pageTitle } from "@/components/primitives";
-import { TournamentPreviewView } from "@/components/tournamentPreview";
+import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
 import { getTournaments } from "@/lib/api";
 
 export const revalidate = 120; // ISR

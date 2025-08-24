@@ -6,7 +6,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@herou
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
 
-import { PlayerPreviewView } from "./playerPreview";
+import { PlayerPreviewView } from "../player/playerPreview";
 
 import { getPlayersByLeague, registerTeam } from "@/lib/api";
 import { useUserStore } from "@/store/store";

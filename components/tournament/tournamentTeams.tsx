@@ -3,19 +3,13 @@
 import { useEffect, useState } from "react";
 import { Card } from "@heroui/card";
 
-import { PlayerPreviewView } from "./playerPreview";
-import PadelLoader from "./padelLoader";
+import { PlayerPreviewView } from "../player/playerPreview";
+import PadelLoader from "../padelLoader";
 
-import { Player, Team, Tournament } from "@/lib/interfaces";
+import { Team, Tournament } from "@/lib/interfaces";
 import { getTeamsByTournamentId } from "@/lib/api";
 
-export default function TournamentTeams({
-  tournament,
-  profile,
-}: {
-  tournament: Tournament;
-  profile: Player | null;
-}) {
+export default function TournamentTeams({ tournament }: { tournament: Tournament }) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
