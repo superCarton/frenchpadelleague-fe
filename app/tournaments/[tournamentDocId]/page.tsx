@@ -5,7 +5,7 @@ import { Tabs, Tab } from "@heroui/tabs";
 import { useEffect, useState } from "react";
 import { Image } from "@heroui/image";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
-import { Users, Trophy, Info } from "lucide-react";
+import { Users, Trophy, Info, LoaderPinwheel } from "lucide-react";
 import NextLink from "next/link";
 
 import { Tournament } from "@/lib/interfaces";
@@ -15,6 +15,7 @@ import { DateRangeComponent } from "@/components/dateRangeComponent";
 import { useUserStore } from "@/store/store";
 import TournamentInfos from "@/components/tournament/tournamentInfos";
 import TournamentTeams from "@/components/tournament/tournamentTeams";
+import TournamentPhases from "@/components/tournament/tournamentPhases";
 
 export default function TournamentPage() {
   const router = useRouter();
@@ -108,11 +109,20 @@ export default function TournamentPage() {
           />
           <Tab
             key="table"
-            isDisabled
             title={
               <span className="flex items-center gap-1">
                 <Trophy size={16} />
                 Tableau
+              </span>
+            }
+          />
+          <Tab
+            key="matches"
+            isDisabled
+            title={
+              <span className="flex items-center gap-1">
+                <LoaderPinwheel size={16} />
+                Matchs
               </span>
             }
           />
@@ -122,6 +132,8 @@ export default function TournamentPage() {
       <div className="max-w-xl mx-auto px-2 py-6 space-y-6">
         {activeTab === "infos" && <TournamentInfos profile={profile} tournament={tournament} />}
         {activeTab === "teams" && <TournamentTeams tournament={tournament} />}
+        {activeTab === "table" && <TournamentPhases tournament={tournament} />}
+        {activeTab === "matches" && <div>Tous les matchs ici</div>}
       </div>
     </div>
   );

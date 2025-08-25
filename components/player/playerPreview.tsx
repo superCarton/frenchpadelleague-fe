@@ -17,7 +17,7 @@ const leagueAvatarClasses: Record<string, string> = {
 export const PlayerPreviewView = (props: {
   player: Player;
   hideDescription?: boolean;
-  avatarSize?: "md" | "sm" | "lg";
+  avatarSize?: "md" | "sm" | "lg" | "tiny";
   nameFont?: string;
 }) => {
   const router = useRouter();
@@ -34,8 +34,8 @@ export const PlayerPreviewView = (props: {
       <User
         avatarProps={{
           name: `${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`,
-          className: `${leagueAvatarClasses[player.league.badge]}`,
-          size: avatarSize || "md",
+          className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"}`,
+          size: avatarSize && avatarSize !== "tiny" ? avatarSize : "md",
         }}
         className="cursor-pointer"
         description={

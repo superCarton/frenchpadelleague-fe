@@ -43,30 +43,24 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
       </div>
 
       <div className="flex flex-col gap-2">
-        {teams.map((team, index) => (
-          <Card
-            key={team.playerA.documentId}
-            className="grid grid-cols-[6fr_3fr_3fr] items-center px-4 py-3 shadow-sm rounded-sm hover:shadow-md transition"
-          >
-            <div className="flex flex-col gap-1">
-              <PlayerPreviewView
-                // hideDescription
-                avatarSize="sm"
-                nameFont="font-semibold"
-                player={team.playerA}
-              />
-              <PlayerPreviewView
-                // hideDescription
-                avatarSize="sm"
-                nameFont="font-semibold"
-                player={team.playerB}
-              />
-            </div>
+        {teams
+          .sort((a, b) => {
+            return b.playerA.elo + b.playerB.elo - (a.playerA.elo + a.playerB.elo);
+          })
+          .map((team, index) => (
+            <Card
+              key={team.playerA.documentId}
+              className="grid grid-cols-[6fr_3fr_3fr] items-center px-4 py-2 shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex flex-col gap-1">
+                <PlayerPreviewView avatarSize="tiny" nameFont="font-normal" player={team.playerA} />
+                <PlayerPreviewView avatarSize="tiny" nameFont="font-normal" player={team.playerB} />
+              </div>
 
-            <div className="text-center text-gray-600">{index + 1}</div>
-            <div className="text-center text-gray-600">{team.playerA.elo + team.playerB.elo}</div>
-          </Card>
-        ))}
+              <div className="text-center text-gray-600">{index + 1}</div>
+              <div className="text-center text-gray-600">{team.playerA.elo + team.playerB.elo}</div>
+            </Card>
+          ))}
       </div>
     </section>
   );

@@ -7,7 +7,7 @@ dayjs.locale("fr");
 
 type DateProps = {
   startDate: string;
-  endDate: string;
+  endDate?: string;
   abbrev?: boolean;
   withTime?: boolean;
   withDay?: boolean;
@@ -34,12 +34,14 @@ export const DateRangeComponent = ({
   withYear = true,
 }: DateProps) => {
   const start = dayjs(startDate);
-  const end = dayjs(endDate);
+  const end = endDate ? dayjs(endDate) : null;
 
   return (
     <span>
       {formatDate(start, abbrev, withTime, withDay, withYear)}
-      {start.isSame(end) ? "" : ` - ${formatDate(end, abbrev, withTime, withDay, withYear)}`}
+      {end && !start.isSame(end, "day")
+        ? ` - ${formatDate(end, abbrev, withTime, withDay, withYear)}`
+        : ""}
     </span>
   );
 };

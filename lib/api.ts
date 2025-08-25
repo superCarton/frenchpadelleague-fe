@@ -1,34 +1,53 @@
-import { Club, Player, Profiles, Team, Tournament, WithStrapiMeta } from "./interfaces";
+import {
+  Club,
+  Player,
+  Profiles,
+  Team,
+  Tournament,
+  TournamentGroup,
+  TournamentPhase,
+  WithStrapiMeta,
+} from "./interfaces";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:1337/api";
 
-type StrapiPopulate =
+type PopulateField =
   | string
   | {
       fieldName: string;
-      subFields: string[];
+      subFields?: PopulateField[];
     };
 
-const buildUrl = (url: string, populateFields?: StrapiPopulate[]) => {
-  return `${API_URL}${url}${url.includes("?") ? "&" : "?"}${
-    populateFields
-      ? populateFields
-          .map((field) => {
-            if (typeof field === "string") {
-              return `populate[${field}]=true`;
-            } else {
-              return field.subFields
-                .map((subField) => `populate[${field.fieldName}][populate][${subField}]=true`)
-                .join("&");
-            }
-          })
-          .join("&")
-      : ""
-  }`;
+const buildUrl = (url: string, fields: PopulateField[]): string => {
+  const params: string[] = [];
+
+  function recurse(field: PopulateField, prefix: string) {
+    if (typeof field === "string") {
+      params.push(`${prefix}[${field}]=true`);
+    } else {
+      if (field.subFields && field.subFields.length > 0) {
+        for (const sub of field.subFields) {
+          recurse(sub, `${prefix}[${field.fieldName}][populate]`);
+        }
+      } else {
+        params.push(`${prefix}[${field.fieldName}]=true`);
+      }
+    }
+  }
+
+  for (const f of fields) {
+    recurse(f, "populate");
+  }
+
+  const queryString = params.join("&");
+
+  return `${API_URL}${url}${url.includes("?") ? "&" : "?"}${queryString}`;
 };
 
+const playerPopulate: PopulateField[] = ["league"];
+
 export async function login(email: string, password: string): Promise<{ jwt: string }> {
-  const res = await fetch(buildUrl("/auth/local"), {
+  const res = await fetch(buildUrl("/auth/local", []), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -45,7 +64,7 @@ export async function login(email: string, password: string): Promise<{ jwt: str
 }
 
 export async function forgotPassword(email: string) {
-  const res = await fetch(buildUrl("/auth/forgot-password"), {
+  const res = await fetch(buildUrl("/auth/forgot-password", []), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
@@ -59,7 +78,7 @@ export async function forgotPassword(email: string) {
 }
 
 export async function resetPassword(code: string, newPassword: string) {
-  const res = await fetch(buildUrl("/auth/reset-password"), {
+  const res = await fetch(buildUrl("/auth/reset-password", []), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ code, password: newPassword, passwordConfirmation: newPassword }),
@@ -75,7 +94,7 @@ export async function resetPassword(code: string, newPassword: string) {
 export async function getMeProfiles(jwt: string): Promise<Profiles> {
   if (!jwt) throw new Error("Utilisateur non authentifié");
 
-  const res = await fetch(buildUrl("/me/profiles"), {
+  const res = await fetch(buildUrl("/me/profiles", []), {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
@@ -91,7 +110,7 @@ export async function getMeProfiles(jwt: string): Promise<Profiles> {
 export async function getMePlayer(jwt: string): Promise<Player> {
   if (!jwt) throw new Error("Utilisateur non authentifié");
 
-  const res = await fetch(buildUrl("/me/player"), {
+  const res = await fetch(buildUrl("/me/player", []), {
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
@@ -105,7 +124,7 @@ export async function getMePlayer(jwt: string): Promise<Player> {
 }
 
 export async function getPlayerByDocId(playerDocId: string): Promise<WithStrapiMeta<Player>> {
-  const res = await fetch(buildUrl(`/players/${playerDocId}`, ["league"]));
+  const res = await fetch(buildUrl(`/players/${playerDocId}`, playerPopulate));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players/:playerDocId");
@@ -114,7 +133,7 @@ export async function getPlayerByDocId(playerDocId: string): Promise<WithStrapiM
 }
 
 export async function getPlayers(): Promise<WithStrapiMeta<Player[]>> {
-  const res = await fetch(buildUrl("/players", ["league"]));
+  const res = await fetch(buildUrl("/players", playerPopulate));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players");
@@ -123,7 +142,7 @@ export async function getPlayers(): Promise<WithStrapiMeta<Player[]>> {
 }
 
 export async function createPlayer(payload: any) {
-  const res = await fetch(buildUrl("/players"), {
+  const res = await fetch(buildUrl("/players", []), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -136,7 +155,7 @@ export async function createPlayer(payload: any) {
 }
 
 export async function subscribeNewsletter(email: string) {
-  const res = await fetch(buildUrl("/newsletters"), {
+  const res = await fetch(buildUrl("/newsletters", []), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data: { email } }),
@@ -149,7 +168,7 @@ export async function subscribeNewsletter(email: string) {
 }
 
 export async function unsubscribeNewsletter(token: string) {
-  const res = await fetch(buildUrl(`/newsletters/unknown?token=${token}`), {
+  const res = await fetch(buildUrl(`/newsletters/unknown?token=${token}`, []), {
     method: "DELETE",
   });
   const data = await res.json();
@@ -224,7 +243,9 @@ export async function getClubByDocId(clubDocId: string): Promise<WithStrapiMeta<
 }
 
 export async function getPlayersByLeague(leagueId: number): Promise<WithStrapiMeta<Player[]>> {
-  const res = await fetch(buildUrl(`/players?filters[league][id][$eq]=${leagueId}`, ["league"]));
+  const res = await fetch(
+    buildUrl(`/players?filters[league][id][$eq]=${leagueId}`, playerPopulate)
+  );
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players?league=leagueId");
@@ -244,7 +265,7 @@ export async function registerTeam(
 ): Promise<Team> {
   if (!jwt) throw new Error("Utilisateur non authentifié");
 
-  const res = await fetch(buildUrl("/teams/register"), {
+  const res = await fetch(buildUrl("/teams/register", []), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -265,13 +286,52 @@ export async function getTeamsByTournamentId(
 ): Promise<WithStrapiMeta<Team[]>> {
   const res = await fetch(
     buildUrl(`/teams?filters[tournament][id][$eq]=${tournamentId}`, [
-      { fieldName: "playerA", subFields: ["league"] },
-      { fieldName: "playerB", subFields: ["league"] },
+      { fieldName: "playerA", subFields: playerPopulate },
+      { fieldName: "playerB", subFields: playerPopulate },
     ])
   );
   const data = await res.json();
 
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /teams?tournament=tournamentId");
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /teams");
+
+  return data;
+}
+
+export async function getPhasesByTournamentId(
+  tournamentId: number
+): Promise<WithStrapiMeta<TournamentPhase[]>> {
+  const res = await fetch(
+    buildUrl(`/tournament-phases?filters[tournament][id][$eq]=${tournamentId}`, [
+      "game_format",
+      "tournament_groups",
+      "matches",
+    ])
+  );
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournament-phases");
+
+  return data;
+}
+
+export async function getGroupsByTournamentPhaseId(
+  tournamentPhaseId: number
+): Promise<WithStrapiMeta<TournamentGroup[]>> {
+  const res = await fetch(
+    buildUrl(`/tournament-groups?filters[tournament_phase][id][$eq]=${tournamentPhaseId}`, [
+      {
+        fieldName: "teams",
+        subFields: [
+          { fieldName: "playerA", subFields: playerPopulate },
+          { fieldName: "playerB", subFields: playerPopulate },
+        ],
+      },
+      { fieldName: "matches", subFields: ["teamA", "teamB"] },
+    ])
+  );
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournament-groups");
 
   return data;
 }

@@ -77,7 +77,11 @@ export default function TournamentInfos({
           </div>
           <div>
             <h3 className="font-semibold">Fin</h3>
-            <DateComponent withDay withTime date={tournament.endDate} />
+            <DateComponent
+              withDay
+              date={tournament.endDate || tournament.startDate}
+              withTime={!!tournament.endDate}
+            />
           </div>
         </div>
       </section>
@@ -97,12 +101,6 @@ export default function TournamentInfos({
                 <Euro className="mr-2" size={16} />
                 {tournament.prizeMoney}
               </p>
-            </div>
-          )}
-          {tournament.gamesFormat && (
-            <div>
-              <h3 className="font-semibold">Formats de jeu</h3>
-              <p className="prose">{tournament.gamesFormat}</p>
             </div>
           )}
 

@@ -1065,7 +1065,7 @@
     "@react-aria/overlays" "3.28.0"
     "@react-aria/utils" "3.30.0"
 
-"@heroui/table@2.2.24":
+"@heroui/table@2.2.24", "@heroui/table@^2.2.24":
   version "2.2.24"
   resolved "https://registry.yarnpkg.com/@heroui/table/-/table-2.2.24.tgz#6dfad181fc25026125c40d00e48f18fa76623b75"
   integrity sha512-R3jsgmqGqVAI5rxy0MbcL2lOZwJSbaHSDBEPtDj1UCrPlQC7O+VhKMC9D3I0MaX+bCVDfm0wMYmu5mNjmXGXnQ==

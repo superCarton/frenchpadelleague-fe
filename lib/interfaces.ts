@@ -84,12 +84,13 @@ export interface Team extends StrapiDocument {
 }
 
 export interface Match extends StrapiDocument {
-  players1: [Player, Player];
-  players2: [Player, Player];
+  teamA: Team;
+  teamB: Team;
   date: string;
-  score?: Text;
-  winner?: number;
+  score?: number[][];
+  winner?: Team;
   tournament: Tournament;
+  tournament_group?: TournamentGroup;
 }
 
 export type TournamentStatus =
@@ -102,23 +103,21 @@ export type TournamentStatus =
   | "cancelled";
 
 export interface Tournament extends StrapiDocument {
-  documentId: string;
+  name: string;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   currentStatus: TournamentStatus;
   league: League;
   club: Club;
   referee: Referee;
-  address: Address;
-  matches: Match[];
-  name?: string;
   registrationDeadline?: string;
   description?: string;
   prizeMoney?: number;
   allocatedCourts: number;
   registrationFee?: number;
   maxTeams?: number;
-  gamesFormat?: string;
+  matches: Match[];
+  tournament_phases: TournamentPhase[];
 }
 
 export interface GameFormat extends StrapiDocument {
@@ -128,4 +127,22 @@ export interface GameFormat extends StrapiDocument {
   nbGamesInSet: number;
   noAd: boolean;
   lastSetSuperTie: boolean;
+}
+
+export interface TournamentGroup extends StrapiDocument {
+  name: string;
+  teams: Team[];
+  matches: Match[];
+  nbTeamsQualified?: number;
+}
+
+export interface TournamentPhase extends StrapiDocument {
+  name: string;
+  type: "group-stage" | "knockout" | "classification";
+  order: number;
+  description?: string;
+  game_format: GameFormat;
+  tournament: Tournament;
+  tournament_groups?: TournamentGroup[];
+  matches?: Match[];
 }
