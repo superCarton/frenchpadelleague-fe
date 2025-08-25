@@ -11,12 +11,6 @@ export default function Footer() {
     <footer className="w-full bg-black text-white px-6 py-10">
       <div className="max-w-6xl mx-auto w-full">
         <div className="w-full flex flex-col lg:flex-row lg:justify-center lg:items-center gap-8">
-          {/* <div className="w-full lg:w-auto flex justify-center">
-            <div className="flex flex-col items-center">
-              <Image alt="FPL logo" src="/logo-transparent.png" width={150} />
-            </div>
-          </div> */}
-
           <div className="w-full lg:w-auto flex flex-col md:flex-row md:justify-center items-start md:items-start gap-8">
             <div className="w-full md:w-auto flex flex-col items-start text-left">
               <h3 className="text-lg font-semibold mb-3 uppercase">Support</h3>
@@ -26,7 +20,7 @@ export default function Footer() {
                     Découvrir la FPL
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link as={NextLink} className="text-white" href="/discover-fpl">
                     La FPL côté clubs
                   </Link>
@@ -40,7 +34,7 @@ export default function Footer() {
                   <Link as={NextLink} className="text-white" href="/privacy-policy">
                     Politique de confidentialité
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
             <div className="w-full md:w-auto flex flex-col items-start text-left">

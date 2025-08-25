@@ -61,7 +61,7 @@ export default function RegisterPage() {
         description: "Un email de confirmation vient de t'être envoyé",
         color: "success",
       });
-      router.push("/profile");
+      router.push(`/players/${profile.documentId}`);
     } catch (err: any) {
       let description;
 
@@ -83,6 +83,7 @@ export default function RegisterPage() {
       <Form className="" onSubmit={handleRegister}>
         <Input
           isRequired
+          autoComplete="given-name"
           errorMessage="Veuillez entrer votre prénom"
           label="Prénom"
           labelPlacement="outside"
@@ -92,6 +93,7 @@ export default function RegisterPage() {
         />
         <Input
           isRequired
+          autoComplete="family-name"
           errorMessage="Veuillez entrer votre nom"
           label="Nom"
           labelPlacement="outside"
@@ -101,7 +103,8 @@ export default function RegisterPage() {
         />
         <DatePicker
           isRequired
-          className="max-w-sm"
+          autoComplete="bday"
+          className="w-full max-w-full"
           errorMessage="Veuillez entrer une date valide"
           label="Date de naissance"
           labelPlacement="outside"
@@ -111,6 +114,7 @@ export default function RegisterPage() {
         />
         <Input
           isRequired
+          autoComplete="email"
           errorMessage="Veuillez entrer un email valide"
           label="Email"
           labelPlacement="outside"

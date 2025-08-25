@@ -71,6 +71,7 @@ export default function LoginPage() {
     <Form onSubmit={handleLogin}>
       <Input
         isRequired
+        autoComplete="email"
         disabled={loading}
         errorMessage="Veuillez entrer un email valide"
         label="Email"

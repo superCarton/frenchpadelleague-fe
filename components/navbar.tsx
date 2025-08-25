@@ -30,20 +30,20 @@ export const Navbar = () => {
   const { profile, logout } = useUserStore();
   const router = useRouter();
 
-  const navItems: NavLink[] = [];
-
-  if (!profile) {
-    navItems.push(
-      { label: "Découvrir la FPL", href: "/discover-fpl" },
-      { label: "Tester mon niveau", href: "/test-level" },
-      { label: "Rechercher une compétition", href: "/tournaments" },
-      { label: "Rechercher un club", href: "/clubs" },
-      { label: "Rechercher un joueur", href: "/players" }
-    );
-  }
+  const navItems: NavLink[] = [
+    { label: "Découvrir la FPL", href: "/discover-fpl" },
+    // { label: "Tester mon niveau", href: "/test-level" },
+    { label: "Rechercher une compétition", href: "/tournaments" },
+    { label: "Rechercher un club", href: "/clubs" },
+    { label: "Rechercher un joueur", href: "/players" },
+  ];
 
   return (
-    <HeroUINavbar className="bg-black text-white uppercase" onMenuOpenChange={setIsMenuOpen}>
+    <HeroUINavbar
+      className="bg-black text-white uppercase"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
       {/* Left */}
       <NavbarContent justify="start">
         <NavbarMenuToggle
@@ -65,11 +65,11 @@ export const Navbar = () => {
               Découvrir la FPL
             </Link>
           </NavbarItem>
-          <NavbarItem key="test-level">
+          {/* <NavbarItem key="test-level">
             <Link as={NextLink} className="text-white" href="/test-level">
               Tester mon niveau
             </Link>
-          </NavbarItem>
+          </NavbarItem> */}
         </div>
         <Dropdown>
           <NavbarItem>
@@ -83,19 +83,19 @@ export const Navbar = () => {
               </Button>
             </DropdownTrigger>
           </NavbarItem>
-          <DropdownMenu className="bg-black" itemClasses={{ base: "gap-4 text-white" }}>
+          <DropdownMenu itemClasses={{ base: "gap-4" }}>
             <DropdownItem key="tournaments">
-              <Link as={NextLink} href="/tournaments">
+              <Link as={NextLink} className="text-black" href="/tournaments">
                 Une compétition
               </Link>
             </DropdownItem>
             <DropdownItem key="clubs">
-              <Link as={NextLink} href="/clubs">
+              <Link as={NextLink} className="text-black" href="/clubs">
                 Un club
               </Link>
             </DropdownItem>
             <DropdownItem key="players">
-              <Link as={NextLink} href="/players">
+              <Link as={NextLink} className="text-black" href="/players">
                 Un joueur
               </Link>
             </DropdownItem>
@@ -111,7 +111,7 @@ export const Navbar = () => {
               <Avatar
                 as="button"
                 className={`transition-transform border-2 border-${profile.league.badge}`}
-                name="RG"
+                name={`${profile.firstname.at(0)}${profile.lastname.at(0)}`}
                 size="md"
               />
             </DropdownTrigger>
@@ -124,8 +124,6 @@ export const Navbar = () => {
                   {profile.firstname} {profile.lastname}
                 </p>
               </DropdownItem>
-              <DropdownItem key="results">Mes résultats</DropdownItem>
-              <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
               <DropdownItem
                 key="logout"
                 color="danger"
@@ -150,15 +148,15 @@ export const Navbar = () => {
         {navItems.map((item, index) => (
           <NavbarMenuItem
             key={item.href}
-            className={`opacity-0 translate-y-4 animate-fade-slide-in`}
-            style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
+            // className={`opacity-0 translate-y-4 animate-fade-slide-in`}
+            // style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
           >
             <Link
               as={NextLink}
               className="text-white text-xl"
               href={item.href}
               size="lg"
-              onClick={() => setIsMenuOpen(false)}
+              onPress={() => setIsMenuOpen(false)}
             >
               {item.label}
             </Link>

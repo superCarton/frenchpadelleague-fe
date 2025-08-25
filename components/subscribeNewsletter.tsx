@@ -52,6 +52,7 @@ export default function SubscribeNewsletter() {
       <Form className="pt-2" onSubmit={handleSubscribeNewsLetter}>
         <Input
           isRequired
+          autoComplete="email"
           errorMessage="Une adresse email valide est requise"
           name="email"
           placeholder="ton@adresse.email"

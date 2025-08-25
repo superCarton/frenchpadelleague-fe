@@ -56,7 +56,7 @@ export default function TournamentPage() {
   const { league, club } = tournament;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <div className="relative h-64 max-w-6xl mx-auto overflow-hidden hidden sm:block">
         <Image
           alt="cover tournoi"

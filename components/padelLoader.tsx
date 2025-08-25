@@ -31,7 +31,7 @@ export default function PadelLoader({
   }, [ballSpeed]);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-transparent">
+    <div className="flex items-center justify-center h-screen bg-transparent min-h-[300px]">
       <motion.svg
         height={(size * 150) / 300}
         viewBox="0 0 300 150"
