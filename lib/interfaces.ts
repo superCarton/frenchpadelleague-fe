@@ -83,14 +83,18 @@ export interface Team extends StrapiDocument {
   confirmed: boolean;
 }
 
+export type MatchStatus = "scheduled" | "started" | "finished";
 export interface Match extends StrapiDocument {
   teamA: Team;
   teamB: Team;
-  date: string;
+  game_format: GameFormat;
+  matchStatus: MatchStatus;
+  date?: string;
+  scheduledDate?: string;
   score?: number[][];
   winner?: Team;
-  tournament: Tournament;
   tournament_group?: TournamentGroup;
+  tournament_phase?: TournamentPhase;
 }
 
 export type TournamentStatus =

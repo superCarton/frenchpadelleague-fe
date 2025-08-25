@@ -34,19 +34,17 @@ export const Navbar = () => {
 
   if (!profile) {
     navItems.push(
-      {
-        label: "Découvrir la FPL",
-        href: "/discover-fpl",
-      },
-      {
-        label: "Tester mon niveau",
-        href: "/test-level",
-      }
+      { label: "Découvrir la FPL", href: "/discover-fpl" },
+      { label: "Tester mon niveau", href: "/test-level" },
+      { label: "Rechercher une compétition", href: "/tournaments" },
+      { label: "Rechercher un club", href: "/clubs" },
+      { label: "Rechercher un joueur", href: "/players" }
     );
   }
 
   return (
     <HeroUINavbar className="bg-black text-white uppercase" onMenuOpenChange={setIsMenuOpen}>
+      {/* Left */}
       <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -59,14 +57,15 @@ export const Navbar = () => {
         </NavbarBrand>
       </NavbarContent>
 
+      {/* Center */}
       <NavbarContent className="hidden sm:flex gap-0" justify="center">
         <div className="flex gap-4">
-          <NavbarItem key="discover-fpl" className="text-white text-small">
+          <NavbarItem key="discover-fpl">
             <Link as={NextLink} className="text-white" href="/discover-fpl">
               Découvrir la FPL
             </Link>
           </NavbarItem>
-          <NavbarItem key="test-level" className="text-white text-small">
+          <NavbarItem key="test-level">
             <Link as={NextLink} className="text-white" href="/test-level">
               Tester mon niveau
             </Link>
@@ -84,12 +83,7 @@ export const Navbar = () => {
               </Button>
             </DropdownTrigger>
           </NavbarItem>
-          <DropdownMenu
-            className="bg-black"
-            itemClasses={{
-              base: "gap-4 text-white",
-            }}
-          >
+          <DropdownMenu className="bg-black" itemClasses={{ base: "gap-4 text-white" }}>
             <DropdownItem key="tournaments">
               <Link as={NextLink} href="/tournaments">
                 Une compétition
@@ -108,6 +102,8 @@ export const Navbar = () => {
           </DropdownMenu>
         </Dropdown>
       </NavbarContent>
+
+      {/* Right */}
       <NavbarContent justify="end">
         {profile ? (
           <Dropdown placement="bottom-end">
@@ -148,10 +144,22 @@ export const Navbar = () => {
           </Button>
         )}
       </NavbarContent>
-      <NavbarMenu className="bg-black text-white">
+
+      {/* Mobile menu */}
+      <NavbarMenu className="bg-black text-white pt-6 flex flex-col gap-6">
         {navItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link as={NextLink} href={item.href} size="lg">
+          <NavbarMenuItem
+            key={item.href}
+            className={`opacity-0 translate-y-4 animate-fade-slide-in`}
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
+          >
+            <Link
+              as={NextLink}
+              className="text-white text-xl"
+              href={item.href}
+              size="lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
               {item.label}
             </Link>
           </NavbarMenuItem>

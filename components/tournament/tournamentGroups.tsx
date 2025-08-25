@@ -68,7 +68,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                       index === 0 ? "bg-gray-200 font-semibold" : ""
                     }`}
                   >
-                    <TableCell className="border border-gray-300 space-y-1">
+                    <TableCell className="border border-gray-300 space-y-1 py-1 px-2 sm:py-2 sm:px-3">
                       <PlayerPreviewView
                         hideDescription
                         avatarSize="tiny"

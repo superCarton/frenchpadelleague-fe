@@ -65,7 +65,7 @@ export default function TournamentPage() {
         />
       </div>
 
-      <div className="sticky top-[64px] z-40 max-w-6xl mx-auto bg-white shadow-sm border-b">
+      <div className="sticky top-[64px] z-25 max-w-6xl mx-auto bg-white shadow-sm border-b">
         <Breadcrumbs className="px-4 pt-2 pb-0 text-gray-500" size="sm">
           <BreadcrumbItem>
             <NextLink href="/tournaments">Tournois</NextLink>

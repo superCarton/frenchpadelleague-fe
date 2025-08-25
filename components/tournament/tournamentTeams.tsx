@@ -57,8 +57,8 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
                 <PlayerPreviewView avatarSize="tiny" nameFont="font-normal" player={team.playerB} />
               </div>
 
-              <div className="text-center text-gray-600">{index + 1}</div>
-              <div className="text-center text-gray-600">{team.playerA.elo + team.playerB.elo}</div>
+              <div className="text-center text-gray-500">{index + 1}</div>
+              <div className="text-center text-gray-500">{team.playerA.elo + team.playerB.elo}</div>
             </Card>
           ))}
       </div>
