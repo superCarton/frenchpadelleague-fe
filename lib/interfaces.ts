@@ -43,6 +43,7 @@ export interface Player extends StrapiDocument {
   firstname: string;
   lastname: string;
   birthdate: string;
+  gender: "male" | "female";
   elo: number;
   league: League;
   user: User;

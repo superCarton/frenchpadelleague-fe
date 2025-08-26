@@ -8,6 +8,7 @@ import { Form } from "@heroui/form";
 import { addToast } from "@heroui/toast";
 import { CalendarDate } from "@internationalized/date";
 import { DatePicker } from "@heroui/date-picker";
+import { Radio, RadioGroup } from "@heroui/radio";
 
 import { siteConfig } from "@/config/site";
 import { createPlayer, getMePlayer } from "@/lib/api";
@@ -47,6 +48,7 @@ export default function RegisterPage() {
         firstname: data.firstname.toString(),
         lastname: data.lastname.toString(),
         birthdate: data.birthdate.toString(),
+        gender: data.gender.toString(),
       });
 
       setToken(jwt);
@@ -81,6 +83,18 @@ export default function RegisterPage() {
   return (
     <div>
       <Form className="" onSubmit={handleRegister}>
+        <RadioGroup
+          isRequired
+          errorMessage="Veuillez sélectionner votre genre"
+          label={<span className="text-small">Vous êtes</span>}
+          name="gender"
+          orientation="horizontal"
+        >
+          <Radio className="mr-1" value="female">
+            Une femme
+          </Radio>
+          <Radio value="male">Un homme</Radio>
+        </RadioGroup>
         <Input
           isRequired
           autoComplete="given-name"

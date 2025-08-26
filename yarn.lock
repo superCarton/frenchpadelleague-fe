@@ -787,7 +787,7 @@
     "@react-aria/progress" "3.4.25"
     "@react-types/progress" "3.5.14"
 
-"@heroui/radio@2.3.24":
+"@heroui/radio@2.3.24", "@heroui/radio@^2.3.24":
   version "2.3.24"
   resolved "https://registry.yarnpkg.com/@heroui/radio/-/radio-2.3.24.tgz#ad5363d26bf44851e542cf12505c537dd38a02eb"
   integrity sha512-IQ1cwsIAff1JvlpqK5El/b2z6JTDqWK8XiTkElvEy4QkY29uIINkYy6kXqbKyZx14pKN0ILou6Z/iR8QUq304g==

@@ -148,8 +148,8 @@ export const Navbar = () => {
         {navItems.map((item, index) => (
           <NavbarMenuItem
             key={item.href}
-            // className={`opacity-0 translate-y-4 animate-fade-slide-in`}
-            // style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
+            className={`opacity-0 translate-y-4 animate-fade-slide-in`}
+            style={{ animationDelay: `${index * 100}ms`, animationFillMode: "forwards" }}
           >
             <Link
               as={NextLink}

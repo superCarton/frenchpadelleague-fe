@@ -19,13 +19,15 @@ export const PlayerPreviewView = (props: {
   hideDescription?: boolean;
   avatarSize?: "md" | "sm" | "lg" | "tiny";
   nameFont?: string;
+  hideElo?: boolean;
 }) => {
   const router = useRouter();
   const { profile } = useUserStore();
-  const { player, hideDescription, avatarSize, nameFont } = props;
+  const { player, hideDescription, avatarSize, nameFont, hideElo } = props;
   const prettyNameWithElo = (
     <>
-      {player.firstname} {player.lastname} ({player.elo})
+      {player.firstname} {player.lastname}
+      {hideElo ? "" : ` (${player.elo})`}
     </>
   );
 
