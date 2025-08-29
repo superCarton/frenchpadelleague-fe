@@ -91,6 +91,15 @@ export async function resetPassword(code: string, newPassword: string) {
   return data;
 }
 
+export async function confirmEmail(code: string) {
+  const res = await fetch(buildUrl(`/auth/email-confirmation?confirmation=${code}`, []), {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) throw new Error("Erreur lors de la confirmation de l'email");
+}
+
 export async function getMeProfiles(jwt: string): Promise<Profiles> {
   if (!jwt) throw new Error("Utilisateur non authentifié");
 

@@ -4,6 +4,7 @@ import { Button } from "@heroui/button";
 import { Image } from "@heroui/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Spinner } from "@heroui/spinner";
 
 import { sectionTitle } from "@/components/primitives";
 import { Tournament } from "@/lib/interfaces";
@@ -12,6 +13,7 @@ import { TournamentPreviewView } from "@/components/tournament/tournamentPreview
 
 export default function Home() {
   const router = useRouter();
+  const [loadingNextTournamenents, setLoadingNextTournaments] = useState(true);
   const [nextTournaments, setNextTournaments] = useState<Tournament[]>([]);
 
   useEffect(() => {
@@ -20,7 +22,10 @@ export default function Home() {
         const { data } = await getNextTournaments();
 
         setNextTournaments(data);
-      } catch (err: any) {}
+      } catch (err: any) {
+      } finally {
+        setLoadingNextTournaments(false);
+      }
     }
 
     fetchTournaments();
@@ -141,9 +146,13 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           <h2 className={sectionTitle()}>Prochains tournois</h2>
           <div className="max-w-6xl mx-auto space-y-2">
-            {nextTournaments.map((t) => (
-              <TournamentPreviewView key={t.documentId} tournament={t} />
-            ))}
+            {loadingNextTournamenents ? (
+              <Spinner size="lg" />
+            ) : (
+              nextTournaments.map((t) => (
+                <TournamentPreviewView key={t.documentId} tournament={t} />
+              ))
+            )}
           </div>
           <div className="mx-auto mt-4 text-center">
             <Button color="primary" onPress={() => router.push("/tournaments")}>

@@ -11,6 +11,7 @@ import { fontOswald } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
 import PadelLoader from "@/components/padelLoader";
+import EmailConfirmationBanner from "@/components/emailConfirmationBanner";
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="relative flex flex-col h-screen">
             <div className="fixed top-0 left-0 right-0 z-50">
               <Navbar />
+              <EmailConfirmationBanner />
             </div>
             <main className="pt-[64px] w-full bg-gray-50 text-gray-800">
               <Suspense fallback={<PadelLoader />}>{children}</Suspense>

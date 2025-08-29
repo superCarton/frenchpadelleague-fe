@@ -27,10 +27,54 @@ export default function TournamentInfos({
 }) {
   const { league, club } = tournament;
   const [isRegisterModalOpen, setRegisterModalOpen] = useState<boolean>(false);
-  const isCurrentPlayerInTournamentLeague =
-    profile && profile.elo > league.minElo && profile.elo < league.maxElo;
-  const isRegistrationButtonEnabled =
-    tournament.currentStatus === "registrations-opened" && isCurrentPlayerInTournamentLeague;
+
+  const renderRegisterButton = () => {
+    const isCurrentPlayerInTournamentLeague =
+      profile && profile.elo > league.minElo && profile.elo < league.maxElo;
+
+    if (!profile) {
+      return (
+        <p className="text-gray-600 text-sm">
+          Tu dois{" "}
+          <Link as={NextLink} href="/login">
+            te connecter
+          </Link>{" "}
+          pour pouvoir t'inscrire
+        </p>
+      );
+    }
+    if (!profile.user.confirmed) {
+      return (
+        <p className="text-warning-600 text-sm">
+          Tu dois confirmer ton email pour pouvoir t'inscrire
+        </p>
+      );
+    }
+    if (tournament.currentStatus !== "registrations-opened") {
+      return (
+        <p className="text-gray-600 text-sm">
+          Les inscriptions au tournoi ne sont pas encore ouvertes
+        </p>
+      );
+    }
+    if (!isCurrentPlayerInTournamentLeague) {
+      return (
+        <p className="text-warning-600 text-sm">
+          Tu n'es pas éligible pour t'inscrire à ce tournoi
+        </p>
+      );
+    }
+
+    return (
+      <Button
+        className="w-full sm:w-auto"
+        color="primary"
+        onPress={() => setRegisterModalOpen(true)}
+      >
+        S'inscrire au tournoi
+      </Button>
+    );
+  };
 
   return (
     <>
@@ -149,27 +193,7 @@ export default function TournamentInfos({
             {league.maxElo}) au moment de l'inscription
           </p>
         </CardBody>
-        <CardFooter className="justify-center">
-          {profile ? (
-            isRegistrationButtonEnabled && (
-              <Button
-                className="w-full sm:w-auto"
-                color="primary"
-                onPress={() => setRegisterModalOpen(true)}
-              >
-                S'inscrire au tournoi
-              </Button>
-            )
-          ) : (
-            <p className="text-gray-600 text-sm">
-              Tu dois{" "}
-              <Link as={NextLink} href="/login">
-                te connecter
-              </Link>{" "}
-              pour pouvoir t'inscrire
-            </p>
-          )}
-        </CardFooter>
+        <CardFooter className="justify-center">{renderRegisterButton()}</CardFooter>
       </Card>
       <TournamentRegisterModal
         isOpen={isRegisterModalOpen}

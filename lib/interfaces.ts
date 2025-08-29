@@ -37,6 +37,8 @@ export interface League extends StrapiDocument {
 export interface User extends StrapiDocument {
   username: string;
   email: string;
+  blocked: boolean;
+  confirmed: boolean;
 }
 
 export interface Player extends StrapiDocument {

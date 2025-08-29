@@ -101,7 +101,7 @@ export default function LoginPage() {
         type="submit"
         variant="solid"
       >
-        Se Connecter
+        Se connecter
       </Button>
     </Form>
   );
