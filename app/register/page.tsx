@@ -13,6 +13,7 @@ import { Radio, RadioGroup } from "@heroui/radio";
 import { siteConfig } from "@/config/site";
 import { createPlayer, getMePlayer } from "@/lib/api";
 import { useUserStore } from "@/store/store";
+import { PasswordInput } from "@/components/passwordInput";
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = message;
@@ -49,6 +50,7 @@ export default function RegisterPage() {
         lastname: data.lastname.toString(),
         birthdate: data.birthdate.toString(),
         gender: data.gender.toString(),
+        phoneNumber: data.phoneNumber ? data.phoneNumber.toString() : undefined,
       });
 
       setToken(jwt);
@@ -118,7 +120,7 @@ export default function RegisterPage() {
         <DatePicker
           isRequired
           autoComplete="bday"
-          className="w-full max-w-full"
+          className="w-full max-w-full pb-0"
           errorMessage="Veuillez entrer une date valide"
           label="Date de naissance"
           labelPlacement="outside"
@@ -137,6 +139,22 @@ export default function RegisterPage() {
           type="email"
         />
         <Input
+          autoComplete="tel"
+          errorMessage="Veuillez entrer un numéro de téléphone valide"
+          label="Téléphone"
+          labelPlacement="outside"
+          name="phoneNumber"
+          placeholder="+33 6 00 00 00 00"
+          type="tel"
+          validate={(value) => {
+            if (value && !/^\+?[0-9]{6,15}$/.test(value)) {
+              return "Veuillez entrer un numéro de téléphone valide";
+            }
+
+            return true;
+          }}
+        />
+        <PasswordInput
           ref={passwordRef}
           isRequired
           autoComplete="new-password"
@@ -144,7 +162,6 @@ export default function RegisterPage() {
           labelPlacement="outside"
           name="password"
           placeholder="••••••••"
-          type="password"
           validate={(value) => {
             if (!siteConfig.passwordRegex.test(value)) {
               return "Le mot de passe doit contenir au minimum 8 caractères, dont 1 lettre, 1 chiffre et 1 caractère spécial";
@@ -153,7 +170,7 @@ export default function RegisterPage() {
             return true;
           }}
         />
-        <Input
+        <PasswordInput
           isRequired
           autoComplete="new-password"
           errorMessage="La confirmation doit être identique au mot de passe"
@@ -161,7 +178,6 @@ export default function RegisterPage() {
           labelPlacement="outside"
           name="confirm-password"
           placeholder="••••••••"
-          type="password"
           validate={(value) => {
             const password = passwordRef.current?.value || "";
 

@@ -16,6 +16,7 @@ import { useUserStore } from "@/store/store";
 import TournamentInfos from "@/components/tournament/tournamentInfos";
 import TournamentTeams from "@/components/tournament/tournamentTeams";
 import TournamentPhases from "@/components/tournament/tournamentPhases";
+import TournamentMatches from "@/components/tournament/tournamentMatches";
 
 export default function TournamentPage() {
   const router = useRouter();
@@ -118,7 +119,6 @@ export default function TournamentPage() {
           />
           <Tab
             key="matches"
-            isDisabled
             title={
               <span className="flex items-center gap-1">
                 <LoaderPinwheel size={16} />
@@ -133,7 +133,7 @@ export default function TournamentPage() {
         {activeTab === "infos" && <TournamentInfos profile={profile} tournament={tournament} />}
         {activeTab === "teams" && <TournamentTeams tournament={tournament} />}
         {activeTab === "table" && <TournamentPhases tournament={tournament} />}
-        {activeTab === "matches" && <div>Tous les matchs ici</div>}
+        {activeTab === "matches" && <TournamentMatches tournament={tournament} />}
       </div>
     </div>
   );

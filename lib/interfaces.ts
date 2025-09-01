@@ -32,6 +32,7 @@ export interface League extends StrapiDocument {
   title: string;
   minElo: number;
   maxElo: number;
+  badgeImage: StrapiImage;
 }
 
 export interface User extends StrapiDocument {
@@ -87,17 +88,23 @@ export interface Team extends StrapiDocument {
 }
 
 export type MatchStatus = "scheduled" | "started" | "finished";
+
+export interface MatchSet {
+  teamAScore: number;
+  teamBScore: number;
+}
+
 export interface Match extends StrapiDocument {
-  teamA: Team;
-  teamB: Team;
+  team_a: Team;
+  team_b: Team;
   game_format: GameFormat;
   matchStatus: MatchStatus;
   date?: string;
   scheduledDate?: string;
-  score?: number[][];
   winner?: Team;
   tournament_group?: TournamentGroup;
   tournament_phase?: TournamentPhase;
+  score: MatchSet[];
 }
 
 export type TournamentStatus =

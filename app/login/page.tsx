@@ -11,6 +11,7 @@ import { addToast } from "@heroui/toast";
 
 import { getMePlayer, login } from "@/lib/api";
 import { useUserStore } from "@/store/store";
+import { PasswordInput } from "@/components/passwordInput";
 
 const translateErrorMessageToFr = (message: string) => {
   if (message.includes("Invalid identifier or password")) {
@@ -80,7 +81,7 @@ export default function LoginPage() {
         placeholder="ton@adress.email"
         type="email"
       />
-      <Input
+      <PasswordInput
         isRequired
         autoComplete="current-password"
         disabled={loading}
@@ -89,7 +90,6 @@ export default function LoginPage() {
         labelPlacement="outside"
         name="password"
         placeholder="••••••••"
-        type="password"
       />
       <Link as={NextLink} className="self-end text-small" href="/forgot-password">
         Mot de passe oublié ?

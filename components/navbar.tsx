@@ -15,7 +15,14 @@ import { Image } from "@heroui/image";
 import { Button } from "@heroui/button";
 import { ReactNode, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Avatar, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from "@heroui/react";
+import { Avatar } from "@heroui/avatar";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownSection,
+  DropdownTrigger,
+} from "@heroui/dropdown";
 import { useRouter } from "next/navigation";
 
 import { useUserStore } from "@/store/store";
@@ -44,7 +51,6 @@ export const Navbar = () => {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
     >
-      {/* Left */}
       <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -57,7 +63,6 @@ export const Navbar = () => {
         </NavbarBrand>
       </NavbarContent>
 
-      {/* Center */}
       <NavbarContent className="hidden sm:flex gap-0" justify="center">
         <div className="flex gap-4">
           <NavbarItem key="discover-fpl">
@@ -103,7 +108,6 @@ export const Navbar = () => {
         </Dropdown>
       </NavbarContent>
 
-      {/* Right */}
       <NavbarContent justify="end">
         {profile ? (
           <Dropdown placement="bottom-end">
@@ -115,25 +119,28 @@ export const Navbar = () => {
                 size="md"
               />
             </DropdownTrigger>
-            <DropdownMenu aria-label="Profile Actions" variant="flat">
+            <DropdownMenu aria-label="Profile Actions" disabledKeys={["name"]} variant="flat">
+              <DropdownItem key="name">
+                <p className="text-center font-semibold">{profile.firstname}</p>
+              </DropdownItem>
               <DropdownItem
                 key="profile"
                 onPress={() => router.push(`/players/${profile.documentId}`)}
               >
-                <p className="font-semibold">
-                  {profile.firstname} {profile.lastname}
-                </p>
+                Mon profil FPL
               </DropdownItem>
-              <DropdownItem
-                key="logout"
-                color="danger"
-                onPress={() => {
-                  logout();
-                  router.push("/");
-                }}
-              >
-                Se déconnecter
-              </DropdownItem>
+              <DropdownSection>
+                <DropdownItem
+                  key="logout"
+                  color="danger"
+                  onPress={() => {
+                    logout();
+                    router.push("/");
+                  }}
+                >
+                  Se déconnecter
+                </DropdownItem>
+              </DropdownSection>
             </DropdownMenu>
           </Dropdown>
         ) : (
@@ -143,7 +150,6 @@ export const Navbar = () => {
         )}
       </NavbarContent>
 
-      {/* Mobile menu */}
       <NavbarMenu className="bg-black text-white pt-6 flex flex-col gap-6">
         {navItems.map((item, index) => (
           <NavbarMenuItem

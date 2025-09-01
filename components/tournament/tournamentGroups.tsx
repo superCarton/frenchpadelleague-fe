@@ -71,12 +71,16 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                     <TableCell className="border border-gray-300 space-y-1 py-1 px-2 sm:py-2 sm:px-3">
                       <PlayerPreviewView
                         hideDescription
+                        hideElo
+                        shortName
                         avatarSize="tiny"
                         nameFont="font-normal"
                         player={team.playerA}
                       />
                       <PlayerPreviewView
                         hideDescription
+                        hideElo
+                        shortName
                         avatarSize="tiny"
                         nameFont="font-normal"
                         player={team.playerB}

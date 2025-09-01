@@ -20,13 +20,14 @@ export const PlayerPreviewView = (props: {
   avatarSize?: "md" | "sm" | "lg" | "tiny";
   nameFont?: string;
   hideElo?: boolean;
+  shortName?: boolean;
 }) => {
   const router = useRouter();
   const { profile } = useUserStore();
-  const { player, hideDescription, avatarSize, nameFont, hideElo } = props;
+  const { player, hideDescription, avatarSize, nameFont, hideElo, shortName } = props;
   const prettyNameWithElo = (
     <>
-      {player.firstname} {player.lastname}
+      {shortName ? `${player.firstname.at(0)}.` : player.firstname} {player.lastname}
       {hideElo ? "" : ` (${player.elo})`}
     </>
   );
@@ -41,11 +42,11 @@ export const PlayerPreviewView = (props: {
         }}
         className="cursor-pointer"
         description={
-          !hideDescription ? <div className="text-gray-600">{player.league.badge}</div> : null
+          !hideDescription ? <div className="text-gray-400">{player.league.badge}</div> : null
         }
         name={
           <div
-            className={`${nameFont || "font-bold"} ${profile && profile.documentId === player.documentId ? "text-blue-800" : "text-gray-800"}`}
+            className={`${nameFont || "font-bold"} ${profile && profile.documentId === player.documentId ? "text-blue-800" : "text-gray-600"}`}
           >
             {prettyNameWithElo}
           </div>

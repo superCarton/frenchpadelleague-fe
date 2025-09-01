@@ -1,5 +1,6 @@
 import {
   Club,
+  Match,
   Player,
   Profiles,
   Team,
@@ -45,6 +46,11 @@ const buildUrl = (url: string, fields: PopulateField[]): string => {
 };
 
 const playerPopulate: PopulateField[] = ["league"];
+
+const teamPopulate: PopulateField[] = [
+  { fieldName: "playerA", subFields: playerPopulate },
+  { fieldName: "playerB", subFields: playerPopulate },
+];
 
 export async function login(email: string, password: string): Promise<{ jwt: string }> {
   const res = await fetch(buildUrl("/auth/local", []), {
@@ -330,17 +336,42 @@ export async function getGroupsByTournamentPhaseId(
     buildUrl(`/tournament-groups?filters[tournament_phase][id][$eq]=${tournamentPhaseId}`, [
       {
         fieldName: "teams",
-        subFields: [
-          { fieldName: "playerA", subFields: playerPopulate },
-          { fieldName: "playerB", subFields: playerPopulate },
-        ],
+        subFields: teamPopulate,
       },
-      { fieldName: "matches", subFields: ["teamA", "teamB"] },
+      { fieldName: "matches", subFields: ["team_a", "team_b"] },
     ])
   );
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournament-groups");
+
+  return data;
+}
+
+export async function getMatchesByTournamentId(
+  tournamentId: number
+): Promise<WithStrapiMeta<Match[]>> {
+  const res = await fetch(
+    buildUrl(`/matches?filters[tournament][id][$eq]=${tournamentId}`, [
+      "game_format",
+      "score",
+      {
+        fieldName: "team_a",
+        subFields: teamPopulate,
+      },
+      {
+        fieldName: "team_b",
+        subFields: teamPopulate,
+      },
+      {
+        fieldName: "winner",
+        subFields: teamPopulate,
+      },
+    ])
+  );
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /matches");
 
   return data;
 }

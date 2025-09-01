@@ -3,13 +3,13 @@
 import { Button } from "@heroui/button";
 import { useRef, useState } from "react";
 import { Form } from "@heroui/form";
-import { Input } from "@heroui/input";
 import { useRouter, useSearchParams } from "next/navigation";
 import { addToast } from "@heroui/toast";
 
 import { getMePlayer, resetPassword } from "@/lib/api";
 import { siteConfig } from "@/config/site";
 import { useUserStore } from "@/store/store";
+import { PasswordInput } from "@/components/passwordInput";
 
 export default function RenewPasswordPage() {
   const router = useRouter();
@@ -71,7 +71,7 @@ export default function RenewPasswordPage() {
   return (
     <div>
       <Form className="" onSubmit={handleRenewPassword}>
-        <Input
+        <PasswordInput
           ref={passwordRef}
           isRequired
           autoComplete="new-password"
@@ -80,7 +80,6 @@ export default function RenewPasswordPage() {
           labelPlacement="outside"
           name="password"
           placeholder="••••••••"
-          type="password"
           validate={(value) => {
             if (!siteConfig.passwordRegex.test(value)) {
               return "Le mot de passe doit contenir au minimum 8 caractères, dont 1 lettre, 1 chiffre et 1 caractère spécial";
@@ -89,7 +88,7 @@ export default function RenewPasswordPage() {
             return true;
           }}
         />
-        <Input
+        <PasswordInput
           isRequired
           autoComplete="new-password"
           errorMessage="La confirmation doit être identique au mot de passe"
@@ -97,7 +96,6 @@ export default function RenewPasswordPage() {
           labelPlacement="outside"
           name="confirm-password"
           placeholder="••••••••"
-          type="password"
           validate={(value) => {
             const password = passwordRef.current?.value || "";
 
