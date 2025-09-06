@@ -25,7 +25,7 @@ export const DateComponent = ({
   return (
     <span>
       {d.format(
-        `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH:mm" : ""}`
+        `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH[h]mm" : ""}`
       )}
     </span>
   );

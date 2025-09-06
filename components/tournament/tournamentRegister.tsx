@@ -5,6 +5,7 @@ import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@heroui/modal";
 import { Button } from "@heroui/button";
 import { addToast } from "@heroui/toast";
+import { Alert } from "@heroui/alert";
 
 import { PlayerPreviewView } from "../player/playerPreview";
 
@@ -26,6 +27,8 @@ export default function TournamentRegisterModal({
   const [players, setPlayers] = useState<Player[]>([]);
   const [partnerId, setPartnerId] = useState<string | null>(null);
   const { token, profile } = useUserStore();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -33,12 +36,15 @@ export default function TournamentRegisterModal({
 
       getPlayersByLeague(league.id).then((res) => setPlayers(res.data.filter(filterPlayers)));
       setPartnerId(null);
+      setError(null);
     }
   }, [isOpen, league.id]);
 
   const handleRegister = async () => {
     if (!partnerId || !token) return;
     try {
+      setError(null);
+      setLoading(true);
       await registerTeam(
         { tournamentDocId: tournament.documentId, partnerDocId: partnerId },
         token
@@ -49,20 +55,28 @@ export default function TournamentRegisterModal({
       });
       onClose();
     } catch (err: any) {
-      addToast({
-        title: "Erreur lors de l'inscription au tournoi",
-        description: err.message,
-        color: "danger",
-      });
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} placement="center" size="md" onClose={onClose}>
+    <Modal isOpen={isOpen} placement="center" size="lg" onClose={onClose}>
       <ModalContent>
         <ModalHeader>Inscription au tournoi</ModalHeader>
         <ModalBody>
+          <Alert
+            className="mx-auto"
+            color="danger"
+            description={error}
+            isVisible={!!error}
+            title="Erreur lors de l'inscription au tournoi"
+            variant="faded"
+            onClose={() => setError(null)}
+          />
           <Autocomplete
+            isDisabled={loading}
             label="Choisir un partenaire"
             listboxProps={{
               emptyContent: "Aucun joueur disponible.",
@@ -87,7 +101,12 @@ export default function TournamentRegisterModal({
           <Button variant="light" onPress={onClose}>
             Annuler
           </Button>
-          <Button color="primary" isDisabled={!partnerId} onPress={handleRegister}>
+          <Button
+            color="primary"
+            isDisabled={!partnerId}
+            isLoading={loading}
+            onPress={handleRegister}
+          >
             Valider l'inscription
           </Button>
         </ModalFooter>

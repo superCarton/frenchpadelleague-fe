@@ -5,7 +5,7 @@ import { Tabs, Tab } from "@heroui/tabs";
 import { useEffect, useState } from "react";
 import { Image } from "@heroui/image";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
-import { Users, Trophy, Info, LoaderPinwheel } from "lucide-react";
+import { Users, Trophy, Info, Table, HandFist } from "lucide-react";
 import NextLink from "next/link";
 
 import { Tournament } from "@/lib/interfaces";
@@ -17,6 +17,7 @@ import TournamentInfos from "@/components/tournament/tournamentInfos";
 import TournamentTeams from "@/components/tournament/tournamentTeams";
 import TournamentPhases from "@/components/tournament/tournamentPhases";
 import TournamentMatches from "@/components/tournament/tournamentMatches";
+import TournamentRanking from "@/components/tournament/tournamentRanking";
 
 export default function TournamentPage() {
   const router = useRouter();
@@ -67,7 +68,7 @@ export default function TournamentPage() {
       </div>
 
       <div className="sticky top-[64px] z-25 max-w-6xl mx-auto bg-white shadow-sm border-b">
-        <Breadcrumbs className="px-4 pt-2 pb-0 text-gray-500" size="sm">
+        <Breadcrumbs className="px-4 pt-2 pb-0 text-gray-500" separator="|" size="sm">
           <BreadcrumbItem>
             <NextLink href="/tournaments">Tournois</NextLink>
           </BreadcrumbItem>
@@ -83,7 +84,7 @@ export default function TournamentPage() {
         <Tabs
           aria-label="Onglets du tournoi"
           classNames={{
-            tabList: "px-4 sm:px-6",
+            tabList: "w-full px-4 sm:px-6 overflow-x-auto",
             tab: "data-[selected=true]:text-primary",
           }}
           selectedKey={activeTab}
@@ -112,7 +113,7 @@ export default function TournamentPage() {
             key="table"
             title={
               <span className="flex items-center gap-1">
-                <Trophy size={16} />
+                <Table size={16} />
                 Tableau
               </span>
             }
@@ -121,19 +122,30 @@ export default function TournamentPage() {
             key="matches"
             title={
               <span className="flex items-center gap-1">
-                <LoaderPinwheel size={16} />
+                <HandFist size={16} />
                 Matchs
+              </span>
+            }
+          />
+          <Tab
+            key="ranking"
+            isDisabled={tournament.currentStatus !== "completed"}
+            title={
+              <span className="flex items-center gap-1">
+                <Trophy size={16} />
+                Classement
               </span>
             }
           />
         </Tabs>
       </div>
 
-      <div className="max-w-xl mx-auto px-2 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-2 py-6">
         {activeTab === "infos" && <TournamentInfos profile={profile} tournament={tournament} />}
         {activeTab === "teams" && <TournamentTeams tournament={tournament} />}
         {activeTab === "table" && <TournamentPhases tournament={tournament} />}
         {activeTab === "matches" && <TournamentMatches tournament={tournament} />}
+        {activeTab === "ranking" && <TournamentRanking tournament={tournament} />}
       </div>
     </div>
   );

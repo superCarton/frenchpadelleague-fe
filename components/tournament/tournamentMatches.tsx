@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CircularProgress } from "@heroui/progress";
 
-import PadelLoader from "../padelLoader";
 import MatchComponent from "../matchComponent";
+
+import TournamentBracket from "./tournamentBrackets";
 
 import { Match, Tournament } from "@/lib/interfaces";
 import { getMatchesByTournamentId } from "@/lib/api";
@@ -31,13 +33,24 @@ export default function TournamentMatches({ tournament }: { tournament: Tourname
   }, [tournament.id]);
 
   if (error) return <div className="p-6 text-red-500">{error}</div>;
-  if (loading) return <PadelLoader />;
+  if (loading)
+    return (
+      <div className="w-full flex h-[200px] justify-center items-center">
+        <CircularProgress label="Chargement des matchs..." />
+      </div>
+    );
 
   return (
     <section className="space-y-2">
       {matches.map((match) => {
         return <MatchComponent key={match.documentId} match={match} />;
       })}
+
+      <TournamentBracket
+        defaultRound="semi"
+        matches={matches}
+        rounds={["quarter", "semi", "final"]}
+      />
     </section>
   );
 }

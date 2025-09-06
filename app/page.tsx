@@ -10,11 +10,13 @@ import { sectionTitle } from "@/components/primitives";
 import { Tournament } from "@/lib/interfaces";
 import { getNextTournaments } from "@/lib/api";
 import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
+import { useUserStore } from "@/store/store";
 
 export default function Home() {
   const router = useRouter();
   const [loadingNextTournamenents, setLoadingNextTournaments] = useState(true);
   const [nextTournaments, setNextTournaments] = useState<Tournament[]>([]);
+  const { profile } = useUserStore();
 
   useEffect(() => {
     async function fetchTournaments() {
@@ -45,16 +47,18 @@ export default function Home() {
         <p className="mt-6 text-lg md:text-xl text-gray-300 uppercase tracking-wide text-center">
           La plus grande ligue amateur de France
         </p>
-        <div className="flex justify-center mt-10">
-          <Button
-            className="px-10 py-4 text-xl shadow-lg hover:scale-105 transition-transform"
-            color="primary"
-            variant="solid"
-            onPress={() => router.push("/register")}
-          >
-            S'inscrire
-          </Button>
-        </div>
+        {!profile && (
+          <div className="flex justify-center mt-10">
+            <Button
+              className="px-10 py-4 text-xl shadow-lg hover:scale-105 transition-transform"
+              color="primary"
+              variant="solid"
+              onPress={() => router.push("/register")}
+            >
+              S'inscrire
+            </Button>
+          </div>
+        )}
       </section>
 
       <section className="bg-white py-16 px-4 w-full">

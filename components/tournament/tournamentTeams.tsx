@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@heroui/card";
+import { CircularProgress } from "@heroui/progress";
 
 import { PlayerPreviewView } from "../player/playerPreview";
-import PadelLoader from "../padelLoader";
 
 import { Team, Tournament } from "@/lib/interfaces";
 import { getTeamsByTournamentId } from "@/lib/api";
@@ -32,7 +32,12 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
   }, [tournament.id]);
 
   if (error) return <div className="p-6 text-red-500">{error}</div>;
-  if (loading) return <PadelLoader />;
+  if (loading)
+    return (
+      <div className="w-full flex h-[200px] justify-center items-center">
+        <CircularProgress label="Chargement des équipes..." />
+      </div>
+    );
 
   return (
     <section>
@@ -58,7 +63,9 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
               </div>
 
               <div className="text-center text-gray-500">{index + 1}</div>
-              <div className="text-center text-gray-500">{team.playerA.elo + team.playerB.elo}</div>
+              <div className="text-center text-gray-500">
+                {Math.ceil((team.playerA.elo + team.playerB.elo) / 2)}
+              </div>
             </Card>
           ))}
       </div>

@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Form } from "@heroui/form";
 import { addToast } from "@heroui/toast";
-import { CalendarDate } from "@internationalized/date";
+import { CalendarDate, getLocalTimeZone, today } from "@internationalized/date";
 import { DatePicker } from "@heroui/date-picker";
 import { Radio, RadioGroup } from "@heroui/radio";
 
@@ -124,7 +124,8 @@ export default function RegisterPage() {
           errorMessage="Veuillez entrer une date valide"
           label="Date de naissance"
           labelPlacement="outside"
-          maxValue={new CalendarDate(2025, 1, 1)}
+          maxValue={today(getLocalTimeZone()).subtract({ years: 10 })}
+          minValue={today(getLocalTimeZone()).subtract({ years: 100 })}
           name="birthdate"
           placeholderValue={new CalendarDate(1993, 3, 10)}
         />

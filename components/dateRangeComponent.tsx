@@ -22,7 +22,7 @@ const formatDate = (
   withYear: boolean
 ) =>
   date.format(
-    `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH:mm" : ""}`
+    `${withDay ? "dddd " : ""}${abbrev ? `DD/MM${withYear ? "/YY" : ""}` : `DD MMMM${withYear ? " YYYY" : ""}`}${withTime ? " - HH[h]mm" : ""}`
   );
 
 export const DateRangeComponent = ({
@@ -36,9 +36,22 @@ export const DateRangeComponent = ({
   const start = dayjs(startDate);
   const end = endDate ? dayjs(endDate) : null;
 
+  const renderEndDate = () => {
+    if (!end) return null;
+    if (!start.isSame(end, "day")) {
+      return ` - ${formatDate(end, abbrev, withTime, withDay, withYear)}`;
+    }
+    if (!start.isSame(end, "hour")) {
+      return `-${end.format("HH[h]mm")}`;
+    }
+
+    return null;
+  };
+
   return (
     <span>
       {formatDate(start, abbrev, withTime, withDay, withYear)}
+      {renderEndDate()}
       {end && !start.isSame(end, "day")
         ? ` - ${formatDate(end, abbrev, withTime, withDay, withYear)}`
         : ""}

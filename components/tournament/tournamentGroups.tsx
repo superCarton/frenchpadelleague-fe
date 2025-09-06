@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
+import { CircularProgress } from "@heroui/progress";
 
-import PadelLoader from "../padelLoader";
 import { PlayerPreviewView } from "../player/playerPreview";
 
-import { getGroupsByTournamentPhaseId } from "@/lib/api";
+import { getGroupsByTournamentId } from "@/lib/api";
 import { TournamentGroup } from "@/lib/interfaces";
 
 type TournamentGroupsProps = {
-  tournamentPhaseId: number;
+  tournamentId: number;
 };
 
 export default function TournamentGroups(props: TournamentGroupsProps) {
-  const { tournamentPhaseId } = props;
+  const { tournamentId } = props;
   const [groups, setGroups] = useState<TournamentGroup[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -23,7 +23,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
     setLoading(true);
     const fetchPhases = async () => {
       try {
-        const { data } = await getGroupsByTournamentPhaseId(tournamentPhaseId);
+        const { data } = await getGroupsByTournamentId(tournamentId);
 
         setGroups(data);
       } catch (err: any) {
@@ -34,10 +34,15 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
     };
 
     fetchPhases();
-  }, [tournamentPhaseId]);
+  }, [tournamentId]);
 
   if (error) return <div className="p-6 text-red-500">{error}</div>;
-  if (loading) return <PadelLoader />;
+  if (loading)
+    return (
+      <div className="w-full flex h-[200px] justify-center items-center">
+        <CircularProgress label="Chargement des poules..." />
+      </div>
+    );
 
   return (
     <>
@@ -55,10 +60,12 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
             <Table removeWrapper>
               <TableHeader className="bg-gray-100">
                 <TableColumn className="border border-gray-300">ÉQUIPE</TableColumn>
-                <TableColumn className="border border-gray-300 text-center">J</TableColumn>
-                <TableColumn className="border border-gray-300 text-center">G</TableColumn>
-                <TableColumn className="border border-gray-300 text-center">P</TableColumn>
-                <TableColumn className="border border-gray-300 text-center">+/-</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[60px]">J</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[60px]">G</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[60px]">P</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[60px]">
+                  +/-
+                </TableColumn>
               </TableHeader>
               <TableBody>
                 {sortedTeams.map((team, index) => (
@@ -68,7 +75,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                       index === 0 ? "bg-gray-200 font-semibold" : ""
                     }`}
                   >
-                    <TableCell className="border border-gray-300 space-y-1 py-1 px-2 sm:py-2 sm:px-3">
+                    <TableCell className="border border-gray-300 flex flex-row gap-2 items-center">
                       <PlayerPreviewView
                         hideDescription
                         hideElo
@@ -77,6 +84,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                         nameFont="font-normal"
                         player={team.playerA}
                       />
+                      <span className="text-gray-400">/</span>
                       <PlayerPreviewView
                         hideDescription
                         hideElo

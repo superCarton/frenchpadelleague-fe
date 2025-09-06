@@ -6,7 +6,6 @@ import {
   Team,
   Tournament,
   TournamentGroup,
-  TournamentPhase,
   WithStrapiMeta,
 } from "./interfaces";
 
@@ -230,6 +229,7 @@ export async function getTournamentByDocId(
     buildUrl(`/tournaments/${tournamentDocId}`, [
       "league",
       { fieldName: "club", subFields: ["logo", "coverImage", "address"] },
+      { fieldName: "referee", subFields: playerPopulate },
     ])
   );
   const data = await res.json();
@@ -312,33 +312,28 @@ export async function getTeamsByTournamentId(
   return data;
 }
 
-export async function getPhasesByTournamentId(
+export async function getGroupsByTournamentId(
   tournamentId: number
-): Promise<WithStrapiMeta<TournamentPhase[]>> {
-  const res = await fetch(
-    buildUrl(`/tournament-phases?filters[tournament][id][$eq]=${tournamentId}`, [
-      "game_format",
-      "tournament_groups",
-      "matches",
-    ])
-  );
-  const data = await res.json();
-
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournament-phases");
-
-  return data;
-}
-
-export async function getGroupsByTournamentPhaseId(
-  tournamentPhaseId: number
 ): Promise<WithStrapiMeta<TournamentGroup[]>> {
   const res = await fetch(
-    buildUrl(`/tournament-groups?filters[tournament_phase][id][$eq]=${tournamentPhaseId}`, [
+    buildUrl(`/tournament-groups?filters[tournament][id][$eq]=${tournamentId}`, [
       {
         fieldName: "teams",
         subFields: teamPopulate,
       },
-      { fieldName: "matches", subFields: ["team_a", "team_b"] },
+      {
+        fieldName: "matches",
+        subFields: [
+          {
+            fieldName: "team_a",
+            subFields: teamPopulate,
+          },
+          {
+            fieldName: "team_b",
+            subFields: teamPopulate,
+          },
+        ],
+      },
     ])
   );
   const data = await res.json();

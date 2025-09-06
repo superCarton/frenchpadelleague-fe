@@ -28,6 +28,7 @@
     "@heroui/listbox": "2.3.22",
     "@heroui/navbar": "2.2.21",
     "@heroui/pagination": "^2.2.22",
+    "@heroui/progress": "^2.2.21",
     "@heroui/radio": "^2.3.24",
     "@heroui/react": "^2.8.2",
     "@heroui/skeleton": "^2.2.15",

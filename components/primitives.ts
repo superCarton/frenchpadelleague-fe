@@ -5,5 +5,5 @@ export const pageTitle = tv({
 });
 
 export const sectionTitle = tv({
-  base: "text-lg sm:text-xl font-bold uppercase mb-8 border-b-4 border-primary inline-block",
+  base: "text-lg sm:text-xl font-bold uppercase mb-6 inline-block",
 });

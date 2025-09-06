@@ -1,9 +1,8 @@
 "use client";
 
 import { Button } from "@heroui/button";
-import { User } from "@heroui/user";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { Calendar, Euro, Info, MapPin, ScanLine, Utensils } from "lucide-react";
+import { AlignEndHorizontal, Calendar, Euro, Gavel, ScanLine, Utensils } from "lucide-react";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { useState } from "react";
@@ -12,6 +11,9 @@ import { DateComponent } from "../dateComponent";
 import { sectionTitle } from "../primitives";
 import { ClubUser } from "../club/clubUser";
 import AddressLink from "../addressLink";
+import { PlayerPreviewView } from "../player/playerPreview";
+import Gender from "../gender";
+import { DateRangeComponent } from "../dateRangeComponent";
 
 import { TournamentPreviewView } from "./tournamentPreview";
 import TournamentRegisterModal from "./tournamentRegister";
@@ -80,17 +82,61 @@ export default function TournamentInfos({
     <>
       <TournamentPreviewView tournament={tournament} />
 
-      {tournament.description && (
-        <div className="prose max-w-none text-gray-700">{tournament.description}</div>
-      )}
+      <section className="space-y-2">
+        <h2 className={sectionTitle()}>Description</h2>
+        <div className="text-gray-700 space-y-2">
+          {tournament.description && (
+            <div className="prose max-w-none">{tournament.description}</div>
+          )}
+
+          {tournament.league && (
+            <div className="flex items-center gap-2">
+              <AlignEndHorizontal size={16} />
+              {tournament.league.title} ( joueurs de {tournament.league.minElo} à{" "}
+              {tournament.league.maxElo} elo )
+            </div>
+          )}
+
+          <div className="flex items-center gap-2">
+            <Calendar size={18} />
+            <DateRangeComponent
+              withDay
+              withTime
+              withYear
+              endDate={tournament.endDate}
+              startDate={tournament.startDate}
+            />
+          </div>
+
+          <Gender gender={tournament.gender} />
+
+          <div className="flex items-center gap-2">
+            <Euro size={16} />
+            <span>
+              Prize money{" "}
+              {typeof tournament.prizeMoney !== "undefined"
+                ? `${tournament.prizeMoney}$`
+                : "non défini"}
+            </span>
+          </div>
+
+          {tournament.referee && (
+            <div className="flex items-center gap-2">
+              <Gavel size={16} />
+              <span>Juge arbitre</span>
+              <PlayerPreviewView
+                hideDescription
+                hideElo
+                avatarSize="tiny"
+                player={tournament.referee}
+              />
+            </div>
+          )}
+        </div>
+      </section>
 
       <section className="space-y-2">
-        <h2 className={sectionTitle()}>
-          <div className="flex items-center gap-2">
-            <MapPin size={18} />
-            Lieu
-          </div>
-        </h2>
+        <h2 className={sectionTitle()}>Lieu</h2>
         <div className="text-gray-700 space-y-1">
           <ClubUser club={club} />
           <p className="flex items-center gap-2 mt-2">
@@ -103,55 +149,6 @@ export default function TournamentInfos({
           <p className="flex items-center gap-2">
             <ScanLine size={16} />6 courts alloués
           </p>
-        </div>
-      </section>
-
-      {/* Dates */}
-      <section className="space-y-2">
-        <h2 className={sectionTitle()}>
-          <div className="flex items-center gap-2">
-            <Calendar size={18} />
-            Dates
-          </div>
-        </h2>
-        <div className="grid sm:grid-cols-2 gap-4 text-gray-700">
-          <div>
-            <h3 className="font-semibold">Début</h3>
-            <DateComponent withDay withTime date={tournament.startDate} />
-          </div>
-          <div>
-            <h3 className="font-semibold">Fin</h3>
-            <DateComponent
-              withDay
-              date={tournament.endDate || tournament.startDate}
-              withTime={!!tournament.endDate}
-            />
-          </div>
-        </div>
-      </section>
-
-      <section className="space-y-2">
-        <h2 className={sectionTitle()}>
-          <div className="flex items-center gap-2">
-            <Info size={18} />
-            Informations
-          </div>
-        </h2>
-        <div className="text-gray-700 space-y-2">
-          {tournament.prizeMoney && (
-            <div>
-              <h3 className="font-semibold">Prize Money</h3>
-              <p className="flex items-center">
-                <Euro className="mr-2" size={16} />
-                {tournament.prizeMoney}
-              </p>
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <h3 className="font-semibold">Juge arbitre</h3>
-            <User name="Guillaume Mathias" />
-          </div>
         </div>
       </section>
 
@@ -189,8 +186,8 @@ export default function TournamentInfos({
           )}
           <p>
             Ce tournoi de niveau <strong>{league.title}</strong> est réservé aux joueurs possédant
-            le badge <strong>{league.badge}</strong> (Elo compris entre {league.minElo} et{" "}
-            {league.maxElo}) au moment de l'inscription
+            le badge <strong>{league.badge}</strong> ( elo compris entre {league.minElo} et{" "}
+            {league.maxElo} ) au moment de l'inscription
           </p>
         </CardBody>
         <CardFooter className="justify-center">{renderRegisterButton()}</CardFooter>

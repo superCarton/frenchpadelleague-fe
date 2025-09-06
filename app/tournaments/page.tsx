@@ -18,7 +18,7 @@ export default async function TournamentsPage() {
           <BreadcrumbItem href="/accueil">Accueil</BreadcrumbItem>
           <BreadcrumbItem href="/tournaments">Tournois</BreadcrumbItem>
         </Breadcrumbs>
-        <h2 className={pageTitle()}>Les tournois à venir</h2>
+        <h2 className={pageTitle()}>Les compétitions à venir</h2>
         <div className="w-full space-y-4">
           {tournaments
             .sort((a, b) => (dayjs(b.startDate).isBefore(dayjs(a.startDate)) ? 1 : -1))

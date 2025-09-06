@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Calendar, MapPin } from "lucide-react";
 
 import { DateRangeComponent } from "../dateRangeComponent";
+import Gender from "../gender";
 
 import TournamentStatusBadge from "./tournamentStatusBadge";
 
@@ -61,6 +62,7 @@ export const TournamentPreviewView = (props: { tournament: Tournament }) => {
               <Calendar className="text-gray-500" size={16} />
               <DateRangeComponent endDate={tournament.endDate} startDate={tournament.startDate} />
             </div>
+            <Gender className="!gap-1" gender={tournament.gender} />
           </div>
         </div>
       </div>

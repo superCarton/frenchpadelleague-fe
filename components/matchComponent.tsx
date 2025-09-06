@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { PlayerPreviewView } from "./player/playerPreview";
 import { MatchDateComponent } from "./matchDateComponent";
 
-import { Match } from "@/lib/interfaces";
+import { Match, Team } from "@/lib/interfaces";
 
 export default function MatchComponent({ match }: { match: Match }) {
   const winnerTeamId = match.winner?.id;
@@ -40,31 +40,42 @@ export default function MatchComponent({ match }: { match: Match }) {
     );
   };
 
-  const renderTeam = (team: Match["team_a"], isWinner: boolean) => (
-    <div className="flex flex-col gap-1">
-      {[team.playerA, team.playerB].map((player, i) => (
-        <PlayerPreviewView
-          key={i}
-          hideDescription
-          hideElo
-          shortName
-          avatarSize="tiny"
-          nameFont={isWinner ? "text-gray-800 font-semibold" : "text-gray-600 border-gray-200"}
-          player={player}
-        />
-      ))}
+  const renderTeam = (team: Team, isWinner: boolean) => (
+    <div className="flex flex-row gap-3">
+      <PlayerPreviewView
+        hideDescription
+        hideElo
+        shortName
+        avatarSize="tiny"
+        nameFont={isWinner ? "text-gray-800 font-semibold" : "text-gray-600 border-gray-200"}
+        player={team.playerA}
+      />
+      <span className="text-gray-400">/</span>
+      <PlayerPreviewView
+        hideDescription
+        hideElo
+        shortName
+        avatarSize="tiny"
+        nameFont={isWinner ? "text-gray-800 font-semibold" : "text-gray-600 border-gray-200"}
+        player={team.playerB}
+      />
     </div>
   );
 
   return (
-    <Card className="mx-auto shadow-sm hover:shadow-md transition overflow-hidden border border-gray-200 min-h-[145px]">
-      <CardBody className="flex flex-row justify-between items-center p-3 px-4">
-        <div className="flex flex-col flex-1 justify-between gap-4">
-          {renderTeam(match.team_a, winnerTeamId === match.team_a.id)}
-          {renderTeam(match.team_b, winnerTeamId === match.team_b.id)}
+    <Card className="mx-auto shadow-sm hover:shadow-md transition overflow-hidden border border-gray-200 min-h-[90px] min-w-[350px]">
+      <CardBody className="flex flex-row justify-between items-center p-3 px-4 gap-4">
+        <div className="flex flex-col flex-1 justify-between gap-2">
+          <div className="min-h-[24px]">
+            {match.team_a && renderTeam(match.team_a, winnerTeamId === match.team_a.id)}
+          </div>
+          <div className="border-t border-gray-200 w-full" />
+          <div className="min-h-[24px]">
+            {match.team_b && renderTeam(match.team_b, winnerTeamId === match.team_b.id)}
+          </div>
         </div>
 
-        <div className="flex flex-col items-center justify-center min-w-[100px]">
+        <div className="flex flex-col items-center justify-center min-w-[80px]">
           {match.matchStatus === "scheduled" ? (
             match.scheduledDate ? (
               match.scheduledDate ? (

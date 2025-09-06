@@ -16,6 +16,10 @@ export type StrapiImage = {
   url: string;
 };
 
+export type Gender = "male" | "female";
+
+export type TournamentGender = Gender | "mixed";
+
 export interface Address {
   street: string;
   streetComplement?: string;
@@ -35,6 +39,15 @@ export interface League extends StrapiDocument {
   badgeImage: StrapiImage;
 }
 
+export interface GameFormat extends StrapiDocument {
+  name: string;
+  description: string;
+  nbOfSets: number;
+  nbGamesInSet: number;
+  noAd: boolean;
+  lastSetSuperTie: boolean;
+}
+
 export interface User extends StrapiDocument {
   username: string;
   email: string;
@@ -46,7 +59,7 @@ export interface Player extends StrapiDocument {
   firstname: string;
   lastname: string;
   birthdate: string;
-  gender: "male" | "female";
+  gender: Gender;
   elo: number;
   league: League;
   user: User;
@@ -75,10 +88,6 @@ export interface Club extends StrapiDocument {
   coverImage: StrapiImage;
 }
 
-export interface Referee extends StrapiDocument {
-  user: User;
-}
-
 export interface Team extends StrapiDocument {
   playerA: Player;
   playerB: Player;
@@ -87,24 +96,28 @@ export interface Team extends StrapiDocument {
   confirmed: boolean;
 }
 
-export type MatchStatus = "scheduled" | "started" | "finished";
+export type MatchStatus = "wont-play" | "scheduled" | "started" | "finished";
 
 export interface MatchSet {
   teamAScore: number;
   teamBScore: number;
 }
 
+export type TournamentRound = "r32" | "r16" | "quarter" | "semi" | "final";
+
 export interface Match extends StrapiDocument {
-  team_a: Team;
-  team_b: Team;
+  team_a?: Team;
+  team_b?: Team;
   game_format: GameFormat;
   matchStatus: MatchStatus;
   date?: string;
   scheduledDate?: string;
   winner?: Team;
   tournament_group?: TournamentGroup;
-  tournament_phase?: TournamentPhase;
   score: MatchSet[];
+  tournament: Tournament;
+  round?: TournamentRound;
+  nextMatch?: Match;
 }
 
 export type TournamentStatus =
@@ -121,9 +134,9 @@ export interface Tournament extends StrapiDocument {
   startDate: string;
   endDate?: string;
   currentStatus: TournamentStatus;
+  gender: TournamentGender;
   league: League;
   club: Club;
-  referee: Referee;
   registrationDeadline?: string;
   description?: string;
   prizeMoney?: number;
@@ -131,16 +144,8 @@ export interface Tournament extends StrapiDocument {
   registrationFee?: number;
   maxTeams?: number;
   matches: Match[];
-  tournament_phases: TournamentPhase[];
-}
-
-export interface GameFormat extends StrapiDocument {
-  name: string;
-  description: string;
-  nbOfSets: number;
-  nbGamesInSet: number;
-  noAd: boolean;
-  lastSetSuperTie: boolean;
+  tournament_groups: TournamentGroup[];
+  referee: Player;
 }
 
 export interface TournamentGroup extends StrapiDocument {
@@ -148,15 +153,5 @@ export interface TournamentGroup extends StrapiDocument {
   teams: Team[];
   matches: Match[];
   nbTeamsQualified?: number;
-}
-
-export interface TournamentPhase extends StrapiDocument {
-  name: string;
-  type: "group-stage" | "knockout" | "classification";
-  order: number;
-  description?: string;
-  game_format: GameFormat;
   tournament: Tournament;
-  tournament_groups?: TournamentGroup[];
-  matches?: Match[];
 }
