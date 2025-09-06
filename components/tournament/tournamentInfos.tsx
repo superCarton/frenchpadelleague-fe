@@ -79,10 +79,10 @@ export default function TournamentInfos({
   };
 
   return (
-    <>
+    <div className="space-y-6">
       <TournamentPreviewView tournament={tournament} />
 
-      <section className="space-y-2">
+      <section>
         <h2 className={sectionTitle()}>Description</h2>
         <div className="text-gray-700 space-y-2">
           {tournament.description && (
@@ -110,6 +110,13 @@ export default function TournamentInfos({
 
           <Gender gender={tournament.gender} />
 
+          {tournament.allocatedCourts && (
+            <p className="flex items-center gap-2">
+              <ScanLine size={16} />
+              {tournament.allocatedCourts} courts alloués
+            </p>
+          )}
+
           <div className="flex items-center gap-2">
             <Euro size={16} />
             <span>
@@ -135,7 +142,7 @@ export default function TournamentInfos({
         </div>
       </section>
 
-      <section className="space-y-2">
+      <section>
         <h2 className={sectionTitle()}>Lieu</h2>
         <div className="text-gray-700 space-y-1">
           <ClubUser club={club} />
@@ -145,9 +152,6 @@ export default function TournamentInfos({
           <p className="flex items-center gap-2">
             <Utensils size={16} />
             Restauration sur place disponible
-          </p>
-          <p className="flex items-center gap-2">
-            <ScanLine size={16} />6 courts alloués
           </p>
         </div>
       </section>
@@ -198,6 +202,6 @@ export default function TournamentInfos({
         tournament={tournament}
         onClose={() => setRegisterModalOpen(false)}
       />
-    </>
+    </div>
   );
 }

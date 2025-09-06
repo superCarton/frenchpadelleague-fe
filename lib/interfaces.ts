@@ -103,7 +103,7 @@ export interface MatchSet {
   teamBScore: number;
 }
 
-export type TournamentRound = "r32" | "r16" | "quarter" | "semi" | "final";
+export type TournamentRound = "groups" | "r32" | "r16" | "quarter" | "semi" | "final";
 
 export interface Match extends StrapiDocument {
   team_a?: Team;
@@ -116,8 +116,7 @@ export interface Match extends StrapiDocument {
   tournament_group?: TournamentGroup;
   score: MatchSet[];
   tournament: Tournament;
-  round?: TournamentRound;
-  nextMatch?: Match;
+  round: TournamentRound;
 }
 
 export type TournamentStatus =

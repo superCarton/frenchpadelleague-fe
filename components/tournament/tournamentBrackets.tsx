@@ -8,14 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import MatchComponent from "../matchComponent";
 
 import { Match, TournamentRound } from "@/lib/interfaces";
-
-const roundName: Record<TournamentRound, string> = {
-  r32: "Premier tour",
-  r16: "Huitième de finale",
-  quarter: "Quart de finale",
-  semi: "Demi finale",
-  final: "Finale",
-};
+import { roundNames } from "@/lib/helpers";
 
 export default function TournamentBracket({
   matches,
@@ -110,7 +103,7 @@ export default function TournamentBracket({
           >
             <div className="flex flex-col flex-1 gap-2 justify-center relative">
               <div className="text-small text-gray-400 uppercase text-center">
-                {roundName[currentRound]}
+                {roundNames[currentRound]}
               </div>
 
               <div className="flex flex-col flex-1 gap-8">
@@ -137,7 +130,7 @@ export default function TournamentBracket({
             {nextRound && (
               <div className="flex flex-col flex-1 gap-2">
                 <div className="text-small text-gray-400 uppercase text-center">
-                  {roundName[nextRound]}
+                  {roundNames[nextRound]}
                 </div>
 
                 {/* On espace les matchs du next round de la hauteur d'une paire (≈ 2 matchs + gap) */}

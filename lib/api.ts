@@ -46,6 +46,8 @@ const buildUrl = (url: string, fields: PopulateField[]): string => {
 
 const playerPopulate: PopulateField[] = ["league"];
 
+const clubPopulate: PopulateField[] = ["logo", "coverImage", "address"];
+
 const teamPopulate: PopulateField[] = [
   { fieldName: "playerA", subFields: playerPopulate },
   { fieldName: "playerB", subFields: playerPopulate },
@@ -195,10 +197,7 @@ export async function unsubscribeNewsletter(token: string) {
 
 export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
   const res = await fetch(
-    buildUrl("/tournaments", [
-      "league",
-      { fieldName: "club", subFields: ["logo", "coverImage", "address"] },
-    ])
+    buildUrl("/tournaments", ["league", { fieldName: "club", subFields: clubPopulate }])
   );
   const data = await res.json();
 
@@ -212,7 +211,7 @@ export async function getNextTournaments(): Promise<WithStrapiMeta<Tournament[]>
   const res = await fetch(
     buildUrl(
       `/tournaments?filters[startDate][$gt]=${today}&sort=startDate:asc&pagination[limit]=3`,
-      ["league", { fieldName: "club", subFields: ["logo", "coverImage", "address"] }]
+      ["league", { fieldName: "club", subFields: clubPopulate }]
     )
   );
   const data = await res.json();
@@ -228,7 +227,8 @@ export async function getTournamentByDocId(
   const res = await fetch(
     buildUrl(`/tournaments/${tournamentDocId}`, [
       "league",
-      { fieldName: "club", subFields: ["logo", "coverImage", "address"] },
+      "teams",
+      { fieldName: "club", subFields: clubPopulate },
       { fieldName: "referee", subFields: playerPopulate },
     ])
   );
@@ -240,7 +240,7 @@ export async function getTournamentByDocId(
 }
 
 export async function getClubs(): Promise<WithStrapiMeta<Club[]>> {
-  const res = await fetch(buildUrl("/clubs", ["address", "logo", "coverImage"]));
+  const res = await fetch(buildUrl("/clubs", clubPopulate));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs");
@@ -249,7 +249,7 @@ export async function getClubs(): Promise<WithStrapiMeta<Club[]>> {
 }
 
 export async function getClubByDocId(clubDocId: string): Promise<WithStrapiMeta<Club>> {
-  const res = await fetch(buildUrl(`/clubs/${clubDocId}`, ["address", "logo", "coverImage"]));
+  const res = await fetch(buildUrl(`/clubs/${clubDocId}`, clubPopulate));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs/:clubDocId");

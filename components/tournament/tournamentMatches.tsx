@@ -5,10 +5,9 @@ import { CircularProgress } from "@heroui/progress";
 
 import MatchComponent from "../matchComponent";
 
-import TournamentBracket from "./tournamentBrackets";
-
-import { Match, Tournament } from "@/lib/interfaces";
+import { Match, Tournament, TournamentRound } from "@/lib/interfaces";
 import { getMatchesByTournamentId } from "@/lib/api";
+import { roundNames } from "@/lib/helpers";
 
 export default function TournamentMatches({ tournament }: { tournament: Tournament }) {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -40,17 +39,28 @@ export default function TournamentMatches({ tournament }: { tournament: Tourname
       </div>
     );
 
-  return (
-    <section className="space-y-2">
-      {matches.map((match) => {
-        return <MatchComponent key={match.documentId} match={match} />;
-      })}
+  const stages: Record<TournamentRound, Match[]> = matches.reduce(
+    (acc, m) => {
+      acc[m.round] = (acc[m.round] || []).concat(m);
+      return acc;
+    },
+    {} as Record<TournamentRound, Match[]>
+  );
 
-      <TournamentBracket
-        defaultRound="semi"
-        matches={matches}
-        rounds={["quarter", "semi", "final"]}
-      />
+  return (
+    <section className="space-y-4">
+      {Object.entries(stages).map(([round, roundMatches]) => (
+        <div key={round} className="space-y-2">
+          <div className="text-small text-gray-400 uppercase">
+            {roundNames[round as TournamentRound]}
+          </div>
+          <div className="space-y-2">
+            {roundMatches.map((match) => {
+              return <MatchComponent key={match.documentId} match={match} />;
+            })}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }
