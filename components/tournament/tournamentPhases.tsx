@@ -42,7 +42,7 @@ export default function TournamentPhases({ tournament }: { tournament: Tournamen
 
   return (
     <section className="space-y-2">
-      <Tabs aria-label="Tabs variants" variant="bordered">
+      <Tabs aria-label="Tabs variants" color="primary" variant="solid">
         <Tab key="groups" title="Poules">
           <TournamentGroups tournamentId={tournament.id} />
         </Tab>

@@ -7,7 +7,7 @@ import { CircularProgress } from "@heroui/progress";
 import { PlayerPreviewView } from "../player/playerPreview";
 
 import { getGroupsByTournamentId } from "@/lib/api";
-import { TournamentGroup } from "@/lib/interfaces";
+import { TournamentGroupWithStats } from "@/lib/interfaces";
 
 type TournamentGroupsProps = {
   tournamentId: number;
@@ -15,17 +15,16 @@ type TournamentGroupsProps = {
 
 export default function TournamentGroups(props: TournamentGroupsProps) {
   const { tournamentId } = props;
-  const [groups, setGroups] = useState<TournamentGroup[]>([]);
+  const [groups, setGroups] = useState<TournamentGroupWithStats[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     setLoading(true);
-    const fetchPhases = async () => {
+    const fetchTournamentGroups = async () => {
       try {
-        const { data } = await getGroupsByTournamentId(tournamentId);
-
-        setGroups(data);
+        const data = await getGroupsByTournamentId(tournamentId);
+        setGroups(data || []);
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement des poules");
       } finally {
@@ -33,7 +32,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
       }
     };
 
-    fetchPhases();
+    fetchTournamentGroups();
   }, [tournamentId]);
 
   if (error) return <div className="p-6 text-red-500">{error}</div>;
@@ -47,13 +46,6 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
   return (
     <>
       {groups.map((group) => {
-        const sortedTeams = group.teams
-          .map((team) => ({
-            ...team,
-            eloTotal: team.playerA.elo + team.playerB.elo,
-          }))
-          .sort((a, b) => b.eloTotal - a.eloTotal);
-
         return (
           <div key={group.documentId}>
             <div>{group.name}</div>
@@ -64,13 +56,19 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                 <TableColumn className="border border-gray-300 text-center w-[60px]">G</TableColumn>
                 <TableColumn className="border border-gray-300 text-center w-[60px]">P</TableColumn>
                 <TableColumn className="border border-gray-300 text-center w-[60px]">
+                  JP
+                </TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[60px]">
+                  JC
+                </TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[60px]">
                   +/-
                 </TableColumn>
               </TableHeader>
               <TableBody>
-                {sortedTeams.map((team, index) => (
+                {group.stats.map((stat, index) => (
                   <TableRow
-                    key={team.id}
+                    key={stat.team.id}
                     className={`divide-x divide-gray-300 ${
                       index === 0 ? "bg-gray-200 font-semibold" : ""
                     }`}
@@ -82,7 +80,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                         shortName
                         avatarSize="tiny"
                         nameFont="font-normal"
-                        player={team.playerA}
+                        player={stat.team.playerA}
                       />
                       <span className="text-gray-400">/</span>
                       <PlayerPreviewView
@@ -91,13 +89,25 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
                         shortName
                         avatarSize="tiny"
                         nameFont="font-normal"
-                        player={team.playerB}
+                        player={stat.team.playerB}
                       />
                     </TableCell>
-                    <TableCell className="border border-gray-300 text-center">0</TableCell>
-                    <TableCell className="border border-gray-300 text-center">0</TableCell>
-                    <TableCell className="border border-gray-300 text-center">0</TableCell>
-                    <TableCell className="border border-gray-300 text-center">0</TableCell>
+                    <TableCell className="border border-gray-300 text-center">
+                      {stat.played}
+                    </TableCell>
+                    <TableCell className="border border-gray-300 text-center">{stat.won}</TableCell>
+                    <TableCell className="border border-gray-300 text-center">
+                      {stat.lost}
+                    </TableCell>
+                    <TableCell className="border border-gray-300 text-center">
+                      {stat.gamesFor}
+                    </TableCell>
+                    <TableCell className="border border-gray-300 text-center">
+                      {stat.gamesAgainst}
+                    </TableCell>
+                    <TableCell className="border border-gray-300 text-center">
+                      {stat.gamesDiff}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

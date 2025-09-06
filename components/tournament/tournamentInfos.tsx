@@ -179,8 +179,11 @@ export default function TournamentInfos({
             <p>{tournament.currentStatus === "registrations-opened" ? "Ouvertes" : "Fermées"}</p>
           </div>
           <div>
-            <h3 className="font-semibold">Nombre de places restantes</h3>
-            <p>2 / 24</p>
+            <h3 className="font-semibold">Nombre d'équipes inscrites</h3>
+            <p>
+              {tournament.teams.length}
+              {typeof tournament.maxTeams !== "undefined" && <> / {tournament.maxTeams}</>}
+            </p>
           </div>
           {tournament.registrationDeadline && (
             <div>

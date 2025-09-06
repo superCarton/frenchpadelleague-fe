@@ -5,7 +5,7 @@ import {
   Profiles,
   Team,
   Tournament,
-  TournamentGroup,
+  TournamentGroupWithStats,
   WithStrapiMeta,
 } from "./interfaces";
 
@@ -51,6 +51,23 @@ const clubPopulate: PopulateField[] = ["logo", "coverImage", "address"];
 const teamPopulate: PopulateField[] = [
   { fieldName: "playerA", subFields: playerPopulate },
   { fieldName: "playerB", subFields: playerPopulate },
+];
+
+const matchPopulate: PopulateField[] = [
+  "game_format",
+  "score",
+  {
+    fieldName: "team_a",
+    subFields: teamPopulate,
+  },
+  {
+    fieldName: "team_b",
+    subFields: teamPopulate,
+  },
+  {
+    fieldName: "winner",
+    subFields: teamPopulate,
+  },
 ];
 
 export async function login(email: string, password: string): Promise<{ jwt: string }> {
@@ -314,7 +331,7 @@ export async function getTeamsByTournamentId(
 
 export async function getGroupsByTournamentId(
   tournamentId: number
-): Promise<WithStrapiMeta<TournamentGroup[]>> {
+): Promise<TournamentGroupWithStats[]> {
   const res = await fetch(
     buildUrl(`/tournament-groups?filters[tournament][id][$eq]=${tournamentId}`, [
       {
@@ -323,16 +340,7 @@ export async function getGroupsByTournamentId(
       },
       {
         fieldName: "matches",
-        subFields: [
-          {
-            fieldName: "team_a",
-            subFields: teamPopulate,
-          },
-          {
-            fieldName: "team_b",
-            subFields: teamPopulate,
-          },
-        ],
+        subFields: matchPopulate,
       },
     ])
   );
@@ -347,22 +355,7 @@ export async function getMatchesByTournamentId(
   tournamentId: number
 ): Promise<WithStrapiMeta<Match[]>> {
   const res = await fetch(
-    buildUrl(`/matches?filters[tournament][id][$eq]=${tournamentId}`, [
-      "game_format",
-      "score",
-      {
-        fieldName: "team_a",
-        subFields: teamPopulate,
-      },
-      {
-        fieldName: "team_b",
-        subFields: teamPopulate,
-      },
-      {
-        fieldName: "winner",
-        subFields: teamPopulate,
-      },
-    ])
+    buildUrl(`/matches?filters[tournament][id][$eq]=${tournamentId}`, matchPopulate)
   );
   const data = await res.json();
 

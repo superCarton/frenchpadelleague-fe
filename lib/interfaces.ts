@@ -94,6 +94,8 @@ export interface Team extends StrapiDocument {
   tournament: Tournament;
   name: string;
   confirmed: boolean;
+  seed?: number;
+  elo: number;
 }
 
 export type MatchStatus = "wont-play" | "scheduled" | "started" | "finished";
@@ -145,6 +147,7 @@ export interface Tournament extends StrapiDocument {
   matches: Match[];
   tournament_groups: TournamentGroup[];
   referee: Player;
+  teams: Team[];
 }
 
 export interface TournamentGroup extends StrapiDocument {
@@ -153,4 +156,19 @@ export interface TournamentGroup extends StrapiDocument {
   matches: Match[];
   nbTeamsQualified?: number;
   tournament: Tournament;
+}
+
+interface GroupTeamStat {
+  team: Team;
+  played: number;
+  won: number;
+  lost: number;
+  gamesFor: number;
+  gamesAgainst: number;
+  gamesDiff: number;
+}
+
+export interface TournamentGroupWithStats extends TournamentGroup {
+  isFinished: boolean;
+  stats: GroupTeamStat[];
 }
