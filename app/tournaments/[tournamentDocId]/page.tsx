@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Tabs, Tab } from "@heroui/tabs";
 import { useEffect, useState } from "react";
 import { Image } from "@heroui/image";
@@ -20,19 +20,12 @@ import TournamentMatches from "@/components/tournament/tournamentMatches";
 import TournamentRanking from "@/components/tournament/tournamentRanking";
 
 export default function TournamentPage() {
-  const router = useRouter();
   const { tournamentDocId } = useParams<{ tournamentDocId: string }>();
-  const searchParams = useSearchParams();
-  const activeTab = searchParams.get("tab") || "infos";
   const { profile } = useUserStore();
 
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
-  const handleTabChange = (key: string) => {
-    router.push(`/tournaments/${tournamentDocId}?tab=${key}`);
-  };
 
   useEffect(() => {
     setLoading(true);
@@ -67,29 +60,35 @@ export default function TournamentPage() {
         />
       </div>
 
-      <div className="sticky top-[64px] z-25 max-w-6xl mx-auto bg-white shadow-sm border-b">
-        <Breadcrumbs className="px-4 pt-2 pb-0 text-gray-500" separator="|" size="sm">
-          <BreadcrumbItem>
-            <NextLink href="/tournaments">Tournois</NextLink>
-          </BreadcrumbItem>
-          <BreadcrumbItem isCurrent>
-            FPL {league.title} - {club.name} -{" "}
-            <DateRangeComponent
-              abbrev
-              endDate={tournament.endDate}
-              startDate={tournament.startDate}
-            />
-          </BreadcrumbItem>
-        </Breadcrumbs>
+      <Breadcrumbs
+        className="w-full text-gray-600 flex justify-center mt-2"
+        separator="/"
+        size="md"
+        variant="bordered"
+      >
+        <BreadcrumbItem>
+          <NextLink href="/tournaments">Tournois</NextLink>
+        </BreadcrumbItem>
+        <BreadcrumbItem isCurrent>
+          FPL {league.title} - {club.name} -{" "}
+          <DateRangeComponent
+            abbrev
+            endDate={tournament.endDate}
+            startDate={tournament.startDate}
+          />
+        </BreadcrumbItem>
+      </Breadcrumbs>
+
+      <div className="max-w-2xl mx-auto px-2 pb-6 pt-2">
         <Tabs
           aria-label="Onglets du tournoi"
+          className="w-full"
           classNames={{
-            tabList: "w-full px-4 sm:px-6 overflow-x-auto",
-            tab: "data-[selected=true]:text-primary",
+            tabList: "w-full flex-nowrap overflow-x-auto scrollbar-hide",
+            tab: "shrink-0 w-auto flex-initial data-[selected=true]:text-primary",
           }}
-          selectedKey={activeTab}
-          variant="underlined"
-          onSelectionChange={(key) => handleTabChange(key as string)}
+          color="primary"
+          variant="bordered"
         >
           <Tab
             key="infos"
@@ -99,7 +98,9 @@ export default function TournamentPage() {
                 Infos
               </span>
             }
-          />
+          >
+            <TournamentInfos profile={profile} tournament={tournament} />
+          </Tab>
           <Tab
             key="teams"
             title={
@@ -108,7 +109,9 @@ export default function TournamentPage() {
                 Équipes
               </span>
             }
-          />
+          >
+            <TournamentTeams tournament={tournament} />
+          </Tab>
           <Tab
             key="table"
             title={
@@ -117,7 +120,9 @@ export default function TournamentPage() {
                 Tableau
               </span>
             }
-          />
+          >
+            <TournamentPhases tournament={tournament} />
+          </Tab>
           <Tab
             key="matches"
             title={
@@ -126,7 +131,9 @@ export default function TournamentPage() {
                 Matchs
               </span>
             }
-          />
+          >
+            <TournamentMatches tournament={tournament} />
+          </Tab>
           <Tab
             key="ranking"
             isDisabled={tournament.currentStatus !== "completed"}
@@ -136,16 +143,10 @@ export default function TournamentPage() {
                 Classement
               </span>
             }
-          />
+          >
+            <TournamentRanking tournament={tournament} />
+          </Tab>
         </Tabs>
-      </div>
-
-      <div className="max-w-2xl mx-auto px-2 py-6">
-        {activeTab === "infos" && <TournamentInfos profile={profile} tournament={tournament} />}
-        {activeTab === "teams" && <TournamentTeams tournament={tournament} />}
-        {activeTab === "table" && <TournamentPhases tournament={tournament} />}
-        {activeTab === "matches" && <TournamentMatches tournament={tournament} />}
-        {activeTab === "ranking" && <TournamentRanking tournament={tournament} />}
       </div>
     </div>
   );

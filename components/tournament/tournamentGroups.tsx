@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { CircularProgress } from "@heroui/progress";
 
-import { PlayerPreviewView } from "../player/playerPreview";
-
 import { getGroupsByTournamentId } from "@/lib/api";
 import { TournamentGroupWithStats } from "@/lib/interfaces";
 
@@ -48,68 +46,59 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
       {groups.map((group) => {
         return (
           <div key={group.documentId}>
-            <div>{group.name}</div>
+            <div className="text-small text-gray-400 uppercase">{group.name}</div>
             <Table removeWrapper>
               <TableHeader className="bg-gray-100">
                 <TableColumn className="border border-gray-300">ÉQUIPE</TableColumn>
-                <TableColumn className="border border-gray-300 text-center w-[60px]">J</TableColumn>
-                <TableColumn className="border border-gray-300 text-center w-[60px]">G</TableColumn>
-                <TableColumn className="border border-gray-300 text-center w-[60px]">P</TableColumn>
-                <TableColumn className="border border-gray-300 text-center w-[60px]">
+                <TableColumn className="border border-gray-300 text-center w-[50px]">J</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[50px]">G</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[50px]">P</TableColumn>
+                <TableColumn className="border border-gray-300 text-center w-[50px]">
                   JP
                 </TableColumn>
-                <TableColumn className="border border-gray-300 text-center w-[60px]">
+                <TableColumn className="border border-gray-300 text-center w-[50px]">
                   JC
                 </TableColumn>
-                <TableColumn className="border border-gray-300 text-center w-[60px]">
+                <TableColumn className="border border-gray-300 text-center w-[50px]">
                   +/-
                 </TableColumn>
               </TableHeader>
               <TableBody>
-                {group.stats.map((stat, index) => (
-                  <TableRow
-                    key={stat.team.id}
-                    className={`divide-x divide-gray-300 ${
-                      index === 0 ? "bg-gray-200 font-semibold" : ""
-                    }`}
-                  >
-                    <TableCell className="border border-gray-300 flex flex-row gap-2 items-center">
-                      <PlayerPreviewView
-                        hideDescription
-                        hideElo
-                        shortName
-                        avatarSize="tiny"
-                        nameFont="font-normal"
-                        player={stat.team.playerA}
-                      />
-                      <span className="text-gray-400">/</span>
-                      <PlayerPreviewView
-                        hideDescription
-                        hideElo
-                        shortName
-                        avatarSize="tiny"
-                        nameFont="font-normal"
-                        player={stat.team.playerB}
-                      />
-                    </TableCell>
-                    <TableCell className="border border-gray-300 text-center">
-                      {stat.played}
-                    </TableCell>
-                    <TableCell className="border border-gray-300 text-center">{stat.won}</TableCell>
-                    <TableCell className="border border-gray-300 text-center">
-                      {stat.lost}
-                    </TableCell>
-                    <TableCell className="border border-gray-300 text-center">
-                      {stat.gamesFor}
-                    </TableCell>
-                    <TableCell className="border border-gray-300 text-center">
-                      {stat.gamesAgainst}
-                    </TableCell>
-                    <TableCell className="border border-gray-300 text-center">
-                      {stat.gamesDiff}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {group.stats
+                  .sort((statA, statB) => (statA.team.seed || 0) - (statB.team.seed || 0))
+                  .map((stat) => (
+                    <TableRow key={stat.team.id} className={`divide-x divide-gray-300`}>
+                      <TableCell className="border border-gray-300 flex flex-col gap-1 items-start">
+                        <div className="truncate">
+                          {stat.team.playerA.firstname.at(0)}. {stat.team.playerA.lastname}
+                        </div>
+                        <div className="truncate">
+                          {stat.team.playerB.firstname.at(0)}. {stat.team.playerB.lastname}{" "}
+                          {stat.team.seed && (
+                            <span className="text-tiny text-gray-400">({stat.team.seed})</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-center">
+                        {stat.played}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-center">
+                        {stat.won}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-center">
+                        {stat.lost}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-center">
+                        {stat.gamesFor}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-center">
+                        {stat.gamesAgainst}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-center">
+                        {stat.gamesDiff}
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </div>

@@ -1,18 +1,23 @@
 import { Card, CardBody } from "@heroui/card";
 import clsx from "clsx";
 
-import { PlayerPreviewView } from "./player/playerPreview";
 import { MatchDateComponent } from "./matchDateComponent";
 
 import { Match, Team } from "@/lib/interfaces";
 
-export default function MatchComponent({ match }: { match: Match }) {
+export default function MatchComponent({
+  match,
+  showTournamentSeeds,
+}: {
+  match: Match;
+  showTournamentSeeds?: boolean;
+}) {
   const winnerTeamId = match.winner?.id;
 
   const renderSetScore = (score: number, isWinner: boolean) => (
     <div
       className={clsx(
-        "px-2 py-1 text-sm font-medium min-w-[32px] text-center bg-gray-100 border",
+        "px-2 py-1 min-w-[32px] text-center bg-gray-100 border",
         isWinner ? "text-gray-800 font-semibold border-gray-400" : "text-gray-600 border-gray-200"
       )}
     >
@@ -24,7 +29,7 @@ export default function MatchComponent({ match }: { match: Match }) {
     if (!match.score) return null;
 
     return (
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 text-small">
         {match.score.map((set, index) => {
           const teamAWon = set.teamAScore > set.teamBScore;
           const teamBWon = set.teamBScore > set.teamAScore;
@@ -41,36 +46,25 @@ export default function MatchComponent({ match }: { match: Match }) {
   };
 
   const renderTeam = (team: Team, isWinner: boolean) => (
-    <div className="flex flex-row gap-3">
-      <PlayerPreviewView
-        hideDescription
-        hideElo
-        shortName
-        avatarSize="tiny"
-        nameFont={isWinner ? "text-gray-800 font-semibold" : "text-gray-600 border-gray-200"}
-        player={team.playerA}
-      />
-      <span className="text-gray-400">/</span>
-      <PlayerPreviewView
-        hideDescription
-        hideElo
-        shortName
-        avatarSize="tiny"
-        nameFont={isWinner ? "text-gray-800 font-semibold" : "text-gray-600 border-gray-200"}
-        player={team.playerB}
-      />
+    <div className={clsx("flex flex-row items-center gap-2", { "font-semibold": isWinner })}>
+      {team.playerA.firstname.at(0)}. {team.playerA.lastname}
+      <span className="text-gray-400 font-normal">/</span>
+      {team.playerB.firstname.at(0)}. {team.playerB.lastname}{" "}
+      {showTournamentSeeds && team.seed && (
+        <span className="text-tiny text-gray-400 font-normal">({team.seed})</span>
+      )}
     </div>
   );
 
   return (
     <Card className="mx-auto shadow-sm hover:shadow-md transition overflow-hidden border border-gray-200 min-h-[90px] min-w-[350px]">
-      <CardBody className="flex flex-row justify-between items-center p-3 px-4 gap-4">
+      <CardBody className="flex flex-row justify-between items-center p-3 px-4 gap-4 text-gray-600 text-small">
         <div className="flex flex-col flex-1 justify-between gap-2">
-          <div className="min-h-[24px]">
+          <div className="flex items-center min-h-[24px]">
             {match.team_a && renderTeam(match.team_a, winnerTeamId === match.team_a.id)}
           </div>
           <div className="border-t border-gray-200 w-full" />
-          <div className="min-h-[24px]">
+          <div className="flex items-center min-h-[24px]">
             {match.team_b && renderTeam(match.team_b, winnerTeamId === match.team_b.id)}
           </div>
         </div>

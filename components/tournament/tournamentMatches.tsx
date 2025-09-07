@@ -56,7 +56,7 @@ export default function TournamentMatches({ tournament }: { tournament: Tourname
           </div>
           <div className="space-y-2">
             {roundMatches.map((match) => {
-              return <MatchComponent key={match.documentId} match={match} />;
+              return <MatchComponent key={match.documentId} showTournamentSeeds match={match} />;
             })}
           </div>
         </div>

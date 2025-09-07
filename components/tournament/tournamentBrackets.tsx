@@ -55,10 +55,10 @@ export default function TournamentBracket({
   const nextRound = getNextRound();
   const currentRoundMatches = matches.filter((m) => m.round === currentRound);
   const gapSize = 4;
-  const matchHeight = 92;
+  const matchHeight = 91;
   const tableHeight =
     currentRoundMatches.length * matchHeight +
-    (currentRoundMatches.length - 1) * 8 * gapSize + // gap between matches
+    (currentRoundMatches.length - 1) * 2 * gapSize + // gap between matches
     20 + // title size
     2 * gapSize; // gap between title and matches
 
@@ -106,7 +106,7 @@ export default function TournamentBracket({
                 {roundNames[currentRound]}
               </div>
 
-              <div className="flex flex-col flex-1 gap-8">
+              <div className="flex flex-col flex-1 gap-2">
                 {currentRoundMatches.map((m, i) => (
                   <div key={m.id} className="relative">
                     <MatchComponent match={m} />
@@ -134,12 +134,12 @@ export default function TournamentBracket({
                 </div>
 
                 {/* On espace les matchs du next round de la hauteur d'une paire (≈ 2 matchs + gap) */}
-                <div className="flex flex-col flex-1 justify-center gap-[172px]">
+                <div className="flex flex-col flex-1 justify-center gap-[110px]">
                   {matches
                     .filter((m) => m.round === nextRound)
                     .map((m) => (
                       <div key={m.id} className="relative">
-                        <MatchComponent key={m.id} match={m} />
+                        <MatchComponent key={m.id} showTournamentSeeds match={m} />
                         <div className="absolute -left-8 top-1/2 w-8 h-px bg-gray-400" />
                       </div>
                     ))}
