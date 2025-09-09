@@ -65,6 +65,7 @@ export interface Player extends StrapiDocument {
   user: User;
   club?: Club;
   matchesHistory: Match[];
+  publishedAt: string;
 }
 
 export interface Profiles {

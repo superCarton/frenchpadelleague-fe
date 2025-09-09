@@ -5,6 +5,7 @@ import { Card } from "@heroui/card";
 import { CircularProgress } from "@heroui/progress";
 
 import { PlayerPreviewView } from "../player/playerPreview";
+import ErrorComponent from "../errorComponent";
 
 import { Team, Tournament } from "@/lib/interfaces";
 import { getTeamsByTournamentId } from "@/lib/api";
@@ -31,7 +32,7 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
     fetchTeams();
   }, [tournament.id]);
 
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) return <ErrorComponent error={error} />;
   if (loading)
     return (
       <div className="w-full flex h-[200px] justify-center items-center">

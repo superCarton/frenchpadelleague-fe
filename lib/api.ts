@@ -1,5 +1,6 @@
 import {
   Club,
+  League,
   Match,
   Player,
   Profiles,
@@ -44,7 +45,7 @@ const buildUrl = (url: string, fields: PopulateField[]): string => {
   return `${API_URL}${url}${url.includes("?") ? "&" : "?"}${queryString}`;
 };
 
-const playerPopulate: PopulateField[] = ["league"];
+const playerPopulate: PopulateField[] = [{ fieldName: "league", subFields: ["badgeImage"] }];
 
 const clubPopulate: PopulateField[] = ["logo", "coverImage", "address"];
 
@@ -217,8 +218,9 @@ export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
     buildUrl("/tournaments", ["league", { fieldName: "club", subFields: clubPopulate }])
   );
   const data = await res.json();
+  console.log("here", res, data);
 
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments");
+  if (!res.ok) throw new Error(data.error);
 
   return data;
 }
@@ -360,6 +362,55 @@ export async function getMatchesByTournamentId(
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /matches");
+
+  return data;
+}
+
+export async function getPlayerEloHistory(playerDocId: string) {
+  return Promise.resolve({
+    bestElo: 810,
+    eloHistory: [
+      {
+        date: "10-03-2025",
+        elo: 600,
+      },
+      {
+        date: "04-04-2025",
+        elo: 625,
+      },
+      {
+        date: "25-04-2025",
+        elo: 665,
+      },
+      {
+        date: "04-06-2025",
+        elo: 712,
+      },
+      {
+        date: "30-06-2025",
+        elo: 690,
+      },
+      {
+        date: "14-07-2025",
+        elo: 720,
+      },
+      {
+        date: "28-07-2025",
+        elo: 755,
+      },
+      {
+        date: "28-08-2025",
+        elo: 738,
+      },
+    ],
+  });
+}
+
+export async function getAllLeagues(): Promise<WithStrapiMeta<League[]>> {
+  const res = await fetch(buildUrl(`/leagues`, []));
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error || "Erreur /leagues");
 
   return data;
 }

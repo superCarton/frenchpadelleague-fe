@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Tab, Tabs } from "@heroui/tabs";
 import { CircularProgress } from "@heroui/progress";
 
+import ErrorComponent from "../errorComponent";
+
 import TournamentGroups from "./tournamentGroups";
 import TournamentBracket from "./tournamentBrackets";
 
@@ -32,7 +34,7 @@ export default function TournamentPhases({ tournament }: { tournament: Tournamen
     fetchMatches();
   }, [tournament.id]);
 
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) return <ErrorComponent error={error} />;
   if (loading)
     return (
       <div className="w-full flex h-[200px] justify-center items-center">

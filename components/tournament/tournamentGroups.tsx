@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { CircularProgress } from "@heroui/progress";
 
+import ErrorComponent from "../errorComponent";
+
 import { getGroupsByTournamentId } from "@/lib/api";
 import { TournamentGroupWithStats } from "@/lib/interfaces";
 
@@ -33,7 +35,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
     fetchTournamentGroups();
   }, [tournamentId]);
 
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) return <ErrorComponent error={error} />;
   if (loading)
     return (
       <div className="w-full flex h-[200px] justify-center items-center">

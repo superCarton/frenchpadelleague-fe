@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { CircularProgress } from "@heroui/progress";
 
 import MatchComponent from "../matchComponent";
+import ErrorComponent from "../errorComponent";
 
 import { Match, Tournament, TournamentRound } from "@/lib/interfaces";
 import { getMatchesByTournamentId } from "@/lib/api";
@@ -31,7 +32,7 @@ export default function TournamentMatches({ tournament }: { tournament: Tourname
     fetchMatches();
   }, [tournament.id]);
 
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
+  if (error) return <ErrorComponent error={error} />;
   if (loading)
     return (
       <div className="w-full flex h-[200px] justify-center items-center">
