@@ -7,11 +7,10 @@ import { Image } from "@heroui/image";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import { Users, Trophy, Info, Table, HandFist } from "lucide-react";
 import NextLink from "next/link";
-import { CircularProgress } from "@heroui/progress";
 
 import { Tournament } from "@/lib/interfaces";
 import { getTournamentByDocId } from "@/lib/api";
-import { DateRangeComponent } from "@/components/dateRangeComponent";
+import { DateRangeComponent } from "@/components/common/dateRangeComponent";
 import { useUserStore } from "@/store/store";
 import TournamentInfos from "@/components/tournament/tournamentInfos";
 import TournamentTeams from "@/components/tournament/tournamentTeams";
@@ -19,6 +18,7 @@ import TournamentPhases from "@/components/tournament/tournamentPhases";
 import TournamentMatches from "@/components/tournament/tournamentMatches";
 import TournamentRanking from "@/components/tournament/tournamentRanking";
 import ErrorComponent from "@/components/errorComponent";
+import { SectionLoader } from "@/components/common/sectionLoader";
 
 export default function TournamentPage() {
   const { tournamentDocId } = useParams<{ tournamentDocId: string }>();
@@ -46,12 +46,7 @@ export default function TournamentPage() {
   }, [tournamentDocId]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading)
-    return (
-      <div className="w-full flex h-[200px] justify-center items-center">
-        <CircularProgress label="Chargement du tournoi..." />
-      </div>
-    );
+  if (loading) return <SectionLoader label="Chargement du tournoi" />;
   if (!tournament) return <div className="p-6">Tournoi introuvable</div>;
 
   const { league, club } = tournament;

@@ -11,7 +11,7 @@ import { addToast } from "@heroui/toast";
 
 import { getMePlayer, login } from "@/lib/api";
 import { useUserStore } from "@/store/store";
-import { PasswordInput } from "@/components/passwordInput";
+import { PasswordInput } from "@/components/common/passwordInput";
 
 const translateErrorMessageToFr = (message: string) => {
   if (message.includes("Invalid identifier or password")) {

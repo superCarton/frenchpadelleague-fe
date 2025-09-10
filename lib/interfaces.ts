@@ -72,6 +72,26 @@ export interface Profiles {
   player: Player;
 }
 
+export type Weekday =
+  | "monday"
+  | "tuesday"
+  | "wednesday"
+  | "thursday"
+  | "friday"
+  | "saturday"
+  | "sunday";
+
+export interface OpeningHours {
+  days: { name: Weekday }[];
+  openingTime: string;
+  closingTime: string;
+}
+
+export interface PadelCourt {
+  name: string;
+  type: "indoor" | "outdoor";
+}
+
 export interface Club extends StrapiDocument {
   user: User;
   name: string;
@@ -87,6 +107,8 @@ export interface Club extends StrapiDocument {
   tournaments: Tournament[];
   logo: StrapiImage;
   coverImage: StrapiImage;
+  opening_hours?: OpeningHours[];
+  padelCourts?: PadelCourt[];
 }
 
 export interface Team extends StrapiDocument {

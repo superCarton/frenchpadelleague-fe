@@ -9,7 +9,7 @@ import { addToast } from "@heroui/toast";
 import { getMePlayer, resetPassword } from "@/lib/api";
 import { siteConfig } from "@/config/site";
 import { useUserStore } from "@/store/store";
-import { PasswordInput } from "@/components/passwordInput";
+import { PasswordInput } from "@/components/common/passwordInput";
 
 export default function RenewPasswordPage() {
   const router = useRouter();

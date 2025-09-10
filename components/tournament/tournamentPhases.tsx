@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Tab, Tabs } from "@heroui/tabs";
-import { CircularProgress } from "@heroui/progress";
 
 import ErrorComponent from "../errorComponent";
+import { SectionLoader } from "../common/sectionLoader";
 
 import TournamentGroups from "./tournamentGroups";
 import TournamentBracket from "./tournamentBrackets";
@@ -35,12 +35,7 @@ export default function TournamentPhases({ tournament }: { tournament: Tournamen
   }, [tournament.id]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading)
-    return (
-      <div className="w-full flex h-[200px] justify-center items-center">
-        <CircularProgress label="Chargement des tableaux..." />
-      </div>
-    );
+  if (loading) return <SectionLoader label="Chargement des tableaux" />;
 
   return (
     <section className="space-y-2">

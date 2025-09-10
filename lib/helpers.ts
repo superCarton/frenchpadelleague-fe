@@ -1,4 +1,4 @@
-import { TournamentRound } from "./interfaces";
+import { TournamentRound, Weekday } from "./interfaces";
 
 export const roundNames: Record<TournamentRound, string> = {
   groups: "Poules",
@@ -23,4 +23,22 @@ export const leagueColors = {
   gold: "#e2a21c",
   premium: "#0b0b0b",
   legend: "#820817",
+};
+
+export const daysNames: Record<Weekday, string> = {
+  monday: "Lundi",
+  tuesday: "Mardi",
+  wednesday: "Mercredi",
+  thursday: "Jeudi",
+  friday: "Vendredi",
+  saturday: "Samedi",
+  sunday: "Dimanche",
+};
+
+export const formatHour = (hourString: string) => {
+  const [h, m] = hourString.split(":").map(Number);
+  if (m === 0) {
+    return `${h}h`;
+  }
+  return `${h}h${m}`;
 };

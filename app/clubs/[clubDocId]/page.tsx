@@ -3,10 +3,13 @@ import { Avatar } from "@heroui/avatar";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { Globe, Mail, Phone, Smartphone } from "lucide-react";
+import dayjs from "dayjs";
 
-import { getClubByDocId } from "@/lib/api";
+import { getClubByDocId, getTournamentsByClubDocumentId } from "@/lib/api";
 import { pageTitle, sectionTitle } from "@/components/primitives";
-import AddressLink from "@/components/addressLink";
+import AddressLink from "@/components/common/addressLink";
+import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
+import { daysNames, formatHour } from "@/lib/helpers";
 
 export const revalidate = 120; // ISR
 export const dynamic = "force-dynamic"; // prevent pre-render at first build
@@ -18,6 +21,12 @@ type ClubPageProps = {
 export default async function ClubPage({ params }: ClubPageProps) {
   const { clubDocId } = await params;
   const { data: club } = await getClubByDocId(clubDocId);
+  const { data: tournaments } = await getTournamentsByClubDocumentId(clubDocId);
+
+  const nbIndoorCourts =
+    club.padelCourts && club.padelCourts.filter((court) => court.type === "indoor").length;
+  const nbOutdoorCourts =
+    club.padelCourts && club.padelCourts.filter((court) => court.type === "outdoor").length;
 
   return (
     <div className="max-w-xl mx-auto px-2 py-6">
@@ -44,15 +53,30 @@ export default async function ClubPage({ params }: ClubPageProps) {
         )}
         <section>
           <h3 className={sectionTitle()}>Installations</h3>
-          <ul className="space-y-2">
-            <li>Nombre de courts : {club.totalCourts}</li>
+          <ul className="space-y-1">
+            {nbOutdoorCourts !== 0 && <li>{nbOutdoorCourts} courts extérieurs</li>}
+            {nbIndoorCourts !== 0 && <li>{nbIndoorCourts} courts couverts</li>}
             {club.hasRestaurant && <li>Restauration sur place disponible</li>}
           </ul>
         </section>
-        <section>
-          <h3 className={sectionTitle()}>Horaires d'ouverture</h3>
-          <div />
-        </section>
+        {club.opening_hours && (
+          <section>
+            <h3 className={sectionTitle()}>Horaires d'ouverture</h3>
+            <div>
+              {club.opening_hours.map((openingHours) => {
+                return openingHours.days.map((day) => (
+                  <div key={day.name} className="flex flex-row">
+                    <div className="w-[150px]">{daysNames[day.name]} :</div>
+                    <div>
+                      {formatHour(openingHours.openingTime)} -{" "}
+                      {formatHour(openingHours.closingTime)}
+                    </div>
+                  </div>
+                ));
+              })}
+            </div>
+          </section>
+        )}
         <section>
           <h3 className={sectionTitle()}>Contact</h3>
           <ul className="space-y-2">
@@ -112,6 +136,20 @@ export default async function ClubPage({ params }: ClubPageProps) {
               </li>
             )}
           </ul>
+        </section>
+        <section>
+          <h3 className={sectionTitle()}>Les tournois au club</h3>
+          <div className="w-full space-y-4">
+            {tournaments.length ? (
+              tournaments
+                .sort((a, b) => (dayjs(b.startDate).isBefore(dayjs(a.startDate)) ? 1 : -1))
+                .map((tournament) => (
+                  <TournamentPreviewView key={tournament.documentId} tournament={tournament} />
+                ))
+            ) : (
+              <>Pas de tournois</>
+            )}
+          </div>
         </section>
       </div>
     </div>

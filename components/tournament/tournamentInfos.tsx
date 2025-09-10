@@ -6,14 +6,15 @@ import { AlignEndHorizontal, Calendar, Euro, Gavel, ScanLine, Utensils } from "l
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
 import { useState } from "react";
+import { Alert } from "@heroui/react";
 
-import { DateComponent } from "../dateComponent";
+import { DateComponent } from "../common/dateComponent";
 import { sectionTitle } from "../primitives";
 import { ClubUser } from "../club/clubUser";
-import AddressLink from "../addressLink";
+import AddressLink from "../common/addressLink";
 import { PlayerPreviewView } from "../player/playerPreview";
-import Gender from "../gender";
-import { DateRangeComponent } from "../dateRangeComponent";
+import Gender from "../common/gender";
+import { DateRangeComponent } from "../common/dateRangeComponent";
 
 import { TournamentPreviewView } from "./tournamentPreview";
 import TournamentRegisterModal from "./tournamentRegister";
@@ -27,8 +28,16 @@ export default function TournamentInfos({
   tournament: Tournament;
   profile: Player | null;
 }) {
-  const { league, club } = tournament;
+  const { league, club, teams } = tournament;
   const [isRegisterModalOpen, setRegisterModalOpen] = useState<boolean>(false);
+
+  const playerTeamRegistered =
+    profile &&
+    teams.find(
+      (team) =>
+        team.playerA.documentId === profile.documentId ||
+        team.playerB.documentId === profile.documentId
+    );
 
   const renderRegisterButton = () => {
     const isCurrentPlayerInTournamentLeague =
@@ -81,6 +90,14 @@ export default function TournamentInfos({
   return (
     <div className="space-y-6">
       <TournamentPreviewView tournament={tournament} />
+      {playerTeamRegistered && (
+        <Alert color="secondary" variant="solid">
+          Vous êtes inscrits à ce tournoi avec{" "}
+          {playerTeamRegistered.playerA.documentId === profile.documentId
+            ? playerTeamRegistered.playerB.firstname
+            : playerTeamRegistered.playerA.firstname}
+        </Alert>
+      )}
 
       <section>
         <h2 className={sectionTitle()}>Description</h2>
@@ -156,49 +173,52 @@ export default function TournamentInfos({
         </div>
       </section>
 
-      <Card className="w-full sm:w-xl mx-auto mx-auto py-5 sm:px-5">
-        <CardHeader className="flex gap-3 text-lg font-semibold text-gray-80 border-b border-gray-200 pb-2 mb-4">
-          Inscriptions
-        </CardHeader>
-        <CardBody className="space-y-3 text-gray-700">
-          <p>
-            Les inscriptions se font uniquement en ligne sur ce site. Le paiement se fera
-            directement à l'arrivée au bar du club.
-          </p>
-          {tournament.registrationFee && (
+      {!playerTeamRegistered && (
+        <Card className="w-full sm:w-xl mx-auto mx-auto py-5 sm:px-5">
+          <CardHeader className="flex gap-3 text-lg font-semibold text-gray-80 border-b border-gray-200 pb-2 mb-4">
+            Inscriptions
+          </CardHeader>
+          <CardBody className="space-y-3 text-gray-700">
+            <p>
+              Les inscriptions se font uniquement en ligne sur ce site. Le paiement se fera
+              directement à l'arrivée au bar du club.
+            </p>
+            {tournament.registrationFee && (
+              <div>
+                <h3 className="font-semibold">Tarif</h3>
+                <p className="flex items-center gap-1">
+                  {tournament.registrationFee}
+                  <Euro size={16} />
+                </p>
+              </div>
+            )}
             <div>
-              <h3 className="font-semibold">Tarif</h3>
-              <p className="flex items-center gap-1">
-                {tournament.registrationFee}
-                <Euro size={16} />
+              <h3 className="font-semibold">Statut des inscriptions</h3>
+              <p>{tournament.currentStatus === "registrations-opened" ? "Ouvertes" : "Fermées"}</p>
+            </div>
+            <div>
+              <h3 className="font-semibold">Nombre d'équipes inscrites</h3>
+              <p>
+                {tournament.teams.length}
+                {typeof tournament.maxTeams !== "undefined" && <> / {tournament.maxTeams}</>}
               </p>
             </div>
-          )}
-          <div>
-            <h3 className="font-semibold">Statut des inscriptions</h3>
-            <p>{tournament.currentStatus === "registrations-opened" ? "Ouvertes" : "Fermées"}</p>
-          </div>
-          <div>
-            <h3 className="font-semibold">Nombre d'équipes inscrites</h3>
+            {tournament.registrationDeadline && (
+              <div>
+                <h3 className="font-semibold">Date limite</h3>
+                <DateComponent withDay withTime date={tournament.registrationDeadline} />
+              </div>
+            )}
             <p>
-              {tournament.teams.length}
-              {typeof tournament.maxTeams !== "undefined" && <> / {tournament.maxTeams}</>}
+              Ce tournoi de niveau <strong>{league.title}</strong> est réservé aux joueurs possédant
+              le badge <strong>{league.badge}</strong> ( elo compris entre {league.minElo} et{" "}
+              {league.maxElo} ) au moment de l'inscription
             </p>
-          </div>
-          {tournament.registrationDeadline && (
-            <div>
-              <h3 className="font-semibold">Date limite</h3>
-              <DateComponent withDay withTime date={tournament.registrationDeadline} />
-            </div>
-          )}
-          <p>
-            Ce tournoi de niveau <strong>{league.title}</strong> est réservé aux joueurs possédant
-            le badge <strong>{league.badge}</strong> ( elo compris entre {league.minElo} et{" "}
-            {league.maxElo} ) au moment de l'inscription
-          </p>
-        </CardBody>
-        <CardFooter className="justify-center">{renderRegisterButton()}</CardFooter>
-      </Card>
+          </CardBody>
+          <CardFooter className="justify-center">{renderRegisterButton()}</CardFooter>
+        </Card>
+      )}
+
       <TournamentRegisterModal
         isOpen={isRegisterModalOpen}
         league={league}

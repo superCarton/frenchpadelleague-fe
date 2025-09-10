@@ -1,5 +1,5 @@
-import PadelLoader from "@/components/padelLoader";
+import { SectionLoader } from "@/components/common/sectionLoader";
 
 export default function Loading() {
-  return <PadelLoader />;
+  return <SectionLoader />;
 }

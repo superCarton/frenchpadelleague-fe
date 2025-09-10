@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CircularProgress } from "@heroui/progress";
 
 import MatchComponent from "../matchComponent";
 import ErrorComponent from "../errorComponent";
+import { SectionLoader } from "../common/sectionLoader";
 
 import { Match, Tournament, TournamentRound } from "@/lib/interfaces";
 import { getMatchesByTournamentId } from "@/lib/api";
@@ -33,12 +33,7 @@ export default function TournamentMatches({ tournament }: { tournament: Tourname
   }, [tournament.id]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading)
-    return (
-      <div className="w-full flex h-[200px] justify-center items-center">
-        <CircularProgress label="Chargement des matchs..." />
-      </div>
-    );
+  if (loading) return <SectionLoader label="Chargement des matchs" />;
 
   const stages: Record<TournamentRound, Match[]> = matches.reduce(
     (acc, m) => {

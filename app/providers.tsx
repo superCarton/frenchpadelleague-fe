@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ToastProvider } from "@heroui/toast";
 
-import PadelLoader from "@/components/padelLoader";
+import PadelLoader from "@/components/common/padelLoader";
 import { useUserStore } from "@/store/store";
 
 export interface ProvidersProps {

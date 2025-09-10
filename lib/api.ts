@@ -47,7 +47,13 @@ const buildUrl = (url: string, fields: PopulateField[]): string => {
 
 const playerPopulate: PopulateField[] = [{ fieldName: "league", subFields: ["badgeImage"] }];
 
-const clubPopulate: PopulateField[] = ["logo", "coverImage", "address"];
+const clubPopulate: PopulateField[] = [
+  "logo",
+  "coverImage",
+  "address",
+  "padelCourts",
+  { fieldName: "opening_hours", subFields: ["days"] },
+];
 
 const teamPopulate: PopulateField[] = [
   { fieldName: "playerA", subFields: playerPopulate },
@@ -218,7 +224,6 @@ export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
     buildUrl("/tournaments", ["league", { fieldName: "club", subFields: clubPopulate }])
   );
   const data = await res.json();
-  console.log("here", res, data);
 
   if (!res.ok) throw new Error(data.error);
 
@@ -246,7 +251,7 @@ export async function getTournamentByDocId(
   const res = await fetch(
     buildUrl(`/tournaments/${tournamentDocId}`, [
       "league",
-      "teams",
+      { fieldName: "teams", subFields: teamPopulate },
       { fieldName: "club", subFields: clubPopulate },
       { fieldName: "referee", subFields: playerPopulate },
     ])
@@ -319,10 +324,7 @@ export async function getTeamsByTournamentId(
   tournamentId: number
 ): Promise<WithStrapiMeta<Team[]>> {
   const res = await fetch(
-    buildUrl(`/teams?filters[tournament][id][$eq]=${tournamentId}`, [
-      { fieldName: "playerA", subFields: playerPopulate },
-      { fieldName: "playerB", subFields: playerPopulate },
-    ])
+    buildUrl(`/teams?filters[tournament][id][$eq]=${tournamentId}`, teamPopulate)
   );
   const data = await res.json();
 
@@ -362,6 +364,22 @@ export async function getMatchesByTournamentId(
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error?.message || "Erreur /matches");
+
+  return data;
+}
+
+export async function getTournamentsByClubDocumentId(
+  clubDocumentId: string
+): Promise<WithStrapiMeta<Tournament[]>> {
+  const res = await fetch(
+    buildUrl(`/tournaments?filters[club][documentId][$eq]=${clubDocumentId}`, [
+      "league",
+      { fieldName: "club", subFields: clubPopulate },
+    ])
+  );
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentDocId");
 
   return data;
 }

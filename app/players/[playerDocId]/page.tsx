@@ -5,8 +5,6 @@ import dayjs from "dayjs";
 import { Avatar } from "@heroui/avatar";
 import clsx from "clsx";
 import { Chip } from "@heroui/chip";
-import { Tooltip } from "@heroui/tooltip";
-import { CircularProgress } from "@heroui/progress";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Button } from "@heroui/button";
@@ -17,7 +15,8 @@ import EloHistoryChart from "@/components/player/eloHistoryChart";
 import { Player } from "@/lib/interfaces";
 import { useUserStore } from "@/store/store";
 import ErrorComponent from "@/components/errorComponent";
-import { DateComponent } from "@/components/dateComponent";
+import { DateComponent } from "@/components/common/dateComponent";
+import { SectionLoader } from "@/components/common/sectionLoader";
 
 export default function PlayerPage() {
   const { playerDocId } = useParams<{ playerDocId: string }>();
@@ -45,35 +44,23 @@ export default function PlayerPage() {
   }, [playerDocId]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading)
-    return (
-      <div className="w-full flex h-[200px] justify-center items-center">
-        <CircularProgress label="Chargement du profil..." />
-      </div>
-    );
+  if (loading) {
+    return <SectionLoader label="Chargement du profil" />;
+  }
   if (!player) return <div className="p-6">Joueur introuvable</div>;
 
   const isPlayerConnected = profile && profile.documentId === player.documentId;
 
   const playerAge = dayjs().diff(dayjs(player.birthdate), "year");
-  // --- Niveau / progression ---
-  const min = player.league.minElo ?? 0;
-  const max = player.league.maxElo ?? 1;
-  const elo = player.elo ?? min;
-  const percent = Math.round(
-    Math.max(0, Math.min(100, ((elo - min) / Math.max(1, max - min)) * 100))
-  );
-  const toNext = Math.max(0, max - elo);
 
-  console.log(player);
   return (
-    <div className="max-w-xl mx-auto px-2 py-6 text-sm">
+    <div className="max-w-2xl mx-auto px-2 py-6 text-sm">
       {/* Cover + avatar */}
       <div className="flex flex-col item-center justify-center mb-8">
         <Image
           alt="Club background"
           className="object-cover"
-          src={`/cover-player-${player.gender}.png`}
+          src={`/cover-player-${player.gender === "female" ? "female" : "male"}.png`}
         />
         <div className="relative top-6">
           <Avatar
@@ -92,7 +79,7 @@ export default function PlayerPage() {
           {player.firstname} {player.lastname}
         </h2>
         {/* {isPlayerConnected && ( */}
-        <Button className="w-sm" color="secondary">
+        <Button className="w-sm" color="secondary" variant="bordered">
           Modifier mon profil
         </Button>
         {/* )} */}
@@ -119,61 +106,43 @@ export default function PlayerPage() {
         <section>
           <h3 className={sectionTitle()}>Niveau</h3>
 
-          <div className="flex flex-row items-center justify-center gap-10">
-            {/* Badge + Elo */}
-            <div className="flex flex-col items-center gap-4">
-              <Image
-                alt={`Badge ${player.league.title}`}
-                className="object-contain w-24 h-24"
-                height={120}
-                radius="none"
-                src={player.league.badgeImage.url}
-              />
-              <div className="text-gray-500 text-sm">{player.league.title}</div>
-              <div className="flex items-end justify-center gap-1 text-2xl font-bold text-gray-900">
-                {player.elo}
-                <span className="text-sm text-gray-500 font-medium">Elo</span>
-              </div>
-              <div>Meilleur Elo 725</div>
-            </div>
-
-            {/* Progression circulaire */}
-            <div className="flex flex-col items-center justify-center gap-4">
-              <Tooltip
-                content={`${elo} Elo • ${percent}% de la ${player.league.title}`}
-                placement="bottom"
-              >
-                <CircularProgress
-                  showValueLabel
-                  aria-label="Progression dans la ligue"
-                  classNames={{
-                    svg: "w-24 h-24",
-                    indicator: "text-green-500",
-                    track: "text-gray-200",
-                    value: "text-base font-semibold text-gray-800",
-                  }}
-                  value={percent}
+          <div className="flex flex-row gap-4">
+            <div className="flex flex-row items-center justify-center gap-4">
+              <div className="flex flex-col items-center gap-4">
+                <Image
+                  alt={`Badge ${player.league.title}`}
+                  className="object-contain w-24 h-24"
+                  height={120}
+                  radius="none"
+                  src={player.league.badgeImage.url}
                 />
-              </Tooltip>
-              <div className="text-xs text-gray-500 text-center">
-                {toNext > 0
-                  ? `Encore ${toNext} Elo avant la ligue supérieure`
-                  : `Au plafond de la ligue`}
+                <div className="text-gray-500 text-sm">{player.league.title}</div>
+                <div className="flex items-end justify-center gap-1 text-2xl font-bold text-gray-900">
+                  {player.elo}
+                  <span className="text-sm text-gray-500 font-medium">Elo</span>
+                </div>
+                <div>Meilleur Elo 725</div>
               </div>
             </div>
-          </div>
 
-          {/* Graphique d’évolution */}
-          <div className="mt-8">
-            <EloHistoryChart playerDocId={player.documentId} />
+            {/* Graphique d’évolution */}
+            <div className="flex-1">
+              <EloHistoryChart playerDocId={player.documentId} />
+            </div>
           </div>
         </section>
 
-        {/* --- Derniers matchs --- */}
         <section>
           <h3 className={sectionTitle()}>Derniers matchs</h3>
           <div />
         </section>
+
+        {isPlayerConnected && (
+          <section>
+            <h3 className={sectionTitle()}>Mes inscriptions aux tournois</h3>
+            <div />
+          </section>
+        )}
       </div>
     </div>
   );

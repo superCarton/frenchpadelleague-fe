@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
-import { CircularProgress } from "@heroui/progress";
 
 import ErrorComponent from "../errorComponent";
+import { SectionLoader } from "../common/sectionLoader";
 
 import { getGroupsByTournamentId } from "@/lib/api";
 import { TournamentGroupWithStats } from "@/lib/interfaces";
@@ -36,12 +36,7 @@ export default function TournamentGroups(props: TournamentGroupsProps) {
   }, [tournamentId]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading)
-    return (
-      <div className="w-full flex h-[200px] justify-center items-center">
-        <CircularProgress label="Chargement des poules..." />
-      </div>
-    );
+  if (loading) return <SectionLoader label="Chargement des poules" />;
 
   return (
     <>

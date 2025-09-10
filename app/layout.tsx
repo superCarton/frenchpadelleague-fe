@@ -10,8 +10,8 @@ import { siteConfig } from "@/config/site";
 import { fontOswald } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
-import PadelLoader from "@/components/padelLoader";
 import EmailConfirmationBanner from "@/components/emailConfirmationBanner";
+import { SectionLoader } from "@/components/common/sectionLoader";
 
 export const metadata: Metadata = {
   title: {
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <EmailConfirmationBanner />
             </div>
             <main className="pt-[64px] w-full bg-gray-50 text-gray-800">
-              <Suspense fallback={<PadelLoader />}>{children}</Suspense>
+              <Suspense fallback={<SectionLoader />}>{children}</Suspense>
             </main>
             <Footer />
           </div>

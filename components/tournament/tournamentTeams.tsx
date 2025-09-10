@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { Card } from "@heroui/card";
-import { CircularProgress } from "@heroui/progress";
 
 import { PlayerPreviewView } from "../player/playerPreview";
 import ErrorComponent from "../errorComponent";
+import { SectionLoader } from "../common/sectionLoader";
 
 import { Team, Tournament } from "@/lib/interfaces";
 import { getTeamsByTournamentId } from "@/lib/api";
@@ -33,12 +33,7 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
   }, [tournament.id]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading)
-    return (
-      <div className="w-full flex h-[200px] justify-center items-center">
-        <CircularProgress label="Chargement des équipes..." />
-      </div>
-    );
+  if (loading) return <SectionLoader label="Chargement des équipes" />;
 
   return (
     <section>

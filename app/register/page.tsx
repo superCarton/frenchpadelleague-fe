@@ -13,7 +13,7 @@ import { Radio, RadioGroup } from "@heroui/radio";
 import { siteConfig } from "@/config/site";
 import { createPlayer, getMePlayer } from "@/lib/api";
 import { useUserStore } from "@/store/store";
-import { PasswordInput } from "@/components/passwordInput";
+import { PasswordInput } from "@/components/common/passwordInput";
 
 const translateErrorMessageToFr = (message: string) => {
   let messageFR = message;
