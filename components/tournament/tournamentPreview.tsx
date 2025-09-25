@@ -10,14 +10,7 @@ import Gender from "../common/gender";
 import TournamentStatusBadge from "./tournamentStatusBadge";
 
 import { Tournament } from "@/lib/interfaces";
-
-const leagueGradients: Record<string, string> = {
-  bronze: "from-bronze to-bronze-light",
-  silver: "from-silver to-silver-light",
-  gold: "from-gold to-gold-light",
-  premium: "from-premium to-premium-light",
-  legend: "from-legend to-legend-light",
-};
+import { leagueGradients } from "@/lib/helpers";
 
 export const TournamentPreviewView = (props: { tournament: Tournament }) => {
   const { tournament } = props;

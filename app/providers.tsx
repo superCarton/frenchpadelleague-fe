@@ -36,7 +36,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
           setShowSplash(false);
           setHasBootstrapped(true);
         }, 1000); // durée du fade
-      }, 5000); // attente avant fade
+      }, 3000); // attente avant fade
 
       return () => clearTimeout(timer);
     }

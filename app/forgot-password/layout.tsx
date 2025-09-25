@@ -11,7 +11,7 @@ export default function UnSubscribeNewsletterLayout({ children }: { children: Re
         </CardHeader>
         <CardBody className="py-2">{children}</CardBody>
         <CardFooter className="text-small">
-          <Link as={NextLink} className="pl-2 text-small" href="/login">
+          <Link as={NextLink} className="pl-2 text-small" href="/login" underline="hover">
             Se connecter
           </Link>
         </CardFooter>

@@ -17,6 +17,14 @@ export const getPrettyErrorMessage = (message: string) => {
   return message;
 };
 
+export const leagueGradients = {
+  bronze: "from-bronze to-bronze-light",
+  silver: "from-silver to-silver-light",
+  gold: "from-gold to-gold-light",
+  premium: "from-premium to-premium-light",
+  legend: "from-legend to-legend-light",
+};
+
 export const leagueColors = {
   bronze: "#6f3310",
   silver: "#959084",

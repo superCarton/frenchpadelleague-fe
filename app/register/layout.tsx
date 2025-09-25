@@ -12,7 +12,7 @@ export default function RegisterLayout({ children }: { children: React.ReactNode
         <CardBody className="py-2">{children}</CardBody>
         <CardFooter className="text-small">
           Tu as déjà un compte ?{" "}
-          <Link as={NextLink} className="pl-2 text-small" href="/login">
+          <Link as={NextLink} className="pl-2 text-small" href="/login" underline="hover">
             Se connecter
           </Link>
         </CardFooter>

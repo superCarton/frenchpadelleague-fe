@@ -78,10 +78,20 @@ export default function TournamentBracket({
     <div className="relative w-full overflow-hidden">
       {/* Navigation */}
       <div className="flex justify-between mb-4">
-        <Link className="cursor-pointer" isDisabled={currentRound === "quarter"} onClick={goPrev}>
+        <Link
+          className="cursor-pointer"
+          isDisabled={currentRound === "quarter"}
+          underline="hover"
+          onClick={goPrev}
+        >
           ← Tour précédent
         </Link>
-        <Link className="cursor-pointer" isDisabled={currentRound === "final"} onClick={goNext}>
+        <Link
+          className="cursor-pointer"
+          isDisabled={currentRound === "final"}
+          underline="hover"
+          onClick={goNext}
+        >
           Tour suivant →
         </Link>
       </div>

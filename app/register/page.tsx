@@ -50,7 +50,7 @@ export default function RegisterPage() {
         lastname: data.lastname.toString(),
         birthdate: data.birthdate.toString(),
         gender: data.gender.toString(),
-        phoneNumber: data.phoneNumber ? data.phoneNumber.toString() : undefined,
+        phoneNumber: data.phoneNumber ? data.phoneNumber.toString().replace(/\s+/g, "") : undefined,
       });
 
       setToken(jwt);
@@ -148,10 +148,11 @@ export default function RegisterPage() {
           placeholder="+33 6 00 00 00 00"
           type="tel"
           validate={(value) => {
-            if (value && !/^\+?[0-9]{6,15}$/.test(value)) {
+            if (!value) return true;
+            const digits = value.replace(/\s+/g, "");
+            if (!/^\+?[0-9]{6,15}$/.test(digits)) {
               return "Veuillez entrer un numéro de téléphone valide";
             }
-
             return true;
           }}
         />

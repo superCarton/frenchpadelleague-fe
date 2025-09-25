@@ -90,6 +90,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                   as={NextLink}
                   className="flex align-center gap-2"
                   href={`mailto:${club.contactEmail}`}
+                  underline="hover"
                 >
                   <Mail size={16} />
                   {club.contactEmail}
@@ -103,6 +104,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                   as={NextLink}
                   className="flex align-center gap-2"
                   href={`tel:${club.phoneNumber}`}
+                  underline="hover"
                 >
                   <Phone size={16} />
                   {club.phoneNumber}
@@ -116,6 +118,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                   as={NextLink}
                   className="flex align-center gap-2"
                   href={club.instagramLink}
+                  underline="hover"
                 >
                   <Smartphone size={16} />
                   Instagram
@@ -129,6 +132,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                   as={NextLink}
                   className="flex align-center gap-2"
                   href={club.website}
+                  underline="hover"
                 >
                   <Globe size={16} />
                   {club.website}

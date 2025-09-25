@@ -1,5 +1,6 @@
 import {
   Club,
+  Gender,
   League,
   Match,
   Player,
@@ -45,7 +46,13 @@ const buildUrl = (url: string, fields: PopulateField[]): string => {
   return `${API_URL}${url}${url.includes("?") ? "&" : "?"}${queryString}`;
 };
 
-const playerPopulate: PopulateField[] = [{ fieldName: "league", subFields: ["badgeImage"] }];
+const leaguePopulate: PopulateField[] = ["badgeImage"];
+
+const playerPopulate: PopulateField[] = [
+  "photo",
+  "playerStat",
+  { fieldName: "league", subFields: leaguePopulate },
+];
 
 const clubPopulate: PopulateField[] = [
   "logo",
@@ -86,11 +93,8 @@ export async function login(email: string, password: string): Promise<{ jwt: str
       password,
     }),
   });
-
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur login");
-
   return data;
 }
 
@@ -101,7 +105,6 @@ export async function forgotPassword(email: string) {
     body: JSON.stringify({ email }),
   });
   const data = await res.json();
-
   if (!res.ok)
     throw new Error(data.error?.message || "Erreur lors du renouvelement du mot de passe");
 
@@ -116,9 +119,7 @@ export async function resetPassword(code: string, newPassword: string) {
   });
 
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur lors du changement du mot de passe");
-
   return data;
 }
 
@@ -127,7 +128,6 @@ export async function confirmEmail(code: string) {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });
-
   if (!res.ok) throw new Error("Erreur lors de la confirmation de l'email");
 }
 
@@ -141,9 +141,7 @@ export async function getMeProfiles(jwt: string): Promise<Profiles> {
   });
 
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /me/profiles");
-
   return data;
 }
 
@@ -157,27 +155,21 @@ export async function getMePlayer(jwt: string): Promise<Player> {
   });
 
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /me/profiles");
-
   return data;
 }
 
 export async function getPlayerByDocId(playerDocId: string): Promise<WithStrapiMeta<Player>> {
   const res = await fetch(buildUrl(`/players/${playerDocId}`, playerPopulate));
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players/:playerDocId");
-
   return data;
 }
 
 export async function getPlayers(): Promise<WithStrapiMeta<Player[]>> {
   const res = await fetch(buildUrl("/players", playerPopulate));
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players");
-
   return data;
 }
 
@@ -188,9 +180,7 @@ export async function createPlayer(payload: any) {
     body: JSON.stringify(payload),
   });
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur création joueur");
-
   return data;
 }
 
@@ -201,9 +191,7 @@ export async function subscribeNewsletter(email: string) {
     body: JSON.stringify({ data: { email } }),
   });
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur lors de l'ajout à la newsletter");
-
   return data;
 }
 
@@ -212,16 +200,17 @@ export async function unsubscribeNewsletter(token: string) {
     method: "DELETE",
   });
   const data = await res.json();
-
   if (!res.ok)
     throw new Error(data.error?.message || "Erreur lors de la suppression de la newsletter");
-
   return data;
 }
 
 export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
   const res = await fetch(
-    buildUrl("/tournaments", ["league", { fieldName: "club", subFields: clubPopulate }])
+    buildUrl("/tournaments", [
+      { fieldName: "league", subFields: leaguePopulate },
+      { fieldName: "club", subFields: clubPopulate },
+    ])
   );
   const data = await res.json();
 
@@ -235,7 +224,10 @@ export async function getNextTournaments(): Promise<WithStrapiMeta<Tournament[]>
   const res = await fetch(
     buildUrl(
       `/tournaments?filters[startDate][$gt]=${today}&sort=startDate:asc&pagination[limit]=3`,
-      ["league", { fieldName: "club", subFields: clubPopulate }]
+      [
+        { fieldName: "league", subFields: leaguePopulate },
+        { fieldName: "club", subFields: clubPopulate },
+      ]
     )
   );
   const data = await res.json();
@@ -250,34 +242,29 @@ export async function getTournamentByDocId(
 ): Promise<WithStrapiMeta<Tournament>> {
   const res = await fetch(
     buildUrl(`/tournaments/${tournamentDocId}`, [
-      "league",
+      { fieldName: "league", subFields: leaguePopulate },
+      "courts",
       { fieldName: "teams", subFields: teamPopulate },
       { fieldName: "club", subFields: clubPopulate },
       { fieldName: "referee", subFields: playerPopulate },
     ])
   );
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentDocId");
-
   return data;
 }
 
 export async function getClubs(): Promise<WithStrapiMeta<Club[]>> {
   const res = await fetch(buildUrl("/clubs", clubPopulate));
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs");
-
   return data;
 }
 
 export async function getClubByDocId(clubDocId: string): Promise<WithStrapiMeta<Club>> {
   const res = await fetch(buildUrl(`/clubs/${clubDocId}`, clubPopulate));
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs/:clubDocId");
-
   return data;
 }
 
@@ -286,9 +273,7 @@ export async function getPlayersByLeague(leagueId: number): Promise<WithStrapiMe
     buildUrl(`/players?filters[league][id][$eq]=${leagueId}`, playerPopulate)
   );
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players?league=leagueId");
-
   return data;
 }
 
@@ -314,9 +299,7 @@ export async function registerTeam(
   });
 
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /teams/register");
-
   return data;
 }
 
@@ -327,9 +310,7 @@ export async function getTeamsByTournamentId(
     buildUrl(`/teams?filters[tournament][id][$eq]=${tournamentId}`, teamPopulate)
   );
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /teams");
-
   return data;
 }
 
@@ -349,9 +330,7 @@ export async function getGroupsByTournamentId(
     ])
   );
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournament-groups");
-
   return data;
 }
 
@@ -362,9 +341,7 @@ export async function getMatchesByTournamentId(
     buildUrl(`/matches?filters[tournament][id][$eq]=${tournamentId}`, matchPopulate)
   );
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /matches");
-
   return data;
 }
 
@@ -373,14 +350,12 @@ export async function getTournamentsByClubDocumentId(
 ): Promise<WithStrapiMeta<Tournament[]>> {
   const res = await fetch(
     buildUrl(`/tournaments?filters[club][documentId][$eq]=${clubDocumentId}`, [
-      "league",
+      { fieldName: "league", subFields: leaguePopulate },
       { fieldName: "club", subFields: clubPopulate },
     ])
   );
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentDocId");
-
   return data;
 }
 
@@ -424,11 +399,69 @@ export async function getPlayerEloHistory(playerDocId: string) {
   });
 }
 
-export async function getAllLeagues(): Promise<WithStrapiMeta<League[]>> {
-  const res = await fetch(buildUrl(`/leagues`, []));
+export async function getAllLeaguesByGender(gender: Gender): Promise<WithStrapiMeta<League[]>> {
+  const res = await fetch(buildUrl(`/leagues?filters[gender][$eq]=${gender}`, leaguePopulate));
   const data = await res.json();
-
   if (!res.ok) throw new Error(data.error || "Erreur /leagues");
+  return data;
+}
 
+export async function updateMeElo(
+  {
+    fftPadelRank,
+    quizzTotalPoints,
+  }: {
+    fftPadelRank?: number;
+    quizzTotalPoints?: number;
+  },
+  jwt: string
+): Promise<Player> {
+  if (!jwt) throw new Error("Utilisateur non authentifié");
+
+  const res = await fetch(buildUrl("/me/player/level-quizz", leaguePopulate), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify({ fftPadelRank, quizzTotalPoints }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /me/player/level-quizz");
+  return data;
+}
+
+export async function uploadMeProfilePhoto(file: File, jwt: string): Promise<Player> {
+  if (!jwt) throw new Error("Utilisateur non authentifié");
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch(buildUrl("/me/player/photo", []), {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /me/player/photo");
+  return data;
+}
+
+export async function updateMeProfile(
+  profileUpdates: { firstname: string; lastname: string; email: string; phoneNumber?: string },
+  jwt: string
+): Promise<Player> {
+  if (!jwt) throw new Error("Utilisateur non authentifié");
+  const res = await fetch(buildUrl("/me/update-profile", playerPopulate), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(profileUpdates),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /me/update-profile");
   return data;
 }

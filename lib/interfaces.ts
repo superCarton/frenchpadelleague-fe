@@ -30,13 +30,16 @@ export interface Address {
   longitude: number;
 }
 
+export type Badge = "bronze" | "silver" | "gold" | "premium" | "legend";
+
 export interface League extends StrapiDocument {
-  badge: "bronze" | "silver" | "gold" | "premium" | "legend";
+  badge: Badge;
   description: string;
   title: string;
   minElo: number;
   maxElo: number;
   badgeImage: StrapiImage;
+  gender: Gender;
 }
 
 export interface GameFormat extends StrapiDocument {
@@ -55,17 +58,29 @@ export interface User extends StrapiDocument {
   confirmed: boolean;
 }
 
+export interface PlayerStat {
+  elo: number;
+  bestElo: number;
+  mixedElo?: number;
+  bestMixedElo?: number;
+  quizzDone: boolean;
+  fftPadelRank?: number;
+  quizzTotalPoints?: number;
+}
+
 export interface Player extends StrapiDocument {
   firstname: string;
   lastname: string;
   birthdate: string;
   gender: Gender;
-  elo: number;
   league: League;
   user: User;
   club?: Club;
   matchesHistory: Match[];
   publishedAt: string;
+  playerStat: PlayerStat;
+  photo?: StrapiImage;
+  phoneNumber?: string;
 }
 
 export interface Profiles {
@@ -108,7 +123,7 @@ export interface Club extends StrapiDocument {
   logo: StrapiImage;
   coverImage: StrapiImage;
   opening_hours?: OpeningHours[];
-  padelCourts?: PadelCourt[];
+  padelCourts: PadelCourt[];
 }
 
 export interface Team extends StrapiDocument {
@@ -164,13 +179,14 @@ export interface Tournament extends StrapiDocument {
   registrationDeadline?: string;
   description?: string;
   prizeMoney?: number;
-  allocatedCourts: number;
   registrationFee?: number;
   maxTeams?: number;
   matches: Match[];
   tournament_groups: TournamentGroup[];
   referee: Player;
   teams: Team[];
+  courts: PadelCourt[];
+  ballsType: string;
 }
 
 export interface TournamentGroup extends StrapiDocument {

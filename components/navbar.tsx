@@ -117,6 +117,7 @@ export const Navbar = () => {
                 className={`transition-transform border-2 border-${profile.league.badge}`}
                 name={`${profile.firstname.at(0)}${profile.lastname.at(0)}`}
                 size="md"
+                src={profile.photo?.url}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" disabledKeys={["name"]} variant="flat">

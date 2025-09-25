@@ -22,6 +22,7 @@ export default function AddressLink({
       href={`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`}
       rel="noopener noreferrer"
       target="_blank"
+      underline="hover"
     >
       <MapPin size={16} />
       {fullAddress}

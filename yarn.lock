@@ -247,6 +247,14 @@
     "@heroui/react-utils" "2.1.12"
     "@heroui/shared-utils" "2.1.10"
 
+"@heroui/badge@^2.2.16":
+  version "2.2.16"
+  resolved "https://registry.yarnpkg.com/@heroui/badge/-/badge-2.2.16.tgz#91fc76d7c13837a2de28b795bcbeed66e68e7c8d"
+  integrity sha512-gW0aVdic+5jwDhifIB8TWJ6170JOOzLn7Jkomj2IsN2G+oVrJ7XdJJGr2mYkoeNXAwYlYVyXTANV+zPSGKbx7A==
+  dependencies:
+    "@heroui/react-utils" "2.1.13"
+    "@heroui/shared-utils" "2.1.11"
+
 "@heroui/breadcrumbs@2.2.20", "@heroui/breadcrumbs@^2.2.20":
   version "2.2.20"
   resolved "https://registry.yarnpkg.com/@heroui/breadcrumbs/-/breadcrumbs-2.2.20.tgz#8e64cf34db68952c91ae829ea0f311da7ccc4011"

@@ -28,7 +28,7 @@ export const PlayerPreviewView = (props: {
   const prettyNameWithElo = (
     <>
       {shortName ? `${player.firstname.at(0)}.` : player.firstname} {player.lastname}
-      {hideElo ? "" : <span className="font-normal text-gray-400"> ({player.elo})</span>}
+      {hideElo ? "" : <span className="font-normal text-gray-400"> ({player.playerStat.elo})</span>}
     </>
   );
 

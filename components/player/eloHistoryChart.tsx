@@ -15,13 +15,13 @@ import {
 } from "recharts";
 import dayjs from "dayjs";
 
-import { League } from "@/lib/interfaces";
-import { getAllLeagues } from "@/lib/api";
+import { League, Player } from "@/lib/interfaces";
+import { getAllLeaguesByGender } from "@/lib/api";
 import { leagueColors } from "@/lib/helpers";
 
 type Range = "all" | "12m";
 
-export default function EloHistoryChart({ playerDocId }: { playerDocId: string }) {
+export default function EloHistoryChart({ player }: { player: Player }) {
   const playerStats = {
     bestElo: 810,
     eloHistory: [
@@ -74,7 +74,7 @@ export default function EloHistoryChart({ playerDocId }: { playerDocId: string }
     setLoading(true);
     const fetchLeagues = async () => {
       try {
-        const { data } = await getAllLeagues();
+        const { data } = await getAllLeaguesByGender(player.gender);
         setLeagues(data || []);
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement des ligues");

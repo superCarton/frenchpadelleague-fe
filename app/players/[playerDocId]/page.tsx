@@ -3,36 +3,63 @@
 import { Image } from "@heroui/image";
 import dayjs from "dayjs";
 import { Avatar } from "@heroui/avatar";
-import clsx from "clsx";
-import { Chip } from "@heroui/chip";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@heroui/button";
+import { Card, CardBody, CardHeader } from "@heroui/card";
+import { Link } from "@heroui/link";
+import { Chip } from "@heroui/chip";
+import { Badge } from "@heroui/badge";
+import { Camera } from "lucide-react";
+import { useDisclosure } from "@heroui/react";
 
-import { getPlayerByDocId } from "@/lib/api";
-import { pageTitle, sectionTitle } from "@/components/primitives";
-import EloHistoryChart from "@/components/player/eloHistoryChart";
+import { getMePlayer, getPlayerByDocId } from "@/lib/api";
+import { sectionTitle } from "@/components/primitives";
 import { Player } from "@/lib/interfaces";
 import { useUserStore } from "@/store/store";
 import ErrorComponent from "@/components/errorComponent";
-import { DateComponent } from "@/components/common/dateComponent";
 import { SectionLoader } from "@/components/common/sectionLoader";
+import Gender from "@/components/common/gender";
+import { leagueGradients } from "@/lib/helpers";
+import PlayerLevelQuiz from "@/components/player/playerLevelQuizzModal";
+import PlayerUploadPictureModal from "@/components/player/playerUploadPictureModal";
+import PlayerEditProfileModal from "@/components/player/playerEditProfileModal";
 
 export default function PlayerPage() {
   const { playerDocId } = useParams<{ playerDocId: string }>();
-  const { profile } = useUserStore();
+  const { profile, token, setProfile } = useUserStore();
+  const router = useRouter();
 
   const [player, setPlayer] = useState<Player | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+  const {
+    isOpen: isLevelQuizzModalOpen,
+    onOpen: onOpenLevelQuizzModal,
+    onClose: onCloseLevelQuizzModal,
+  } = useDisclosure();
+  const {
+    isOpen: isUploadProfilePictureModalOpen,
+    onOpen: onOpenUploadProfilePictureModal,
+    onClose: onCloseUploadProfilePictureModal,
+  } = useDisclosure();
+  const {
+    isOpen: isEditProfileModalOpen,
+    onOpen: onOpenEditProfileModal,
+    onClose: onCloseEditProfileModal,
+  } = useDisclosure();
+
+  const fetchCurrentPlayer = () => {
     setLoading(true);
     const fetchPlayer = async () => {
       try {
         const { data } = await getPlayerByDocId(playerDocId);
 
         setPlayer(data);
+        if (!data.playerStat.quizzDone) {
+          onOpenLevelQuizzModal();
+        }
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement du tournoi");
       } finally {
@@ -41,74 +68,79 @@ export default function PlayerPage() {
     };
 
     fetchPlayer();
+  };
+
+  const refreshMePlayer = async () => {
+    if (token) {
+      const profile = await getMePlayer(token);
+      setProfile(profile);
+    }
+  };
+
+  const refresh = () => {
+    fetchCurrentPlayer();
+    refreshMePlayer();
+  };
+
+  useEffect(() => {
+    fetchCurrentPlayer();
   }, [playerDocId]);
 
-  if (error) return <ErrorComponent error={error} />;
-  if (loading) {
-    return <SectionLoader label="Chargement du profil" />;
-  }
-  if (!player) return <div className="p-6">Joueur introuvable</div>;
+  const renderContent = () => {
+    if (error) return <ErrorComponent error={error} />;
+    if (loading) {
+      return <SectionLoader label="Chargement du profil" />;
+    }
+    if (!player) return <div className="p-6">Joueur introuvable</div>;
+    const isPlayerConnected = profile && profile.documentId === player.documentId;
+    const playerAge = dayjs().diff(dayjs(player.birthdate), "year");
 
-  const isPlayerConnected = profile && profile.documentId === player.documentId;
-
-  const playerAge = dayjs().diff(dayjs(player.birthdate), "year");
-
-  return (
-    <div className="max-w-2xl mx-auto px-2 py-6 text-sm">
-      {/* Cover + avatar */}
-      <div className="flex flex-col item-center justify-center mb-8">
-        <Image
-          alt="Club background"
-          className="object-cover"
-          src={`/cover-player-${player.gender === "female" ? "female" : "male"}.png`}
-        />
-        <div className="relative top-6">
-          <Avatar
-            isBordered
-            className="z-10 justify-center absolute left-1/2 -translate-x-1/2 -bottom-0"
-            color="secondary"
-            name={`${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`}
-            size="lg"
-          />
-        </div>
-      </div>
-
-      {/* Nom + infos rapides */}
-      <div className="w-full flex flex-col items-center justify-center space-y-2">
-        <h2 className={clsx(pageTitle(), " !mb-2")}>
-          {player.firstname} {player.lastname}
-        </h2>
-        {/* {isPlayerConnected && ( */}
-        <Button className="w-sm" color="secondary" variant="bordered">
-          Modifier mon profil
-        </Button>
-        {/* )} */}
-        <div className="flex flex-col items-center text-sm text-gray-500 gap-1 mb-8">
-          <div>
-            Membre depuis le <DateComponent withYear date={player.publishedAt} />
-          </div>
-          <div>
-            <span>{playerAge} ans</span>
-          </div>
-          <div className="space-x-1">
-            Forme :{" "}
-            {[true, true, false, true, true].map((win, i) => (
-              <Chip key={i} color={win ? "success" : "danger"} radius="sm" variant="flat">
-                {win ? "V" : "D"}
-              </Chip>
-            ))}
-          </div>
-          <div>68% de victoires</div>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <section>
-          <h3 className={sectionTitle()}>Niveau</h3>
-
-          <div className="flex flex-row gap-4">
-            <div className="flex flex-row items-center justify-center gap-4">
-              <div className="flex flex-col items-center gap-4">
+    return (
+      <div className="max-w-2xl mx-auto px-2 py-6 text-sm space-y-4">
+        <Card
+          className={`mx-auto rounded-sm shadow-sm hover:shadow-md transition overflow-hidden border border-${player.league.badge} p-0`}
+        >
+          <CardHeader
+            className={`bg-gradient-to-r px-2 py-2 sm:px-6 sm:py-3 ${leagueGradients[player.league.badge]}`}
+          >
+            <h3 className="text-white font-bold text-xl uppercase tracking-wide">
+              {player.firstname} {player.lastname}
+            </h3>
+          </CardHeader>
+          <CardBody className="flex sm:flex-row flex-col px-8 py-4 gap-6 items-center justify-center">
+            <div className="flex justify-center w-[200px]">
+              <Badge
+                isOneChar
+                className="cursor-pointer"
+                color="primary"
+                content={<Camera size={16} />}
+                hidden={!isPlayerConnected}
+                placement="top-right"
+                shape="circle"
+                showOutline={false}
+                size="lg"
+                variant="solid"
+                onClick={onOpenUploadProfilePictureModal}
+              >
+                <Avatar
+                  className="w-40 h-40"
+                  name={`${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`}
+                  size="lg"
+                  src={player.photo?.url}
+                />
+              </Badge>
+            </div>
+            <div className="w-full flex flex-col items-center justify-center space-y-3">
+              <div className="flex flex-row items-center justify-center gap-4 p-2">
+                <div>
+                  <div className="flex items-end justify-center gap-1 text-4xl font-bold text-gray-900">
+                    {player.playerStat.elo}
+                    <span className="text-sm text-gray-500 font-medium">Elo</span>
+                  </div>
+                  <div className="text-tiny text-gray-500">
+                    Meilleur Elo {player.playerStat.bestElo}
+                  </div>
+                </div>
                 <Image
                   alt={`Badge ${player.league.title}`}
                   className="object-contain w-24 h-24"
@@ -116,34 +148,96 @@ export default function PlayerPage() {
                   radius="none"
                   src={player.league.badgeImage.url}
                 />
-                <div className="text-gray-500 text-sm">{player.league.title}</div>
-                <div className="flex items-end justify-center gap-1 text-2xl font-bold text-gray-900">
-                  {player.elo}
-                  <span className="text-sm text-gray-500 font-medium">Elo</span>
-                </div>
-                <div>Meilleur Elo 725</div>
               </div>
+              <div className="flex flex-col items-center text-tiny text-gray-500 gap-1">
+                {/* <div>
+                Membre depuis le <DateComponent withYear date={player.publishedAt} />
+              </div> */}
+                <div className="flex flex-row gap-1">
+                  {playerAge} ans, section <Gender className="!gap-1" gender={player.gender} />
+                </div>
+                <div className="space-x-1">
+                  Forme :{" "}
+                  {[true, true, false, true, true].map((win, i) => (
+                    <Chip key={i} color={win ? "success" : "danger"} radius="sm" variant="flat">
+                      {win ? "V" : "D"}
+                    </Chip>
+                  ))}
+                </div>
+                <div>68% de victoires</div>
+              </div>
+              {isPlayerConnected && (
+                <div className="flex flex-row items-center gap-2">
+                  <Link
+                    className="cursor-pointer text-small"
+                    color="foreground"
+                    underline="hover"
+                    onPress={onOpenEditProfileModal}
+                  >
+                    Modifier mon profil
+                  </Link>
+                  {!player.playerStat.quizzDone && (
+                    <Link
+                      className="cursor-pointer text-small"
+                      color="foreground"
+                      underline="hover"
+                      onPress={onOpenLevelQuizzModal}
+                    >
+                      Ajuster mon niveau
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
+          </CardBody>
+        </Card>
 
-            {/* Graphique d’évolution */}
-            <div className="flex-1">
-              <EloHistoryChart playerDocId={player.documentId} />
-            </div>
-          </div>
+        <section>
+          <h3 className={sectionTitle()}>Statistiques</h3>
+          <div className="text-sm text-gray-500">Prochainement disponible</div>
         </section>
 
         <section>
           <h3 className={sectionTitle()}>Derniers matchs</h3>
-          <div />
+          <div className="text-sm text-gray-500">Prochainement disponible</div>
         </section>
 
         {isPlayerConnected && (
           <section>
             <h3 className={sectionTitle()}>Mes inscriptions aux tournois</h3>
-            <div />
+            <div className="text-sm text-gray-500">Prochainement disponible</div>
+            <div className="mx-auto mt-4 text-center">
+              <Button color="primary" onPress={() => router.push("/tournaments")}>
+                Voir tous les tournois
+              </Button>
+            </div>
           </section>
         )}
       </div>
-    </div>
+    );
+  };
+
+  return (
+    <>
+      {renderContent()}
+
+      <PlayerLevelQuiz
+        isOpen={isLevelQuizzModalOpen}
+        onClose={onCloseLevelQuizzModal}
+        onQuizzFinished={refresh}
+      />
+
+      <PlayerUploadPictureModal
+        isOpen={isUploadProfilePictureModalOpen}
+        onClose={onCloseUploadProfilePictureModal}
+        onUploaded={refresh}
+      />
+
+      <PlayerEditProfileModal
+        isOpen={isEditProfileModalOpen}
+        onClose={onCloseEditProfileModal}
+        onUpdated={refresh}
+      />
+    </>
   );
 }

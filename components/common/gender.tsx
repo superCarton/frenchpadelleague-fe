@@ -6,8 +6,10 @@ import { TournamentGender } from "@/lib/interfaces";
 export default function Gender({
   gender,
   className,
+  iconOnly = false,
 }: {
   gender: TournamentGender;
+  iconOnly?: boolean;
   className?: string;
 }) {
   return (
@@ -15,7 +17,7 @@ export default function Gender({
       {gender === "male" && (
         <>
           <Mars size={16} />
-          Messieurs
+          {!iconOnly && "Messieurs"}
         </>
       )}
       {gender === "female" && (

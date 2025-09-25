@@ -15,9 +15,10 @@ import AddressLink from "../common/addressLink";
 import { PlayerPreviewView } from "../player/playerPreview";
 import Gender from "../common/gender";
 import { DateRangeComponent } from "../common/dateRangeComponent";
+import { TennisBallIcon } from "../icons";
 
 import { TournamentPreviewView } from "./tournamentPreview";
-import TournamentRegisterModal from "./tournamentRegister";
+import TournamentRegisterModal from "./tournamentRegisterModal";
 
 import { Player, Tournament } from "@/lib/interfaces";
 
@@ -41,7 +42,7 @@ export default function TournamentInfos({
 
   const renderRegisterButton = () => {
     const isCurrentPlayerInTournamentLeague =
-      profile && profile.elo > league.minElo && profile.elo < league.maxElo;
+      profile && profile.league.documentId === tournament.league.documentId;
 
     if (!profile) {
       return (
@@ -56,23 +57,23 @@ export default function TournamentInfos({
     }
     if (!profile.user.confirmed) {
       return (
-        <p className="text-warning-600 text-sm">
+        <Alert color="warning" variant="solid">
           Tu dois confirmer ton email pour pouvoir t'inscrire
-        </p>
+        </Alert>
       );
     }
     if (tournament.currentStatus !== "registrations-opened") {
       return (
-        <p className="text-gray-600 text-sm">
+        <Alert color="secondary" variant="solid">
           Les inscriptions au tournoi ne sont pas encore ouvertes
-        </p>
+        </Alert>
       );
     }
     if (!isCurrentPlayerInTournamentLeague) {
       return (
-        <p className="text-warning-600 text-sm">
+        <Alert color="warning" variant="solid">
           Tu n'es pas éligible pour t'inscrire à ce tournoi
-        </p>
+        </Alert>
       );
     }
 
@@ -92,7 +93,7 @@ export default function TournamentInfos({
       <TournamentPreviewView tournament={tournament} />
       {playerTeamRegistered && (
         <Alert color="secondary" variant="solid">
-          Vous êtes inscrits à ce tournoi avec{" "}
+          Tu es inscris à ce tournoi avec{" "}
           {playerTeamRegistered.playerA.documentId === profile.documentId
             ? playerTeamRegistered.playerB.firstname
             : playerTeamRegistered.playerA.firstname}
@@ -127,11 +128,34 @@ export default function TournamentInfos({
 
           <Gender gender={tournament.gender} />
 
-          {tournament.allocatedCourts && (
-            <p className="flex items-center gap-2">
-              <ScanLine size={16} />
-              {tournament.allocatedCourts} courts alloués
-            </p>
+          {tournament.courts && tournament.courts.length > 0 && (
+            <div className="flex flex-col gap-2">
+              {tournament.courts.filter((court) => court.type === "outdoor").length > 0 && (
+                <p className="flex items-center gap-2">
+                  <ScanLine size={16} />
+                  <span>
+                    {tournament.courts.filter((court) => court.type === "outdoor").length} court(s)
+                    extérieur(s)
+                  </span>
+                </p>
+              )}
+              {tournament.courts.filter((court) => court.type === "indoor").length > 0 && (
+                <p className="flex items-center gap-2">
+                  <ScanLine size={16} />
+                  <span>
+                    {tournament.courts.filter((court) => court.type === "indoor").length} court(s)
+                    couvert(s)
+                  </span>
+                </p>
+              )}
+            </div>
+          )}
+
+          {tournament.ballsType && (
+            <div className="flex items-center gap-2">
+              <TennisBallIcon size={16} />
+              <span>Balles {tournament.ballsType}</span>
+            </div>
           )}
 
           <div className="flex items-center gap-2">

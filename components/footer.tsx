@@ -16,7 +16,7 @@ export default function Footer() {
               <h3 className="text-lg font-semibold mb-3 uppercase">Support</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link as={NextLink} className="text-white" href="/discover-fpl">
+                  <Link as={NextLink} className="text-white" href="/discover-fpl" underline="hover">
                     Découvrir la FPL
                   </Link>
                 </li>
@@ -46,6 +46,7 @@ export default function Footer() {
                     as={NextLink}
                     className="text-white flex align-center"
                     href="mailto:contact@frenchpadelleague.com"
+                    underline="hover"
                   >
                     <Mail className="mr-2" size={16} /> contact@frenchpadelleague.com
                   </Link>
@@ -56,6 +57,7 @@ export default function Footer() {
                     as={NextLink}
                     className="text-white flex align-center"
                     href="tel:+33698311099"
+                    underline="hover"
                   >
                     <Phone className="mr-2" size={16} /> +33 6 98 31 10 99
                   </Link>
@@ -66,6 +68,7 @@ export default function Footer() {
                     as={NextLink}
                     className="text-white flex align-center"
                     href="https://www.instagram.com/frenchpadelleague"
+                    underline="hover"
                   >
                     <Smartphone className="mr-2" size={16} /> Instagram
                   </Link>

@@ -160,7 +160,7 @@ export default function Home() {
           </div>
           <div className="mx-auto mt-4 text-center">
             <Button color="primary" onPress={() => router.push("/tournaments")}>
-              Tous les tournois
+              Voir tous les tournois
             </Button>
           </div>
         </div>

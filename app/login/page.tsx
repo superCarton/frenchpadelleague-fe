@@ -47,10 +47,6 @@ export default function LoginPage() {
       if (e.currentTarget) {
         e.currentTarget.reset();
       }
-      addToast({
-        title: "Login success",
-        color: "success",
-      });
       router.push(`/players/${profile.documentId}`);
     } catch (err: any) {
       let description;
@@ -91,7 +87,7 @@ export default function LoginPage() {
         name="password"
         placeholder="••••••••"
       />
-      <Link as={NextLink} className="self-end text-small" href="/forgot-password">
+      <Link as={NextLink} className="self-end text-small" href="/forgot-password" underline="hover">
         Mot de passe oublié ?
       </Link>
       <Button
