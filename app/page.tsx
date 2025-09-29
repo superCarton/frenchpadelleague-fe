@@ -5,10 +5,12 @@ import { Image } from "@heroui/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
+import { Tab, Tabs } from "@heroui/tabs";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { sectionTitle } from "@/components/primitives";
-import { Tournament } from "@/lib/interfaces";
-import { getNextTournaments } from "@/lib/api";
+import { League, Tournament } from "@/lib/interfaces";
+import { getAllLeagues, getNextTournaments } from "@/lib/api";
 import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
 import { useUserStore } from "@/store/store";
 
@@ -16,6 +18,8 @@ export default function Home() {
   const router = useRouter();
   const [loadingNextTournamenents, setLoadingNextTournaments] = useState(true);
   const [nextTournaments, setNextTournaments] = useState<Tournament[]>([]);
+  const [loadingLeagues, setLoadingLeagues] = useState(true);
+  const [leagues, setLeagues] = useState<League[]>([]);
   const { profile } = useUserStore();
 
   useEffect(() => {
@@ -31,6 +35,21 @@ export default function Home() {
     }
 
     fetchTournaments();
+  }, []);
+
+  useEffect(() => {
+    async function fetchLeagues() {
+      try {
+        const { data } = await getAllLeagues();
+
+        setLeagues(data);
+      } catch (err: any) {
+      } finally {
+        setLoadingLeagues(false);
+      }
+    }
+
+    fetchLeagues();
   }, []);
 
   return (
@@ -88,29 +107,55 @@ export default function Home() {
       <section className="bg-gray-50 py-16 px-4 w-full">
         <div className="max-w-7xl mx-auto">
           <h2 className={sectionTitle()}>Nos Catégories</h2>
-          <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto text-center">
-            {[
-              {
-                src: "/badge-bronze.png",
-                label: "Découverte du padel compétitif. Accessible et loisir",
-              },
-              {
-                src: "/badge-silver.png",
-                label: "Niveau intermédiaire, jeu régulier et structuré",
-              },
-              { src: "/badge-gold.png", label: "Compétiteur confirmé. Bon rythme et expérience" },
-              { src: "/badge-premium.png", label: "Haut niveau. Technique et intensité" },
-              {
-                src: "/badge-legend.png",
-                label: "Joueurs élite. Jeu complet et exigences élevées",
-              },
-            ].map((badge, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <Image alt={badge.label} className="mb-4" src={badge.src} width={100} />
-                <span className="text-sm text-gray-700">{badge.label}</span>
-              </div>
-            ))}
+          <div>
+            {loadingLeagues ? (
+              <Spinner size="lg" />
+            ) : (
+              <Tabs
+                disableAnimation
+                aria-label="Options"
+                color="primary"
+                radius="full"
+                size="md"
+                variant="bordered"
+              >
+                {[
+                  { type: "male", label: "Messieurs" },
+                  { type: "female", label: "Dames" },
+                ].map((gender) => (
+                  <Tab key={gender.type} title={<div className="min-w-[80px]">{gender.label}</div>}>
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={gender.type}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.25 }}
+                      >
+                        <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto text-center mt-4">
+                          {leagues
+                            .filter((l) => l.gender == gender.type)
+                            .map((league) => (
+                              <div key={league.documentId} className="flex flex-col items-center">
+                                <Image
+                                  alt={league.description}
+                                  className="mb-4"
+                                  height={153}
+                                  src={league.badgeImage.url}
+                                  width={100}
+                                />
+                                <span className="text-sm text-gray-700">{league.description}</span>
+                              </div>
+                            ))}
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </Tab>
+                ))}
+              </Tabs>
+            )}
           </div>
+
           <div className="text-center mt-10 max-w-3xl mx-auto text-gray-700">
             <p>
               Chaque joueur s’inscrit dans la catégorie correspondant à son niveau de jeu. Des

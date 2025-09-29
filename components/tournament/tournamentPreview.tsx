@@ -12,16 +12,19 @@ import TournamentStatusBadge from "./tournamentStatusBadge";
 import { Tournament } from "@/lib/interfaces";
 import { leagueGradients } from "@/lib/helpers";
 
-export const TournamentPreviewView = (props: { tournament: Tournament }) => {
-  const { tournament } = props;
+export const TournamentPreviewView = (props: {
+  tournament: Tournament;
+  disableClick?: boolean;
+}) => {
+  const { tournament, disableClick = false } = props;
   const router = useRouter();
 
   return (
     <div
-      className="mx-auto rounded-sm shadow-sm hover:shadow-md transition overflow-hidden border border-gray-200 cursor-pointer"
+      className={`mx-auto rounded-sm shadow-sm hover:shadow-md transition overflow-hidden border border-gray-200 ${!disableClick && "cursor-pointer"}`}
       role="button"
       tabIndex={0}
-      onClick={() => router.push(`/tournaments/${tournament.documentId}`)}
+      onClick={() => (!disableClick ? router.push(`/tournaments/${tournament.documentId}`) : {})}
       onKeyDown={(e) => {
         if (e.key === "Enter") router.push(`/tournaments/${tournament.documentId}`);
       }}

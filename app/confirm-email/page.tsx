@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Spinner } from "@heroui/spinner";
 import { Alert } from "@heroui/alert";
 import { addToast } from "@heroui/toast";
@@ -9,6 +9,7 @@ import { addToast } from "@heroui/toast";
 import { confirmEmail } from "@/lib/api";
 
 export default function ConfirmEmailPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const code = searchParams.get("code");
 
@@ -23,11 +24,13 @@ export default function ConfirmEmailPage() {
       }
       try {
         await confirmEmail(code);
+        setStatus("success");
         addToast({
           color: "success",
           title: "Adresse email validée",
           description: "Tu peux maintenant t'inscrire aux tournois FPL",
         });
+        router.push("/");
       } catch (err) {
         setStatus("error");
       }

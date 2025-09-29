@@ -2,11 +2,10 @@
 
 import { Button } from "@heroui/button";
 import { Card, CardHeader, CardBody, CardFooter } from "@heroui/card";
-import { AlignEndHorizontal, Calendar, Euro, Gavel, ScanLine, Utensils } from "lucide-react";
+import { AlignEndHorizontal, Calendar, Euro, Gavel, Utensils } from "lucide-react";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
-import { useState } from "react";
-import { Alert } from "@heroui/react";
+import { Alert, useDisclosure } from "@heroui/react";
 
 import { DateComponent } from "../common/dateComponent";
 import { sectionTitle } from "../primitives";
@@ -15,22 +14,42 @@ import AddressLink from "../common/addressLink";
 import { PlayerPreviewView } from "../player/playerPreview";
 import Gender from "../common/gender";
 import { DateRangeComponent } from "../common/dateRangeComponent";
-import { TennisBallIcon } from "../icons";
+import { TennisBallIcon, TennisCourtIcon } from "../icons";
 
 import { TournamentPreviewView } from "./tournamentPreview";
 import TournamentRegisterModal from "./tournamentRegisterModal";
 
-import { Player, Tournament } from "@/lib/interfaces";
+import { Tournament } from "@/lib/interfaces";
+import { getMePlayer } from "@/lib/api";
+import { useUserStore } from "@/store/store";
 
 export default function TournamentInfos({
   tournament,
-  profile,
+  onUpdate,
 }: {
   tournament: Tournament;
-  profile: Player | null;
+  onUpdate: () => void;
 }) {
   const { league, club, teams } = tournament;
-  const [isRegisterModalOpen, setRegisterModalOpen] = useState<boolean>(false);
+  const { token, profile, setProfile } = useUserStore();
+  const {
+    isOpen: isRegisterModalOpen,
+    onOpen: onOpenRegisterModal,
+    onClose: onCloseRegisterModal,
+  } = useDisclosure();
+
+  const refreshMePlayer = async () => {
+    if (token) {
+      const profile = await getMePlayer(token);
+      setProfile(profile);
+    }
+  };
+
+  const refresh = () => {
+    onUpdate();
+    refreshMePlayer();
+    onCloseRegisterModal();
+  };
 
   const playerTeamRegistered =
     profile &&
@@ -57,32 +76,28 @@ export default function TournamentInfos({
     }
     if (!profile.user.confirmed) {
       return (
-        <Alert color="warning" variant="solid">
+        <Alert color="warning" variant="faded">
           Tu dois confirmer ton email pour pouvoir t'inscrire
         </Alert>
       );
     }
     if (tournament.currentStatus !== "registrations-opened") {
       return (
-        <Alert color="secondary" variant="solid">
+        <Alert color="warning" variant="faded">
           Les inscriptions au tournoi ne sont pas encore ouvertes
         </Alert>
       );
     }
     if (!isCurrentPlayerInTournamentLeague) {
       return (
-        <Alert color="warning" variant="solid">
+        <Alert color="warning" variant="faded">
           Tu n'es pas éligible pour t'inscrire à ce tournoi
         </Alert>
       );
     }
 
     return (
-      <Button
-        className="w-full sm:w-auto"
-        color="primary"
-        onPress={() => setRegisterModalOpen(true)}
-      >
+      <Button className="w-full sm:w-auto" color="primary" onPress={onOpenRegisterModal}>
         S'inscrire au tournoi
       </Button>
     );
@@ -90,16 +105,7 @@ export default function TournamentInfos({
 
   return (
     <div className="space-y-6">
-      <TournamentPreviewView tournament={tournament} />
-      {playerTeamRegistered && (
-        <Alert color="secondary" variant="solid">
-          Tu es inscris à ce tournoi avec{" "}
-          {playerTeamRegistered.playerA.documentId === profile.documentId
-            ? playerTeamRegistered.playerB.firstname
-            : playerTeamRegistered.playerA.firstname}
-        </Alert>
-      )}
-
+      <TournamentPreviewView disableClick tournament={tournament} />
       <section>
         <h2 className={sectionTitle()}>Description</h2>
         <div className="text-gray-700 space-y-2">
@@ -132,7 +138,7 @@ export default function TournamentInfos({
             <div className="flex flex-col gap-2">
               {tournament.courts.filter((court) => court.type === "outdoor").length > 0 && (
                 <p className="flex items-center gap-2">
-                  <ScanLine size={16} />
+                  <TennisCourtIcon size={16} />
                   <span>
                     {tournament.courts.filter((court) => court.type === "outdoor").length} court(s)
                     extérieur(s)
@@ -141,7 +147,7 @@ export default function TournamentInfos({
               )}
               {tournament.courts.filter((court) => court.type === "indoor").length > 0 && (
                 <p className="flex items-center gap-2">
-                  <ScanLine size={16} />
+                  <TennisCourtIcon size={16} />
                   <span>
                     {tournament.courts.filter((court) => court.type === "indoor").length} court(s)
                     couvert(s)
@@ -247,7 +253,7 @@ export default function TournamentInfos({
         isOpen={isRegisterModalOpen}
         league={league}
         tournament={tournament}
-        onClose={() => setRegisterModalOpen(false)}
+        onClose={refresh}
       />
     </div>
   );

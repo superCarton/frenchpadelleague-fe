@@ -38,7 +38,7 @@ export const Navbar = () => {
   const router = useRouter();
 
   const navItems: NavLink[] = [
-    { label: "Découvrir la FPL", href: "/discover-fpl" },
+    { label: "Découvrir la FPL", href: "/" },
     // { label: "Tester mon niveau", href: "/test-level" },
     { label: "Rechercher une compétition", href: "/tournaments" },
     { label: "Rechercher un club", href: "/clubs" },
@@ -66,7 +66,7 @@ export const Navbar = () => {
       <NavbarContent className="hidden sm:flex gap-0" justify="center">
         <div className="flex gap-4">
           <NavbarItem key="discover-fpl">
-            <Link as={NextLink} className="text-white" href="/discover-fpl">
+            <Link as={NextLink} className="text-white" href="/">
               Découvrir la FPL
             </Link>
           </NavbarItem>

@@ -33,26 +33,24 @@ export const PlayerPreviewView = (props: {
   );
 
   return (
-    <div className="flex items-center space-x-4">
-      <User
-        avatarProps={{
-          name: `${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`,
-          className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"}`,
-          size: avatarSize && avatarSize !== "tiny" ? avatarSize : "md",
-        }}
-        className="cursor-pointer"
-        description={
-          !hideDescription ? <div className="text-gray-400">{player.league.badge}</div> : null
-        }
-        name={
-          <div
-            className={`${nameFont || "font-bold"} ${profile && profile.documentId === player.documentId ? "text-blue-800" : "text-gray-600"}`}
-          >
-            {prettyNameWithElo}
-          </div>
-        }
-        onClick={() => router.push(`/players/${player.documentId}`)}
-      />
-    </div>
+    <User
+      avatarProps={{
+        name: `${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`,
+        className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"}`,
+        size: avatarSize && avatarSize !== "tiny" ? avatarSize : "md",
+      }}
+      className={`cursor-pointer ${avatarSize === "tiny" && "!gap-1"}`}
+      description={
+        !hideDescription ? <div className="text-gray-400">{player.league.badge}</div> : null
+      }
+      name={
+        <div
+          className={`${nameFont || "font-bold"} ${profile && profile.documentId === player.documentId ? "text-blue-800" : "text-gray-600"}`}
+        >
+          {prettyNameWithElo}
+        </div>
+      }
+      onClick={() => router.push(`/players/${player.documentId}`)}
+    />
   );
 };

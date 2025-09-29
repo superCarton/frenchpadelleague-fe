@@ -16,7 +16,7 @@ export default function Footer() {
               <h3 className="text-lg font-semibold mb-3 uppercase">Support</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link as={NextLink} className="text-white" href="/discover-fpl" underline="hover">
+                  <Link as={NextLink} className="text-white" href="/" underline="hover">
                     Découvrir la FPL
                   </Link>
                 </li>

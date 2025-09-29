@@ -16,7 +16,7 @@ import {
 import dayjs from "dayjs";
 
 import { League, Player } from "@/lib/interfaces";
-import { getAllLeaguesByGender } from "@/lib/api";
+import { getAllLeagues } from "@/lib/api";
 import { leagueColors } from "@/lib/helpers";
 
 type Range = "all" | "12m";
@@ -74,7 +74,7 @@ export default function EloHistoryChart({ player }: { player: Player }) {
     setLoading(true);
     const fetchLeagues = async () => {
       try {
-        const { data } = await getAllLeaguesByGender(player.gender);
+        const { data } = await getAllLeagues(player.gender);
         setLeagues(data || []);
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement des ligues");

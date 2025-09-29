@@ -4607,3 +4607,38 @@ export const TennisBallIcon = ({ size = 24, ...props }: IconSvgProps) => (
     </g>
   </svg>
 );
+
+export const TennisCourtIcon = ({ size = 24, ...props }: IconSvgProps) => (
+  <svg
+    fill="none"
+    height={size}
+    stroke="black"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    viewBox="0 0 100 140"
+    width={size}
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    {/* Périmètre du court */}
+    <rect
+      height="132"
+      rx="10"
+      ry="10"
+      strokeWidth="6" // Épaisseur augmentée
+      width="92"
+      x="4"
+      y="4"
+    />
+
+    {/* Filet central */}
+    <line strokeWidth="6" x1="4" x2="96" y1="70" y2="70" />
+
+    {/* Lignes de service */}
+    <line strokeWidth="5" x1="4" x2="96" y1="40" y2="40" />
+    <line strokeWidth="5" x1="4" x2="96" y1="100" y2="100" />
+
+    {/* Ligne centrale de service */}
+    <line strokeWidth="5" x1="50" x2="50" y1="40" y2="100" />
+  </svg>
+);

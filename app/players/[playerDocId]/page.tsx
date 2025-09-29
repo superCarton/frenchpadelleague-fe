@@ -24,6 +24,7 @@ import { leagueGradients } from "@/lib/helpers";
 import PlayerLevelQuiz from "@/components/player/playerLevelQuizzModal";
 import PlayerUploadPictureModal from "@/components/player/playerUploadPictureModal";
 import PlayerEditProfileModal from "@/components/player/playerEditProfileModal";
+import PlayerTournamentsRegistrations from "@/components/player/playerTournamentsRegistrations";
 
 export default function PlayerPage() {
   const { playerDocId } = useParams<{ playerDocId: string }>();
@@ -85,6 +86,8 @@ export default function PlayerPage() {
   useEffect(() => {
     fetchCurrentPlayer();
   }, [playerDocId]);
+
+  const winLoseLast5Matches: (boolean | null)[] = [null, null, null, null, null];
 
   const renderContent = () => {
     if (error) return <ErrorComponent error={error} />;
@@ -158,9 +161,14 @@ export default function PlayerPage() {
                 </div>
                 <div className="space-x-1">
                   Forme :{" "}
-                  {[true, true, false, true, true].map((win, i) => (
-                    <Chip key={i} color={win ? "success" : "danger"} radius="sm" variant="flat">
-                      {win ? "V" : "D"}
+                  {winLoseLast5Matches.map((win, i) => (
+                    <Chip
+                      key={i}
+                      color={win !== null ? (win ? "success" : "danger") : "default"}
+                      radius="sm"
+                      variant="flat"
+                    >
+                      {win !== null ? (win ? "V" : "D") : "N"}
                     </Chip>
                   ))}
                 </div>
@@ -205,7 +213,7 @@ export default function PlayerPage() {
         {isPlayerConnected && (
           <section>
             <h3 className={sectionTitle()}>Mes inscriptions aux tournois</h3>
-            <div className="text-sm text-gray-500">Prochainement disponible</div>
+            <PlayerTournamentsRegistrations playerDocumentId={playerDocId} />
             <div className="mx-auto mt-4 text-center">
               <Button color="primary" onPress={() => router.push("/tournaments")}>
                 Voir tous les tournois

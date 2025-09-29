@@ -133,7 +133,7 @@ export interface Team extends StrapiDocument {
   name: string;
   confirmed: boolean;
   seed?: number;
-  elo: number;
+  elo?: number;
 }
 
 export type MatchStatus = "wont-play" | "scheduled" | "started" | "finished";

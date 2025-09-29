@@ -7,6 +7,7 @@ import {
   Profiles,
   Team,
   Tournament,
+  TournamentGender,
   TournamentGroupWithStats,
   WithStrapiMeta,
 } from "./interfaces";
@@ -62,9 +63,15 @@ const clubPopulate: PopulateField[] = [
   { fieldName: "opening_hours", subFields: ["days"] },
 ];
 
+const tournamentPreviewPopulate: PopulateField[] = [
+  { fieldName: "league", subFields: leaguePopulate },
+  { fieldName: "club", subFields: clubPopulate },
+];
+
 const teamPopulate: PopulateField[] = [
   { fieldName: "playerA", subFields: playerPopulate },
   { fieldName: "playerB", subFields: playerPopulate },
+  { fieldName: "tournament", subFields: tournamentPreviewPopulate },
 ];
 
 const matchPopulate: PopulateField[] = [
@@ -82,6 +89,14 @@ const matchPopulate: PopulateField[] = [
     fieldName: "winner",
     subFields: teamPopulate,
   },
+];
+
+const tournamentDetailsPopulate: PopulateField[] = [
+  { fieldName: "league", subFields: leaguePopulate },
+  "courts",
+  { fieldName: "teams", subFields: teamPopulate },
+  { fieldName: "club", subFields: clubPopulate },
+  { fieldName: "referee", subFields: playerPopulate },
 ];
 
 export async function login(email: string, password: string): Promise<{ jwt: string }> {
@@ -166,8 +181,12 @@ export async function getPlayerByDocId(playerDocId: string): Promise<WithStrapiM
   return data;
 }
 
-export async function getPlayers(): Promise<WithStrapiMeta<Player[]>> {
-  const res = await fetch(buildUrl("/players", playerPopulate));
+export async function getPlayers(gender?: TournamentGender): Promise<WithStrapiMeta<Player[]>> {
+  let url = "/players";
+  if (gender) {
+    url += `?filters[gender][$eq]=${gender === "mixed" ? "male|female" : gender}`;
+  }
+  const res = await fetch(buildUrl(url, playerPopulate));
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Erreur /players");
   return data;
@@ -206,12 +225,7 @@ export async function unsubscribeNewsletter(token: string) {
 }
 
 export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
-  const res = await fetch(
-    buildUrl("/tournaments", [
-      { fieldName: "league", subFields: leaguePopulate },
-      { fieldName: "club", subFields: clubPopulate },
-    ])
-  );
+  const res = await fetch(buildUrl("/tournaments", tournamentPreviewPopulate));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error);
@@ -224,10 +238,7 @@ export async function getNextTournaments(): Promise<WithStrapiMeta<Tournament[]>
   const res = await fetch(
     buildUrl(
       `/tournaments?filters[startDate][$gt]=${today}&sort=startDate:asc&pagination[limit]=3`,
-      [
-        { fieldName: "league", subFields: leaguePopulate },
-        { fieldName: "club", subFields: clubPopulate },
-      ]
+      tournamentPreviewPopulate
     )
   );
   const data = await res.json();
@@ -240,15 +251,7 @@ export async function getNextTournaments(): Promise<WithStrapiMeta<Tournament[]>
 export async function getTournamentByDocId(
   tournamentDocId: string
 ): Promise<WithStrapiMeta<Tournament>> {
-  const res = await fetch(
-    buildUrl(`/tournaments/${tournamentDocId}`, [
-      { fieldName: "league", subFields: leaguePopulate },
-      "courts",
-      { fieldName: "teams", subFields: teamPopulate },
-      { fieldName: "club", subFields: clubPopulate },
-      { fieldName: "referee", subFields: playerPopulate },
-    ])
-  );
+  const res = await fetch(buildUrl(`/tournaments/${tournamentDocId}`, tournamentDetailsPopulate));
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentDocId");
   return data;
@@ -308,6 +311,19 @@ export async function getTeamsByTournamentId(
 ): Promise<WithStrapiMeta<Team[]>> {
   const res = await fetch(
     buildUrl(`/teams?filters[tournament][id][$eq]=${tournamentId}`, teamPopulate)
+  );
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /teams");
+  return data;
+}
+
+export async function getTeamsByPlayerDocId(playerDocId: string): Promise<WithStrapiMeta<Team[]>> {
+  const res = await fetch(
+    buildUrl(
+      `/teams?filters[$or][0][playerA][documentId][$eq]=${playerDocId}&
+      filters[$or][1][playerB][documentId][$eq]=${playerDocId}&sort=tournament.startDate:asc`,
+      teamPopulate
+    )
   );
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Erreur /teams");
@@ -399,8 +415,12 @@ export async function getPlayerEloHistory(playerDocId: string) {
   });
 }
 
-export async function getAllLeaguesByGender(gender: Gender): Promise<WithStrapiMeta<League[]>> {
-  const res = await fetch(buildUrl(`/leagues?filters[gender][$eq]=${gender}`, leaguePopulate));
+export async function getAllLeagues(gender?: Gender): Promise<WithStrapiMeta<League[]>> {
+  let url = "/leagues?&sort=minElo";
+  if (gender) {
+    url += `&filters[gender][$eq]=${gender}`;
+  }
+  const res = await fetch(buildUrl(url, leaguePopulate));
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || "Erreur /leagues");
   return data;

@@ -33,7 +33,7 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
   }, [tournament.id]);
 
   if (error) return <ErrorComponent error={error} />;
-  if (loading) return <SectionLoader label="Chargement des équipes" />;
+  if (loading) return <SectionLoader label="Chargement des équipes inscrites" />;
 
   return (
     <section>
@@ -44,23 +44,30 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
       </div>
 
       <div className="flex flex-col gap-2">
+        {teams.length === 0 && (
+          <div className="text-gray-500 text-sm">Aucunes équipes inscrites</div>
+        )}
         {teams
           .sort((a, b) => {
-            return b.playerA.elo + b.playerB.elo - (a.playerA.elo + a.playerB.elo);
+            return (
+              b.playerA.playerStat.elo +
+              b.playerB.playerStat.elo -
+              (a.playerA.playerStat.elo + a.playerB.playerStat.elo)
+            );
           })
           .map((team, index) => (
             <Card
               key={team.playerA.documentId}
               className="grid grid-cols-[6fr_3fr_3fr] items-center px-4 py-2 shadow-sm hover:shadow-md transition"
             >
-              <div className="flex flex-col gap-1">
+              <div className="space-y-1">
                 <PlayerPreviewView avatarSize="tiny" nameFont="font-normal" player={team.playerA} />
                 <PlayerPreviewView avatarSize="tiny" nameFont="font-normal" player={team.playerB} />
               </div>
 
               <div className="text-center text-gray-500">{index + 1}</div>
               <div className="text-center text-gray-500">
-                {Math.ceil((team.playerA.elo + team.playerB.elo) / 2)}
+                {Math.ceil((team.playerA.playerStat.elo + team.playerB.playerStat.elo) / 2)}
               </div>
             </Card>
           ))}

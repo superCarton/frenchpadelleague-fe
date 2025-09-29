@@ -7,11 +7,13 @@ import { Image } from "@heroui/image";
 import { BreadcrumbItem, Breadcrumbs } from "@heroui/breadcrumbs";
 import { Users, Trophy, Info, Table, HandFist } from "lucide-react";
 import NextLink from "next/link";
+import { Button } from "@heroui/button";
+import { Alert } from "@heroui/alert";
+import { addToast } from "@heroui/toast";
 
 import { Tournament } from "@/lib/interfaces";
 import { getTournamentByDocId } from "@/lib/api";
 import { DateRangeComponent } from "@/components/common/dateRangeComponent";
-import { useUserStore } from "@/store/store";
 import TournamentInfos from "@/components/tournament/tournamentInfos";
 import TournamentTeams from "@/components/tournament/tournamentTeams";
 import TournamentPhases from "@/components/tournament/tournamentPhases";
@@ -19,16 +21,18 @@ import TournamentMatches from "@/components/tournament/tournamentMatches";
 import TournamentRanking from "@/components/tournament/tournamentRanking";
 import ErrorComponent from "@/components/errorComponent";
 import { SectionLoader } from "@/components/common/sectionLoader";
+import { useUserStore } from "@/store/store";
 
 export default function TournamentPage() {
   const { tournamentDocId } = useParams<{ tournamentDocId: string }>();
-  const { profile } = useUserStore();
 
   const [tournament, setTournament] = useState<Tournament | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+  const { profile } = useUserStore();
+
+  const fetchCurrentTournament = () => {
     setLoading(true);
     const fetchTournament = async () => {
       try {
@@ -43,6 +47,10 @@ export default function TournamentPage() {
     };
 
     fetchTournament();
+  };
+
+  useEffect(() => {
+    fetchCurrentTournament();
   }, [tournamentDocId]);
 
   if (error) return <ErrorComponent error={error} />;
@@ -50,6 +58,15 @@ export default function TournamentPage() {
   if (!tournament) return <div className="p-6">Tournoi introuvable</div>;
 
   const { league, club } = tournament;
+
+  const playerTeamRegistered =
+    profile &&
+    tournament &&
+    tournament.teams.find(
+      (team) =>
+        team.playerA.documentId === profile.documentId ||
+        team.playerB.documentId === profile.documentId
+    );
 
   return (
     <div className="bg-gray-50">
@@ -63,6 +80,7 @@ export default function TournamentPage() {
 
       <Breadcrumbs
         className="w-full text-gray-600 flex justify-center mt-2"
+        radius="md"
         separator="/"
         size="md"
         variant="bordered"
@@ -80,6 +98,43 @@ export default function TournamentPage() {
         </BreadcrumbItem>
       </Breadcrumbs>
 
+      {playerTeamRegistered && (
+        <div className="max-w-2xl mx-auto px-2 pt-2">
+          <Alert
+            isClosable
+            className="py-2 px-2"
+            color="primary"
+            endContent={
+              tournament.currentStatus == "registrations-opened" ? (
+                <Button
+                  color="secondary"
+                  variant="light"
+                  onPress={() =>
+                    addToast({
+                      color: "warning",
+                      title: "Tu dois contacter le juge arbitre pour te désinscrire du tournoi",
+                    })
+                  }
+                >
+                  Désinscrire l'équipe
+                </Button>
+              ) : null
+            }
+            variant="faded"
+          >
+            <div className="flex flex-row gap-2 items-center">
+              Tu es inscrit à ce tournoi avec{" "}
+              {
+                (playerTeamRegistered.playerA.documentId === profile.documentId
+                  ? playerTeamRegistered.playerB
+                  : playerTeamRegistered.playerA
+                ).firstname
+              }
+            </div>
+          </Alert>
+        </div>
+      )}
+
       <div className="max-w-2xl mx-auto px-2 pb-6 pt-2">
         <Tabs
           aria-label="Onglets du tournoi"
@@ -89,6 +144,7 @@ export default function TournamentPage() {
             tab: "shrink-0 w-auto flex-initial data-[selected=true]:text-primary",
           }}
           color="primary"
+          radius="full"
           variant="bordered"
         >
           <Tab
@@ -100,7 +156,7 @@ export default function TournamentPage() {
               </span>
             }
           >
-            <TournamentInfos profile={profile} tournament={tournament} />
+            <TournamentInfos tournament={tournament} onUpdate={fetchCurrentTournament} />
           </Tab>
           <Tab
             key="teams"
@@ -115,6 +171,9 @@ export default function TournamentPage() {
           </Tab>
           <Tab
             key="table"
+            isDisabled={
+              tournament.currentStatus !== "started" && tournament.currentStatus !== "completed"
+            }
             title={
               <span className="flex items-center gap-1">
                 <Table size={16} />
@@ -126,6 +185,9 @@ export default function TournamentPage() {
           </Tab>
           <Tab
             key="matches"
+            isDisabled={
+              tournament.currentStatus !== "started" && tournament.currentStatus !== "completed"
+            }
             title={
               <span className="flex items-center gap-1">
                 <HandFist size={16} />
