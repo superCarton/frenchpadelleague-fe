@@ -29,7 +29,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
     club.padelCourts && club.padelCourts.filter((court) => court.type === "outdoor").length;
 
   return (
-    <div className="max-w-xl mx-auto px-2 py-6">
+    <div className="max-w-xl mx-auto px-2 py-6 text-gray-700">
       <div className="flex flex-col item-center justify-center mb-8">
         <Image alt="Club background" className="object-cover" src={club.coverImage.url} />
         <div className="relative top-6">
@@ -81,14 +81,14 @@ export default async function ClubPage({ params }: ClubPageProps) {
           <h3 className={sectionTitle()}>Contact</h3>
           <ul className="space-y-2">
             <li>
-              <AddressLink address={club.address} />
+              <AddressLink address={club.address} className="text-gray-700" />
             </li>
             {club.contactEmail && (
               <li>
                 <Link
                   isExternal
                   as={NextLink}
-                  className="flex align-center gap-2"
+                  className="flex align-center gap-2 text-gray-700"
                   href={`mailto:${club.contactEmail}`}
                   underline="hover"
                 >
@@ -102,7 +102,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                 <Link
                   isExternal
                   as={NextLink}
-                  className="flex align-center gap-2"
+                  className="flex align-center gap-2 text-gray-700"
                   href={`tel:${club.phoneNumber}`}
                   underline="hover"
                 >
@@ -116,7 +116,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                 <Link
                   isExternal
                   as={NextLink}
-                  className="flex align-center gap-2"
+                  className="flex align-center gap-2 text-gray-700"
                   href={club.instagramLink}
                   underline="hover"
                 >
@@ -130,7 +130,7 @@ export default async function ClubPage({ params }: ClubPageProps) {
                 <Link
                   isExternal
                   as={NextLink}
-                  className="flex align-center gap-2"
+                  className="flex align-center gap-2 text-gray-700"
                   href={club.website}
                   underline="hover"
                 >

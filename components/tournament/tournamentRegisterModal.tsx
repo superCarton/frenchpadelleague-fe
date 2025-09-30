@@ -86,7 +86,7 @@ export default function TournamentRegisterModal({
           >
             {players.map((player) => (
               <AutocompleteItem key={player.documentId}>
-                {player.firstname} {player.lastname} ({player.playerStat.elo})
+                {player.firstname} {player.lastname} ({player.elo.current})
               </AutocompleteItem>
             ))}
           </Autocomplete>

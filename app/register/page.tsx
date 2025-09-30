@@ -84,7 +84,7 @@ export default function RegisterPage() {
 
   return (
     <div>
-      <Form className="" onSubmit={handleRegister}>
+      <Form onSubmit={handleRegister}>
         <RadioGroup
           isRequired
           errorMessage="Veuillez sélectionner votre genre"

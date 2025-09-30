@@ -41,7 +41,7 @@ export const DateRangeComponent = ({
     if (!start.isSame(end, "day")) {
       return ` - ${formatDate(end, abbrev, withTime, withDay, withYear)}`;
     }
-    if (!start.isSame(end, "hour")) {
+    if (!start.isSame(end, "hour") && withTime) {
       return `-${end.format("HH[h]mm")}`;
     }
 
@@ -52,9 +52,6 @@ export const DateRangeComponent = ({
     <span>
       {formatDate(start, abbrev, withTime, withDay, withYear)}
       {renderEndDate()}
-      {end && !start.isSame(end, "day")
-        ? ` - ${formatDate(end, abbrev, withTime, withDay, withYear)}`
-        : ""}
     </span>
   );
 };

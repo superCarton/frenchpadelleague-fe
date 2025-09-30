@@ -51,7 +51,8 @@ const leaguePopulate: PopulateField[] = ["badgeImage"];
 
 const playerPopulate: PopulateField[] = [
   "photo",
-  "playerStat",
+  "elo",
+  "selfEvaluation",
   { fieldName: "league", subFields: leaguePopulate },
 ];
 
@@ -320,8 +321,7 @@ export async function getTeamsByTournamentId(
 export async function getTeamsByPlayerDocId(playerDocId: string): Promise<WithStrapiMeta<Team[]>> {
   const res = await fetch(
     buildUrl(
-      `/teams?filters[$or][0][playerA][documentId][$eq]=${playerDocId}&
-      filters[$or][1][playerB][documentId][$eq]=${playerDocId}&sort=tournament.startDate:asc`,
+      `/teams?filters[$or][0][playerA][documentId][$eq]=${playerDocId}&filters[$or][1][playerB][documentId][$eq]=${playerDocId}&sort=tournament.startDate:asc`,
       teamPopulate
     )
   );
@@ -426,29 +426,31 @@ export async function getAllLeagues(gender?: Gender): Promise<WithStrapiMeta<Lea
   return data;
 }
 
-export async function updateMeElo(
+export async function selfEvaluation(
   {
     fftPadelRank,
-    quizzTotalPoints,
+    fftLicenceNumber,
+    quizScore,
   }: {
     fftPadelRank?: number;
-    quizzTotalPoints?: number;
+    fftLicenceNumber?: string;
+    quizScore?: number;
   },
   jwt: string
 ): Promise<Player> {
   if (!jwt) throw new Error("Utilisateur non authentifié");
 
-  const res = await fetch(buildUrl("/me/player/level-quizz", leaguePopulate), {
+  const res = await fetch(buildUrl("/me/player/self-evaluation", leaguePopulate), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${jwt}`,
     },
-    body: JSON.stringify({ fftPadelRank, quizzTotalPoints }),
+    body: JSON.stringify({ fftPadelRank, fftLicenceNumber, quizScore }),
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /me/player/level-quizz");
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /me/player/self-evaluation");
   return data;
 }
 

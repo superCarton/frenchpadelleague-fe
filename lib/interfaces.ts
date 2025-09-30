@@ -30,7 +30,17 @@ export interface Address {
   longitude: number;
 }
 
-export type Badge = "bronze" | "silver" | "gold" | "premium" | "legend";
+export type Badge =
+  | "bronze"
+  | "silver"
+  | "gold"
+  | "premium"
+  | "legend"
+  | "quartz"
+  | "saphir"
+  | "emeraude"
+  | "rubis"
+  | "diamant";
 
 export interface League extends StrapiDocument {
   badge: Badge;
@@ -58,14 +68,18 @@ export interface User extends StrapiDocument {
   confirmed: boolean;
 }
 
-export interface PlayerStat {
-  elo: number;
-  bestElo: number;
-  mixedElo?: number;
-  bestMixedElo?: number;
-  quizzDone: boolean;
+export interface PlayerElo {
+  current: number;
+  best: number;
+  mixed: number;
+  bestMixed: number;
+}
+
+export interface PlayerSelfEvaluation {
+  date: string;
+  quizScore?: number;
   fftPadelRank?: number;
-  quizzTotalPoints?: number;
+  fftLicenceNumber?: string;
 }
 
 export interface Player extends StrapiDocument {
@@ -78,7 +92,8 @@ export interface Player extends StrapiDocument {
   club?: Club;
   matchesHistory: Match[];
   publishedAt: string;
-  playerStat: PlayerStat;
+  elo: PlayerElo;
+  selfEvaluation?: PlayerSelfEvaluation;
   photo?: StrapiImage;
   phoneNumber?: string;
 }

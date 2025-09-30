@@ -44,8 +44,8 @@ export const TournamentPreviewView = (props: {
           src={tournament.club.logo.url}
         />
 
-        <div className="flex flex-col justify-center">
-          <h4 className="font-semibold text-gray-900 text-lg flex gap-2 flex-col sm:flex-row">
+        <div className="flex flex-col flex-1 justify-center">
+          <h4 className="font-semibold text-gray-900 text-lg flex gap-2 flex-col justify-between sm:flex-row">
             <div>{tournament.club.name}</div>
             <TournamentStatusBadge status={tournament.currentStatus} />
           </h4>

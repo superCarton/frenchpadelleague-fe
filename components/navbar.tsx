@@ -26,6 +26,7 @@ import {
 import { useRouter } from "next/navigation";
 
 import { useUserStore } from "@/store/store";
+import { getPlayerPictureUrl } from "@/lib/helpers";
 
 type NavLink = {
   label: string | ReactNode;
@@ -117,7 +118,7 @@ export const Navbar = () => {
                 className={`transition-transform border-2 border-${profile.league.badge}`}
                 name={`${profile.firstname.at(0)}${profile.lastname.at(0)}`}
                 size="md"
-                src={profile.photo?.url}
+                src={getPlayerPictureUrl(profile)}
               />
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" disabledKeys={["name"]} variant="flat">

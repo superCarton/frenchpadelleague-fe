@@ -167,10 +167,7 @@ export default function TournamentInfos({
           <div className="flex items-center gap-2">
             <Euro size={16} />
             <span>
-              Prize money{" "}
-              {typeof tournament.prizeMoney !== "undefined"
-                ? `${tournament.prizeMoney}$`
-                : "non défini"}
+              Prize money {tournament.prizeMoney ? `${tournament.prizeMoney}$` : "non défini"}
             </span>
           </div>
 

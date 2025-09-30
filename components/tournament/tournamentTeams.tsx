@@ -50,9 +50,9 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
         {teams
           .sort((a, b) => {
             return (
-              b.playerA.playerStat.elo +
-              b.playerB.playerStat.elo -
-              (a.playerA.playerStat.elo + a.playerB.playerStat.elo)
+              b.playerA.elo.current +
+              b.playerB.elo.current -
+              (a.playerA.elo.current + a.playerB.elo.current)
             );
           })
           .map((team, index) => (
@@ -67,7 +67,7 @@ export default function TournamentTeams({ tournament }: { tournament: Tournament
 
               <div className="text-center text-gray-500">{index + 1}</div>
               <div className="text-center text-gray-500">
-                {Math.ceil((team.playerA.playerStat.elo + team.playerB.playerStat.elo) / 2)}
+                {Math.ceil((team.playerA.elo.current + team.playerB.elo.current) / 2)}
               </div>
             </Card>
           ))}

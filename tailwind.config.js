@@ -39,6 +39,31 @@ const config = {
           DEFAULT: "#820817",
           dark: "#4d040d",
         },
+        quartz: {
+          light: "#94189c",
+          DEFAULT: "#501174",
+          dark: "#2a0a57",
+        },
+        saphir: {
+          light: "#0047d1",
+          DEFAULT: "#00218f",
+          dark: "#00125c",
+        },
+        emeraude: {
+          light: "#008627",
+          DEFAULT: "#003d10",
+          dark: "#002f11",
+        },
+        rubis: {
+          light: "#8b0013",
+          DEFAULT: "#61000b",
+          dark: "#3c0009",
+        },
+        diamant: {
+          light: "#9b9b9c",
+          DEFAULT: "#5d5c5d",
+          dark: "#3e3d3d",
+        },
       },
     },
   },

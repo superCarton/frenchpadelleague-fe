@@ -62,7 +62,11 @@ const TournamentStatusBadge: React.FC<TournamentStatusBadgeProps> = ({
   const Icon = statusEl.icon;
 
   return (
-    <Chip color={statusEl.color} startContent={<Icon className="ml-2" size={16} />}>
+    <Chip
+      color={statusEl.color}
+      startContent={<Icon className="ml-2" size={16} />}
+      variant="bordered"
+    >
       {statusEl.label}
     </Chip>
   );

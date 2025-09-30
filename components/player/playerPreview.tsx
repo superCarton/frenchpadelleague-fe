@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { Player } from "@/lib/interfaces";
 import { useUserStore } from "@/store/store";
+import { getPlayerPictureUrl } from "@/lib/helpers";
 
 const leagueAvatarClasses: Record<string, string> = {
   bronze: "bg-bronze border-bronze text-white",
@@ -28,7 +29,7 @@ export const PlayerPreviewView = (props: {
   const prettyNameWithElo = (
     <>
       {shortName ? `${player.firstname.at(0)}.` : player.firstname} {player.lastname}
-      {hideElo ? "" : <span className="font-normal text-gray-400"> ({player.playerStat.elo})</span>}
+      {hideElo ? "" : <span className="font-normal text-gray-400"> ({player.elo.current})</span>}
     </>
   );
 
@@ -36,8 +37,9 @@ export const PlayerPreviewView = (props: {
     <User
       avatarProps={{
         name: `${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`,
-        className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"}`,
+        className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"} border-1 border-${player.league.badge}`,
         size: avatarSize && avatarSize !== "tiny" ? avatarSize : "md",
+        src: getPlayerPictureUrl(player),
       }}
       className={`cursor-pointer ${avatarSize === "tiny" && "!gap-1"}`}
       description={

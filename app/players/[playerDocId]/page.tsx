@@ -20,8 +20,8 @@ import { useUserStore } from "@/store/store";
 import ErrorComponent from "@/components/errorComponent";
 import { SectionLoader } from "@/components/common/sectionLoader";
 import Gender from "@/components/common/gender";
-import { leagueGradients } from "@/lib/helpers";
-import PlayerLevelQuiz from "@/components/player/playerLevelQuizzModal";
+import { getPlayerPictureUrl, leagueGradients } from "@/lib/helpers";
+import PlayerLevelQuiz from "@/components/player/playerLevelQuizModal";
 import PlayerUploadPictureModal from "@/components/player/playerUploadPictureModal";
 import PlayerEditProfileModal from "@/components/player/playerEditProfileModal";
 import PlayerTournamentsRegistrations from "@/components/player/playerTournamentsRegistrations";
@@ -36,9 +36,9 @@ export default function PlayerPage() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const {
-    isOpen: isLevelQuizzModalOpen,
-    onOpen: onOpenLevelQuizzModal,
-    onClose: onCloseLevelQuizzModal,
+    isOpen: isLevelQuizModalOpen,
+    onOpen: onOpenLevelQuizModal,
+    onClose: onCloseLevelQuizModal,
   } = useDisclosure();
   const {
     isOpen: isUploadProfilePictureModalOpen,
@@ -58,8 +58,8 @@ export default function PlayerPage() {
         const { data } = await getPlayerByDocId(playerDocId);
 
         setPlayer(data);
-        if (!data.playerStat.quizzDone) {
-          onOpenLevelQuizzModal();
+        if (!data.selfEvaluation) {
+          onOpenLevelQuizModal();
         }
       } catch (err: any) {
         setError(err.message || "Erreur lors du chargement du tournoi");
@@ -129,7 +129,7 @@ export default function PlayerPage() {
                   className="w-40 h-40"
                   name={`${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`}
                   size="lg"
-                  src={player.photo?.url}
+                  src={getPlayerPictureUrl(player)}
                 />
               </Badge>
             </div>
@@ -137,12 +137,10 @@ export default function PlayerPage() {
               <div className="flex flex-row items-center justify-center gap-4 p-2">
                 <div>
                   <div className="flex items-end justify-center gap-1 text-4xl font-bold text-gray-900">
-                    {player.playerStat.elo}
+                    {player.elo.current}
                     <span className="text-sm text-gray-500 font-medium">Elo</span>
                   </div>
-                  <div className="text-tiny text-gray-500">
-                    Meilleur Elo {player.playerStat.bestElo}
-                  </div>
+                  <div className="text-tiny text-gray-500">Meilleur Elo {player.elo.best}</div>
                 </div>
                 <Image
                   alt={`Badge ${player.league.title}`}
@@ -172,7 +170,7 @@ export default function PlayerPage() {
                     </Chip>
                   ))}
                 </div>
-                <div>68% de victoires</div>
+                <div>50% de victoires</div>
               </div>
               {isPlayerConnected && (
                 <div className="flex flex-row items-center gap-2">
@@ -184,12 +182,12 @@ export default function PlayerPage() {
                   >
                     Modifier mon profil
                   </Link>
-                  {!player.playerStat.quizzDone && (
+                  {!player.selfEvaluation && (
                     <Link
                       className="cursor-pointer text-small"
                       color="foreground"
                       underline="hover"
-                      onPress={onOpenLevelQuizzModal}
+                      onPress={onOpenLevelQuizModal}
                     >
                       Ajuster mon niveau
                     </Link>
@@ -230,9 +228,9 @@ export default function PlayerPage() {
       {renderContent()}
 
       <PlayerLevelQuiz
-        isOpen={isLevelQuizzModalOpen}
-        onClose={onCloseLevelQuizzModal}
-        onQuizzFinished={refresh}
+        isOpen={isLevelQuizModalOpen}
+        onClose={onCloseLevelQuizModal}
+        onQuizFinished={refresh}
       />
 
       <PlayerUploadPictureModal
