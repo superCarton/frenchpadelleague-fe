@@ -3,6 +3,7 @@ import {
   Gender,
   League,
   Match,
+  Pagination,
   Player,
   Profiles,
   Team,
@@ -20,6 +21,21 @@ type PopulateField =
       fieldName: string;
       subFields?: PopulateField[];
     };
+
+const buildPagination = (url: string, pagination?: Pagination) => {
+  if (pagination) {
+    if (pagination.limit) {
+      url += `&pagination[limit]=${pagination.limit}`;
+    }
+    if (pagination.page) {
+      url += `&pagination[page]=${pagination.page}`;
+    }
+    if (pagination.pageSize) {
+      url += `&pagination[pageSize]=${pagination.pageSize}`;
+    }
+  }
+  return url;
+};
 
 const buildUrl = (url: string, fields: PopulateField[]): string => {
   const params: string[] = [];
@@ -41,9 +57,7 @@ const buildUrl = (url: string, fields: PopulateField[]): string => {
   for (const f of fields) {
     recurse(f, "populate");
   }
-
   const queryString = params.join("&");
-
   return `${API_URL}${url}${url.includes("?") ? "&" : "?"}${queryString}`;
 };
 
@@ -182,17 +196,6 @@ export async function getPlayerByDocId(playerDocId: string): Promise<WithStrapiM
   return data;
 }
 
-export async function getPlayers(gender?: TournamentGender): Promise<WithStrapiMeta<Player[]>> {
-  let url = "/players";
-  if (gender) {
-    url += `?filters[gender][$eq]=${gender === "mixed" ? "male|female" : gender}`;
-  }
-  const res = await fetch(buildUrl(url, playerPopulate));
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /players");
-  return data;
-}
-
 export async function createPlayer(payload: any) {
   const res = await fetch(buildUrl("/players", []), {
     method: "POST",
@@ -225,26 +228,30 @@ export async function unsubscribeNewsletter(token: string) {
   return data;
 }
 
-export async function getTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
-  const res = await fetch(buildUrl("/tournaments", tournamentPreviewPopulate));
+export async function getTournaments(
+  filters: {
+    future?: boolean;
+    leagueDocumentId?: string;
+    clubDocumentId?: string;
+  },
+  pagination?: Pagination
+): Promise<WithStrapiMeta<Tournament[]>> {
+  let url = `/tournaments?&sort=startDate:asc`;
+  if (filters.future) {
+    const today = new Date().toISOString();
+    url == `filters[endDate][$gt]=${today}`;
+  }
+  if (filters.leagueDocumentId) {
+    url += `&filters[league][documentId][$eq]=${filters.leagueDocumentId}`;
+  }
+  if (filters.clubDocumentId) {
+    url += `&filters[club][documentId][$eq]=${filters.clubDocumentId}`;
+  }
+  url = buildPagination(url, pagination);
+  const res = await fetch(buildUrl(url, tournamentPreviewPopulate));
   const data = await res.json();
 
   if (!res.ok) throw new Error(data.error);
-
-  return data;
-}
-
-export async function getNextTournaments(): Promise<WithStrapiMeta<Tournament[]>> {
-  const today = new Date().toISOString();
-  const res = await fetch(
-    buildUrl(
-      `/tournaments?filters[startDate][$gt]=${today}&sort=startDate:asc&pagination[limit]=3`,
-      tournamentPreviewPopulate
-    )
-  );
-  const data = await res.json();
-
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments");
 
   return data;
 }
@@ -258,8 +265,10 @@ export async function getTournamentByDocId(
   return data;
 }
 
-export async function getClubs(): Promise<WithStrapiMeta<Club[]>> {
-  const res = await fetch(buildUrl("/clubs", clubPopulate));
+export async function getClubs(pagination?: Pagination): Promise<WithStrapiMeta<Club[]>> {
+  let url = "/clubs?sort=name";
+  url = buildPagination(url, pagination);
+  const res = await fetch(buildUrl(url, clubPopulate));
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Erreur /clubs");
   return data;
@@ -272,12 +281,30 @@ export async function getClubByDocId(clubDocId: string): Promise<WithStrapiMeta<
   return data;
 }
 
-export async function getPlayersByLeague(leagueId: number): Promise<WithStrapiMeta<Player[]>> {
-  const res = await fetch(
-    buildUrl(`/players?filters[league][id][$eq]=${leagueId}`, playerPopulate)
-  );
+export async function getPlayers(
+  filters: {
+    leagueDocumentId?: string;
+    gender?: TournamentGender;
+    nameSearchTokens?: string[];
+  },
+  pagination?: Pagination
+): Promise<WithStrapiMeta<Player[]>> {
+  let url = "/players?sort=lastname";
+  if (filters.gender) {
+    url += `&filters[gender][$eq]=${filters.gender === "mixed" ? "male|female" : filters.gender}`;
+  }
+  if (filters.leagueDocumentId) {
+    url += `&filters[league][documentId][$eq]=${filters.leagueDocumentId}`;
+  }
+  if (filters.nameSearchTokens) {
+    filters.nameSearchTokens.forEach((nameSearch, i) => {
+      url += `&filters[$and][${i}][$or][0][firstname][$startsWithi]=${nameSearch}&filters[$and][${i}][$or][1][lastname][$startsWithi]=${nameSearch}`;
+    });
+  }
+  url = buildPagination(url, pagination);
+  const res = await fetch(buildUrl(url, playerPopulate));
   const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /players?league=leagueId");
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /players");
   return data;
 }
 
@@ -358,20 +385,6 @@ export async function getMatchesByTournamentId(
   );
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Erreur /matches");
-  return data;
-}
-
-export async function getTournamentsByClubDocumentId(
-  clubDocumentId: string
-): Promise<WithStrapiMeta<Tournament[]>> {
-  const res = await fetch(
-    buildUrl(`/tournaments?filters[club][documentId][$eq]=${clubDocumentId}`, [
-      { fieldName: "league", subFields: leaguePopulate },
-      { fieldName: "club", subFields: clubPopulate },
-    ])
-  );
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error?.message || "Erreur /tournaments/:tournamentDocId");
   return data;
 }
 

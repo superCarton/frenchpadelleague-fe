@@ -9,7 +9,7 @@ import { Alert } from "@heroui/alert";
 
 import { PlayerPreviewView } from "../player/playerPreview";
 
-import { getPlayersByLeague, registerTeam } from "@/lib/api";
+import { getPlayers, registerTeam } from "@/lib/api";
 import { useUserStore } from "@/store/store";
 import { League, Player, Tournament } from "@/lib/interfaces";
 
@@ -34,7 +34,9 @@ export default function TournamentRegisterModal({
     if (isOpen) {
       const filterPlayers = (player: Player) => player.documentId !== profile?.documentId;
 
-      getPlayersByLeague(league.id).then((res) => setPlayers(res.data.filter(filterPlayers)));
+      getPlayers({ leagueDocumentId: league.documentId }).then((res) =>
+        setPlayers(res.data.filter(filterPlayers))
+      );
       setPartnerId(null);
       setError(null);
     }

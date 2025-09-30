@@ -37,7 +37,7 @@ export const PlayerPreviewView = (props: {
     <User
       avatarProps={{
         name: `${player.firstname.charAt(0).toUpperCase()}${player.lastname.charAt(0).toUpperCase()}`,
-        className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"} border-1 border-${player.league.badge}`,
+        className: `${leagueAvatarClasses[player.league.badge]} ${avatarSize === "tiny" && "w-6 h-6 text-tiny"} border-${avatarSize === "tiny" ? 1 : 2} border-${player.league.badge}`,
         size: avatarSize && avatarSize !== "tiny" ? avatarSize : "md",
         src: getPlayerPictureUrl(player),
       }}

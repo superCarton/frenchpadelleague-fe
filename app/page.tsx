@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { sectionTitle } from "@/components/primitives";
 import { League, Tournament } from "@/lib/interfaces";
-import { getAllLeagues, getNextTournaments } from "@/lib/api";
+import { getAllLeagues, getTournaments } from "@/lib/api";
 import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
 import { useUserStore } from "@/store/store";
 
@@ -25,8 +25,7 @@ export default function Home() {
   useEffect(() => {
     async function fetchTournaments() {
       try {
-        const { data } = await getNextTournaments();
-
+        const { data } = await getTournaments({ future: true }, { limit: 3 });
         setNextTournaments(data);
       } catch (err: any) {
       } finally {

@@ -16,6 +16,12 @@ export type StrapiImage = {
   url: string;
 };
 
+export type Pagination = {
+  page?: number;
+  pageSize?: number;
+  limit?: number;
+};
+
 export type Gender = "male" | "female";
 
 export type TournamentGender = Gender | "mixed";

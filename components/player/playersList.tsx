@@ -28,7 +28,7 @@ export const PlayerList = ({ players, itemsPerPage = 5 }: PlayerListProps) => {
             key={player.documentId}
             className="p-4 bg-white rounded-lg shadow-sm border border-gray-200"
           >
-            <PlayerPreviewView player={player} />
+            <PlayerPreviewView avatarSize="lg" player={player} />
           </div>
         ))}
       </div>

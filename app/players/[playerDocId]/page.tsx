@@ -58,7 +58,7 @@ export default function PlayerPage() {
         const { data } = await getPlayerByDocId(playerDocId);
 
         setPlayer(data);
-        if (!data.selfEvaluation) {
+        if (profile && profile.documentId === data.documentId && !data.selfEvaluation) {
           onOpenLevelQuizModal();
         }
       } catch (err: any) {
@@ -92,7 +92,7 @@ export default function PlayerPage() {
   const renderContent = () => {
     if (error) return <ErrorComponent error={error} />;
     if (loading) {
-      return <SectionLoader label="Chargement du profil" />;
+      return <SectionLoader label="Chargement du profil joueur" />;
     }
     if (!player) return <div className="p-6">Joueur introuvable</div>;
     const isPlayerConnected = profile && profile.documentId === player.documentId;

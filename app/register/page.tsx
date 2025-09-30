@@ -87,15 +87,19 @@ export default function RegisterPage() {
       <Form onSubmit={handleRegister}>
         <RadioGroup
           isRequired
+          className="mb-1"
           errorMessage="Veuillez sélectionner votre genre"
           label={<span className="text-small">Vous êtes</span>}
           name="gender"
           orientation="horizontal"
+          size="sm"
         >
-          <Radio className="mr-1" value="female">
+          <Radio size="sm" value="male">
+            Un homme
+          </Radio>
+          <Radio className="mr-1" size="sm" value="female">
             Une femme
           </Radio>
-          <Radio value="male">Un homme</Radio>
         </RadioGroup>
         <Input
           isRequired
@@ -120,7 +124,7 @@ export default function RegisterPage() {
         <DatePicker
           isRequired
           autoComplete="bday"
-          className="w-full max-w-full pb-0"
+          className="w-full max-w-full"
           errorMessage="Veuillez entrer une date valide"
           label="Date de naissance"
           labelPlacement="outside"

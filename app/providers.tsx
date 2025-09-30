@@ -9,6 +9,7 @@ import { HeroUIProvider } from "@heroui/system";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ToastProvider } from "@heroui/toast";
+import { I18nProvider } from "@react-aria/i18n";
 
 import PadelLoader from "@/components/common/padelLoader";
 import { useUserStore } from "@/store/store";
@@ -43,29 +44,31 @@ export function Providers({ children, themeProps }: ProvidersProps) {
   }, [loading]);
 
   return (
-    <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider {...themeProps}>
-        <div className="fixed z-[100]">
-          <ToastProvider placement="top-right" toastOffset={70} toastProps={{ timeout: 10000 }} />
-        </div>
+    <I18nProvider locale="fr">
+      <HeroUIProvider navigate={router.push}>
+        <NextThemesProvider {...themeProps}>
+          <div className="fixed z-[100]">
+            <ToastProvider placement="top-right" toastOffset={70} toastProps={{ timeout: 10000 }} />
+          </div>
 
-        {/* Splash uniquement au bootstrap */}
-        {showSplash && !hasBootstrapped && (
-          <div
-            className={`
+          {/* Splash uniquement au bootstrap */}
+          {showSplash && !hasBootstrapped && (
+            <div
+              className={`
               z-100
               fixed inset-0 z-50 flex items-center justify-center bg-black
               transition-opacity duration-1000
               ${fadeOut ? "opacity-0" : "opacity-100"}
             `}
-          >
-            <PadelLoader />
-          </div>
-        )}
+            >
+              <PadelLoader />
+            </div>
+          )}
 
-        {/* App */}
-        <div>{children}</div>
-      </NextThemesProvider>
-    </HeroUIProvider>
+          {/* App */}
+          <div>{children}</div>
+        </NextThemesProvider>
+      </HeroUIProvider>
+    </I18nProvider>
   );
 }

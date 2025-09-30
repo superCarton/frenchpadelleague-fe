@@ -5,7 +5,7 @@ import NextLink from "next/link";
 import { Globe, Mail, Phone, Smartphone } from "lucide-react";
 import dayjs from "dayjs";
 
-import { getClubByDocId, getTournamentsByClubDocumentId } from "@/lib/api";
+import { getClubByDocId, getTournaments } from "@/lib/api";
 import { pageTitle, sectionTitle } from "@/components/primitives";
 import AddressLink from "@/components/common/addressLink";
 import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
@@ -21,7 +21,7 @@ type ClubPageProps = {
 export default async function ClubPage({ params }: ClubPageProps) {
   const { clubDocId } = await params;
   const { data: club } = await getClubByDocId(clubDocId);
-  const { data: tournaments } = await getTournamentsByClubDocumentId(clubDocId);
+  const { data: tournaments } = await getTournaments({ clubDocumentId: clubDocId });
 
   const nbIndoorCourts =
     club.padelCourts && club.padelCourts.filter((court) => court.type === "indoor").length;

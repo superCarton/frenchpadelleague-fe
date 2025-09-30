@@ -44,6 +44,7 @@
     "@heroui/toast": "^2.0.14",
     "@heroui/user": "^2.2.20",
     "@internationalized/date": "^3.8.2",
+    "@react-aria/i18n": "^3.12.12",
     "@react-aria/ssr": "3.9.9",
     "@react-aria/visually-hidden": "3.8.25",
     "@tailwindcss/typography": "^0.5.16",

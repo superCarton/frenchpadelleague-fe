@@ -13,14 +13,15 @@ export default function SubscribeNewsletter() {
 
   const handleSubscribeNewsLetter = async (e: any) => {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
 
     setLoading(true);
 
     try {
       await subscribeNewsletter(data.email.toString());
-      if (e.currentTarget) {
-        e.currentTarget.reset();
+      if (form) {
+        form.reset();
       }
       addToast({
         title: "Vous êtes désormais inscrits à la newsletter !",
