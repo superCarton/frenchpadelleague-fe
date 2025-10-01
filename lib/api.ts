@@ -450,7 +450,7 @@ export async function selfEvaluation(
     quizScore?: number;
   },
   jwt: string
-): Promise<Player> {
+): Promise<League> {
   if (!jwt) throw new Error("Utilisateur non authentifié");
 
   const res = await fetch(buildUrl("/me/player/self-evaluation", leaguePopulate), {
@@ -464,6 +464,28 @@ export async function selfEvaluation(
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.error?.message || "Erreur /me/player/self-evaluation");
+  return data;
+}
+
+export async function selfEvaluationTryMode({
+  gender,
+  fftPadelRank,
+  quizScore,
+}: {
+  gender: Gender;
+  fftPadelRank?: number;
+  quizScore?: number;
+}): Promise<League> {
+  const res = await fetch(buildUrl("/leagues/self-evaluation", leaguePopulate), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ gender, fftPadelRank, quizScore }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error?.message || "Erreur /leagues/self-evaluation");
   return data;
 }
 

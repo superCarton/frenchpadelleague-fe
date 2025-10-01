@@ -62,7 +62,6 @@ export default function PlayerUploadPictureModal({
       <ModalContent>
         <ModalHeader>Télécharger une photo de profil</ModalHeader>
         <ModalBody className="flex flex-col items-center gap-4">
-          {/* Aperçu dans un Avatar */}
           {previewUrl && <Avatar alt="Preview photo" className="w-32 h-32" src={previewUrl} />}
 
           <Input
@@ -80,11 +79,17 @@ export default function PlayerUploadPictureModal({
             }}
           />
         </ModalBody>
-        <ModalFooter>
-          <Button variant="flat" onPress={onClose}>
+        <ModalFooter className="flex justify-between">
+          <Button className="w-[150px]" variant="flat" onPress={onClose}>
             Annuler
           </Button>
-          <Button color="primary" isDisabled={!file} isLoading={loading} onPress={handleUpload}>
+          <Button
+            className="w-[150px]"
+            color="primary"
+            isDisabled={!file}
+            isLoading={loading}
+            onPress={handleUpload}
+          >
             Sauvegarder
           </Button>
         </ModalFooter>

@@ -64,7 +64,7 @@ export default function TournamentRegisterModal({
   };
 
   return (
-    <Modal isOpen={isOpen} placement="center" size="lg" onClose={onClose}>
+    <Modal isOpen={isOpen} size="lg" onClose={onClose}>
       <ModalContent>
         <ModalHeader>Inscription au tournoi</ModalHeader>
         <ModalBody>
@@ -99,11 +99,12 @@ export default function TournamentRegisterModal({
             </div>
           )}
         </ModalBody>
-        <ModalFooter>
-          <Button variant="light" onPress={onClose}>
+        <ModalFooter className="flex justify-between">
+          <Button className="w-[150px]" variant="light" onPress={onClose}>
             Annuler
           </Button>
           <Button
+            className="w-[150px]"
             color="primary"
             isDisabled={!partnerId}
             isLoading={loading}

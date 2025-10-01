@@ -14,21 +14,24 @@ import { Input } from "@heroui/input";
 import { SectionLoader } from "../common/sectionLoader";
 
 import { questionnaire } from "@/config/levelQuestionnaire";
-import { League } from "@/lib/interfaces";
-import { selfEvaluation } from "@/lib/api";
+import { Gender, League } from "@/lib/interfaces";
+import { selfEvaluation, selfEvaluationTryMode } from "@/lib/api";
 import { useUserStore } from "@/store/store";
 
 export default function PlayerLevelQuizModal({
   isOpen,
   onClose,
   onQuizFinished,
+  tryMode = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
   onQuizFinished: () => void;
+  tryMode?: boolean;
 }) {
-  const [mode, setMode] = useState<"choice" | "fft" | "quiz" | "done">("choice");
+  const [mode, setMode] = useState<"gender" | "choice" | "fft" | "quiz" | "done">("choice");
   const [preselectedMode, setPreselectedMode] = useState<string | null>(null);
+  const [gender, setGender] = useState<Gender | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -36,7 +39,8 @@ export default function PlayerLevelQuizModal({
   const { token } = useUserStore();
 
   useEffect(() => {
-    setMode("choice");
+    setMode(tryMode ? "gender" : "choice");
+    setGender(null);
     setAnswers({});
     setStep(0);
     setResultLeague(null);
@@ -44,6 +48,13 @@ export default function PlayerLevelQuizModal({
   }, [isOpen]);
 
   const currentQuestion = questionnaire[step];
+
+  const handleGender = (e: any) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+    setGender(data.gender as any);
+    setMode("choice");
+  };
 
   const handleChoice = (e: any) => {
     e.preventDefault();
@@ -53,20 +64,29 @@ export default function PlayerLevelQuizModal({
 
   const handleFinishFft = async (e: any) => {
     e.preventDefault();
+    setLoading(true);
     const { fftPadelRank, fftLicenceNumber } = Object.fromEntries(new FormData(e.currentTarget));
-    if (!fftPadelRank || !fftLicenceNumber || !token) return;
     try {
-      setLoading(true);
-      const { league } = await selfEvaluation(
-        {
+      if (tryMode && gender) {
+        const league = await selfEvaluationTryMode({
+          gender,
           fftPadelRank: parseInt(fftPadelRank.toString()),
-          fftLicenceNumber: fftLicenceNumber.toString(),
-        },
-        token
-      );
-      setResultLeague(league);
-      setMode("done");
-      onQuizFinished();
+        });
+        setResultLeague(league);
+        setMode("done");
+        onQuizFinished();
+      } else if (token) {
+        const league = await selfEvaluation(
+          {
+            fftPadelRank: parseInt(fftPadelRank.toString()),
+            fftLicenceNumber: fftLicenceNumber.toString(),
+          },
+          token
+        );
+        setResultLeague(league);
+        setMode("done");
+        onQuizFinished();
+      }
     } catch {
       addToast({
         title: "Erreur lors de l'enregistrement du classement FFT",
@@ -80,9 +100,14 @@ export default function PlayerLevelQuizModal({
   const handleFinishQuiz = async () => {
     setLoading(true);
     try {
-      if (token) {
-        const quizScore = Object.values(answers).reduce((acc, val) => acc + val, 0);
-        const { league } = await selfEvaluation({ quizScore }, token);
+      const quizScore = Object.values(answers).reduce((acc, val) => acc + val, 0);
+      if (tryMode && gender) {
+        const league = await selfEvaluationTryMode({ quizScore, gender });
+        setResultLeague(league);
+        setMode("done");
+        onQuizFinished();
+      } else if (token) {
+        const league = await selfEvaluation({ quizScore }, token);
         setResultLeague(league);
         setMode("done");
         onQuizFinished();
@@ -97,48 +122,87 @@ export default function PlayerLevelQuizModal({
     }
   };
 
-  const renderChoice = () => {
-    return (
-      <Form onSubmit={handleChoice}>
-        <div className="flex flex-col gap-4">
-          <RadioGroup
-            isRequired
-            description="L'auto-évaluation de niveau ne peut être faite qu'une seule fois"
-            errorMessage="Veuillez sélectionner une option"
-            name="mode"
-            title="Choisir une option"
-            onValueChange={setPreselectedMode}
+  const renderGender = () => (
+    <Form onSubmit={handleGender}>
+      <div className="flex flex-col gap-4">
+        <p>
+          Sans créer de compte, tu vas découvrir dans quelle ligue FPL tu jouerais pour commencer
+        </p>
+        <RadioGroup
+          isRequired
+          errorMessage="Veuillez sélectionner une option"
+          name="gender"
+          title="Choisir une option"
+        >
+          <Radio className="gap-1" value="male">
+            Je suis un homme
+          </Radio>
+          <Radio className="gap-1" value="female">
+            Je suis une femme
+          </Radio>
+        </RadioGroup>
+        <Button className="mb-2" color="primary" type="submit">
+          Continuer
+        </Button>
+      </div>
+    </Form>
+  );
+
+  const renderChoice = () => (
+    <Form onSubmit={handleChoice}>
+      <div className="flex flex-col gap-4">
+        <RadioGroup
+          isRequired
+          description={
+            !tryMode && "L'auto-évaluation de niveau ne peut être faite qu'une seule fois"
+          }
+          errorMessage="Veuillez sélectionner une option"
+          name="mode"
+          title="Choisir une option"
+          onValueChange={setPreselectedMode}
+        >
+          <Radio
+            className="gap-1"
+            description={`Munis toi de ton dernier classement connu ${!tryMode ? "et de ton numéro de license" : ""}`}
+            value="fft"
           >
-            <Radio
-              className="gap-1"
-              description="Munis toi de ton numéro de license et de ton dernier classement connu"
-              value="fft"
-            >
-              J'ai déjà un classement padel FFT
-            </Radio>
-            <Radio
-              className="gap-1"
-              description="Tu vas répondre à une série de questions pour déterminer ton niveau de padel"
-              value="quiz"
-            >
-              Je n'ai pas de classement padel FFT
-            </Radio>
-          </RadioGroup>
-          {preselectedMode === "quiz" && (
-            <Alert color="warning" variant="bordered">
-              Attention, les top ligues Premium et Legend pour les messieurs, Rubis et Diamant pour
-              les dames sont réservées aux joueurs possédant déjà un très bon classement padel FFT.
-              Rien ne t'empêchera d'y accéder après tes bonnes performances FPL, mais il faudra
-              faire tes preuves 😘
-            </Alert>
+            J'ai déjà un classement padel FFT
+          </Radio>
+          <Radio
+            className="gap-1"
+            description="Tu vas répondre à une série de questions pour déterminer ton niveau de padel"
+            value="quiz"
+          >
+            Je n'ai pas de classement padel FFT
+          </Radio>
+        </RadioGroup>
+        {preselectedMode === "quiz" && (
+          <Alert color="warning" variant="bordered">
+            Les top ligues{" "}
+            {tryMode
+              ? gender! === "male"
+                ? "Premium et Legend"
+                : "Rubis et Diamant"
+              : "Premium et Legend pour les messieurs, Rubis et Diamant pour les dames"}{" "}
+            sont réservées aux joueurs possédant déjà un très bon classement padel FFT. Rien ne
+            t'empêchera d'y accéder après tes bonnes performances FPL, mais il faudra faire tes
+            preuves 😘
+          </Alert>
+        )}
+
+        <div className="flex flex-row w-full justify-between mt-4 mb-2">
+          {tryMode && (
+            <Button className="w-[150px]" onPress={() => setMode("gender")}>
+              Précédent
+            </Button>
           )}
-          <Button className="mb-2" color="primary" type="submit">
+          <Button className="w-[150px]" color="primary" type="submit">
             Continuer
           </Button>
         </div>
-      </Form>
-    );
-  };
+      </div>
+    </Form>
+  );
 
   const renderFft = () => {
     return (
@@ -155,14 +219,16 @@ export default function PlayerLevelQuizModal({
           placeholder="Dernier classement padel FFT"
           type="number"
         />
-        <Input
-          isRequired
-          errorMessage="Veuillez entrer votre numéro de licence FFT"
-          label="Numéro de licence FFT"
-          labelPlacement="outside"
-          name="fftLicenceNumber"
-          placeholder="Numéro de licence FFT"
-        />
+        {!tryMode && (
+          <Input
+            isRequired
+            errorMessage="Veuillez entrer votre numéro de licence FFT"
+            label="Numéro de licence FFT"
+            labelPlacement="outside"
+            name="fftLicenceNumber"
+            placeholder="Numéro de licence FFT"
+          />
+        )}
         <div className="flex flex-row w-full justify-between mt-4 mb-2">
           <Button className="w-[150px]" onPress={() => setMode("choice")}>
             Précédent
@@ -242,15 +308,20 @@ export default function PlayerLevelQuizModal({
   };
 
   return (
-    <Modal isOpen={isOpen} placement="center" size="lg" onClose={onClose}>
+    <Modal isOpen={isOpen} size="lg" onClose={onClose}>
       <ModalContent>
         <ModalHeader>
-          {mode !== "done" && "Ajuster mon niveau"}
-          {mode === "done" && "Nouvelle ligue !"}
+          {mode === "done"
+            ? "Nouvelle ligue !"
+            : tryMode
+              ? "Evaluer dans quelle ligue je jouerais"
+              : "Auto évaluer mon niveau"}
         </ModalHeader>
         <ModalBody>
           {loading ? (
             <SectionLoader label="Calcul de la nouvelle ligue" />
+          ) : mode === "gender" ? (
+            renderGender()
           ) : mode === "choice" ? (
             renderChoice()
           ) : mode === "fft" ? (

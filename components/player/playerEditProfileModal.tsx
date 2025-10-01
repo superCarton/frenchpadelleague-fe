@@ -58,7 +58,7 @@ export default function PlayerEditProfileModal({
   if (!profile) return null;
 
   return (
-    <Modal isOpen={isOpen} placement="center" size="lg" onClose={onClose}>
+    <Modal isOpen={isOpen} size="lg" onClose={onClose}>
       <ModalContent>
         <Form onSubmit={handleSave}>
           <ModalHeader>Modifier mon profil</ModalHeader>

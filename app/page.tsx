@@ -7,12 +7,14 @@ import { useEffect, useState } from "react";
 import { Spinner } from "@heroui/spinner";
 import { Tab, Tabs } from "@heroui/tabs";
 import { AnimatePresence, motion } from "framer-motion";
+import { useDisclosure } from "@heroui/react";
 
 import { sectionTitle } from "@/components/primitives";
 import { League, Tournament } from "@/lib/interfaces";
 import { getAllLeagues, getTournaments } from "@/lib/api";
 import { TournamentPreviewView } from "@/components/tournament/tournamentPreview";
 import { useUserStore } from "@/store/store";
+import PlayerLevelQuizModal from "@/components/player/playerLevelQuizModal";
 
 export default function Home() {
   const router = useRouter();
@@ -21,6 +23,11 @@ export default function Home() {
   const [loadingLeagues, setLoadingLeagues] = useState(true);
   const [leagues, setLeagues] = useState<League[]>([]);
   const { profile } = useUserStore();
+  const {
+    isOpen: isLevelQuizModalOpen,
+    onOpen: onOpenLevelQuizModal,
+    onClose: onCloseLevelQuizModal,
+  } = useDisclosure();
 
   useEffect(() => {
     async function fetchTournaments() {
@@ -161,12 +168,8 @@ export default function Home() {
               critères de montée et de descente encadrent l’évolution entre les catégories, afin de
               garantir des confrontations équilibrées.
             </p>
-            <Button
-              className="mt-6 px-8 py-3"
-              color="primary"
-              onPress={() => router.push("/test-level")}
-            >
-              Tester son niveau
+            <Button className="mt-6 px-8 py-3" color="primary" onPress={onOpenLevelQuizModal}>
+              Tester mon niveau
             </Button>
           </div>
         </div>
@@ -209,6 +212,13 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <PlayerLevelQuizModal
+        tryMode
+        isOpen={isLevelQuizModalOpen}
+        onClose={onCloseLevelQuizModal}
+        onQuizFinished={() => {}}
+      />
     </div>
   );
 }

@@ -116,7 +116,7 @@ export default function TournamentPage() {
                     })
                   }
                 >
-                  Désinscrire l'équipe
+                  Désinscription
                 </Button>
               ) : null
             }
